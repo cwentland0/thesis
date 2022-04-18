@@ -1,0 +1,647 @@
+\documentclass[]{beamer}
+
+% make header narrower
+% \PassOptionsToPackage{height=2em}{beamerouterthemesidebar}
+
+% needed for bold mathmode
+\DeclareFontShape{OT1}{cmss}{b}{n}{<->ssub * cmss/bx/n}{}
+
+\usepackage{changepage}
+\usepackage{xspace}
+\usepackage{soul}
+\usepackage{amsfonts}
+\usepackage{amsmath,amsfonts,amsthm} % Math packages
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{framed}
+\usepackage{wrapfig}
+\usepackage{caption}
+\usepackage{tcolorbox}
+\usepackage{arydshln}
+
+\mode<presentation> {
+\usepackage{subcaption}
+\usepackage{algorithm,algorithmic}
+\usepackage[titletoc,title]{appendix}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsmath,amssymb}
+\usepackage{mathtools}
+\captionsetup{compatibility=false}
+\usepackage{blindtext}
+\usepackage{tcolorbox}
+\usepackage[draft]{animate}
+\usepackage{comment}
+\usepackage{appendixnumberbeamer}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{calc,matrix}
+
+\usetheme{AnnArbor}
+
+\definecolor{myblue}{rgb}{0,0.156,0.375}
+\definecolor{mymaize}{rgb}{1.,0.824,0.227}
+\definecolor{beamer@myblue}{rgb}{0.02,0.1786,0.37109}
+\definecolor{beamer@mymaize}{rgb}{1.,0.824,0.227}
+\setbeamercolor{structure}{fg=beamer@myblue}
+\setbeamercolor*{title}{use=structure,bg=beamer@mymaize,fg=beamer@myblue}
+\setbeamercolor*{frametitle}{use=structure,bg=beamer@mymaize,fg=beamer@myblue}
+\setbeamercolor*{palette primary}{use=structure,fg=beamer@mymaize,bg=beamer@myblue}
+\setbeamercolor*{palette secondary}{use=structure,fg=beamer@mymaize,bg=beamer@myblue}
+\setbeamercolor*{palette tertiary}{use=structure,fg=beamer@mymaize,bg=beamer@myblue}
+
+\setbeamertemplate{frametitle}{%
+    \nointerlineskip%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=2.5ex,dp=1ex]{frametitle}
+        \hspace*{1ex}\insertframetitle%
+    \end{beamercolorbox}%
+}
+
+\usepackage{appendixnumberbeamer}
+\AtBeginSection[]{
+  \begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+    \usebeamerfont{title}\insertsectionhead\par%
+  \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
+\usepackage{textpos}
+}
+
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}%
+\newcommand*{\Resize}[2]{\resizebox{#1}{!}{$#2$}}%
+
+% \addtobeamertemplate{frametitle}{}{%
+% \begin{textblock*}{155mm}(-0.19\textwidth,-1.35cm)
+% \end{textblock*}}
+
+\usepackage{xcolor}
+
+\beamertemplatenavigationsymbolsempty
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    % \insertframenumber/\inserttotalframenumber
+}
+
+% Syntax: \colorboxed[<color model>]{<color specification>}{<math formula>}
+\newcommand*{\colorboxed}{}
+\def\colorboxed#1#{%
+  \colorboxedAux{#1}%
+}
+\newcommand*{\colorboxedAux}[3]{%
+  % #1: optional argument for color model
+  % #2: color specification
+  % #3: formula
+  \begingroup
+    \colorlet{cb@saved}{.}%
+    \color#1{#2}%
+    \boxed{%
+      \color{cb@saved}%
+      #3%
+    }%
+  \endgroup
+}
+
+\makeatletter
+\newcommand{\miniscule}{\@setfontsize\miniscule{4}{5}}% \tiny: 5/6
+\makeatother
+
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+
+\input{commands}
+\graphicspath{{./Images/}}
+
+%---------------------------------------------------
+%	TITLE PAGE
+%---------------------------------------------------
+
+\title[]{Robust and Scalable Projection-based \\ Reduced-order Models for Reacting Flows}
+
+\institute[University of Michigan]
+{
+\vspace{0.3 in}
+\Large Christopher R. Wentland \\
+\small \underline{Dissertation Committee} \\
+Karthik Duraisamy \\
+Cheng Huang \\
+Jesse Capecelatro \\
+Krzysztof Fidkowski \\
+\vspace{1em}
+\tiny University of Michigan, Ann Arbor - Computational Aerosciences Laboratory
+}
+
+\date{\today}
+
+\begin{document}
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\section*{Introduction}
+
+\begin{frame}{The engineering design cycle}
+	\begin{itemize}
+		\item Concept to prototyping to production
+		\item Iterative, test-driven development
+		\item Regulatory costs in high-stakes fields
+		\item Destructive testing sometimes required
+	\end{itemize}
+	\centering
+    \begin{minipage}{0.4\linewidth}
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.99\linewidth]{engineeringCycle.png}
+        \end{figure}
+    \end{minipage}
+	\centering
+	\begin{minipage}{0.55\linewidth}
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.99\linewidth]{crash_test.jpg}
+        \end{figure}
+    \end{minipage}
+\end{frame}
+
+\begin{frame}{``New space'' era}
+    \begin{itemize}
+        \item Space launch startup boom in the last decade
+        \item Varying mission parameters
+        \begin{itemize}
+            \item Payload: satellite, probe, lander, humans
+            \item Trajectory: LEO/GTO, translunar, deep space
+            \item Capacity: 100 - 150,000 kg to LEO
+        \end{itemize}  
+        \item Many propulsion configurations
+        \begin{itemize}
+            \item Solid, bipropellant, hypergolic
+            \item (Non-)cryogenic liquid, gaseous propellant 
+            \item Injector geometry, flow rates
+            \item Gas-generator, expander, tap-off power cycle
+        \end{itemize}
+        \item Additive manufacturing poised to accelerate and democratize
+    \end{itemize}
+	\begin{minipage}{0.33\linewidth}
+		\begin{figure}
+			\includegraphics[width=0.99\linewidth]{be4.jpg}
+		\end{figure}
+	\end{minipage}
+	\begin{minipage}{0.33\linewidth}
+		\begin{figure}
+			\includegraphics[width=0.99\linewidth]{aeonR.png}
+		\end{figure}
+	\end{minipage}
+	\begin{minipage}{0.28\linewidth}
+		\begin{figure}
+			\includegraphics[width=0.99\linewidth]{delphin.jpeg}
+		\end{figure}
+	\end{minipage}
+\end{frame}
+
+\begin{frame}{Cost of experiments (in 2022 USD)}
+    \begin{itemize}
+        \item Rocketdyne F-1 (Saturn V)
+        \begin{itemize}
+            \item \$4.8 billion development cost
+            \item \$30 million per unit
+            \item \$1.6 billion per launch
+        \end{itemize}
+        \item SpaceX Merlin 1D (Falcon Heavy)
+        \begin{itemize}
+            \item \$1 million per unit
+            \item \$97 million per launch
+        \end{itemize}
+    \end{itemize}
+	\begin{minipage}{0.49\linewidth}
+		\begin{figure}
+			\includegraphics[width=0.99\linewidth]{f1TestStand.jpg}
+		\end{figure}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\begin{figure}
+			\includegraphics[width=0.99\linewidth]{merlin1dTestStand.jpg}
+		\end{figure}
+	\end{minipage}
+\end{frame}
+
+\begin{frame}{Cost of simulations}
+    \begin{itemize}
+        \item IBM Summit at ORNL
+        \begin{itemize}
+            \item $\sim$\$200 million (2019 USD) to design and build
+            \item 13 MW peak consumption ($\sim$11,000 homes)
+            \item $\sim$\$10 million annual energy cost (overestimated)
+        \end{itemize}
+        \item Combustion LES/DNS
+        \begin{itemize}
+            \item $\numDOF \sim \; \text{Re}^{9/4}$
+            \item 50+ species, 100+ reactions
+            \item $\Delta t = \mathcal{O}(1\text{e-}9 \; s)$
+        \end{itemize}
+    \end{itemize}
+	\centering
+	\begin{minipage}{0.3\linewidth}
+		\centering
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.95\linewidth]{combustionDNS.png}
+		\end{figure}
+	\end{minipage}
+	\hspace{1cm}
+	\centering
+	\begin{minipage}{0.3\linewidth}
+		\centering
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.95\linewidth]{jetCrossflowDNS.png}
+		\end{figure}
+	\end{minipage}
+	
+\end{frame}
+
+\begin{frame}{Data-driven reduced-order models (ROMs)}
+	\begin{itemize}
+		\item Learning cheap models from high fidelity simulations, experiments
+		\item Non-intrusive methods
+		\begin{itemize}
+			\item Only require system output
+			\item Black/gray box models
+			\item Kriging, operator inference, ANNs
+		\end{itemize}
+		\item Intrusive methods
+		\begin{itemize}
+			\item Directly manipulate governing equations
+			\item Galerkin, Petrov--Galerkin projection
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Projection-based ROMs of non-linear systems}
+    \begin{itemize}
+        \item Mapping from low-dim latent space to approximate solution manifold
+        \item Map governing equations onto test manifold, evolve in time
+    \end{itemize}
+	\centering
+	\begin{minipage}{0.49\linewidth}
+		\centering
+		\vspace{-2em}
+		\begin{equation*}
+			\ode{\stateVec}{\timeVar} = \rhsFunc{\stateVec}
+		\end{equation*}
+		\begin{equation*}
+			\ode{\stateVecCoef}{\timeVar} = \encoderFunc{\rhsFunc{\decoderFunc{\stateVecCoef}}}
+		\end{equation*}
+	\end{minipage}
+	\hspace{-2em}
+	\begin{minipage}{0.49\linewidth}
+		\begin{figure}
+			\includegraphics[width=0.99\linewidth,trim={2em 2em 2em 2em},clip]{tangentPlane.png}
+		\end{figure}
+	\end{minipage}
+	\begin{tcolorbox}[colframe=red!50!white,halign=center]
+		PROMs of non-linear systems have \textbf{no stability guarantees} \\
+		Accuracy/robustness are rarely tested beyond canonical problems
+	\end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Contributions}
+    \begin{enumerate}
+        \item Assessment and improvement of state-of-the-art PROMs for practical CFD systems (e.g. 2D transonic cavity and 3D rocket combustor)
+        \item Improved solution/RHS formulation of hyper-reduced MP-LSVT method with enhanced accuracy and robustness
+        \item Memory- and compute-scalable HPROM framework in high-performance combustion CFD code
+        \item Open-source toolchain for pre- and post-processing of HPROMs for very large CFD datasets
+        \item End-to-end analysis of the computational cost, accuracy, and robustness of sparse-sampling hyper-reduction methods
+        \item The first study of PROMs for a 3D multi-injector rocket combustor, containing 250 million DOFs
+        \item PERFORM, an open-source Python package for rapid prototyping of novel ROM methods
+    \end{enumerate}
+\end{frame}
+
+\section*{Projection ROMs}
+
+\begin{frame}{Projection-based ROMs}
+    \begin{itemize}
+		\item General non-linear ODE
+		\begin{equation*}
+			\ode{\consVec}{\timeVar} + \rhsFunc{\consVec} = \zeroVec \quad \consVec \in \mathbb{R}^{\numDOF}
+		\end{equation*}
+			\item Low-dimensional affine representation ($\numConsvModes \ll \numDOF$)
+		\begin{align*}
+			\consVec(\timeVar) \approx \consVecRom(\timeVar) &\triangleq \consVecCent + \consScale \sum^{\numConsvModes}_{i=1} \consVarCoef(\timeVar) \consTrialVec \\
+			&= \consVecCent + \consScale \consTrial \consVecCoef(\timeVar)
+		\end{align*}
+		\begin{equation*}
+			\consVecCoef \in \mathbb{R}^{\numConsvModes}, \; \consTrial \in \mathbb{R}^{\numDOF \times \numConsvModes}
+		\end{equation*}
+		\item Centering profile $\consVecCent$ and scaling matrix $\consScale$ are crucial; more later
+		\begin{equation*}
+			\consScale \triangleq \text{diag}\left( \consScaleVar_1, \, \consScaleVar_2, \, \hdots, \, \consScaleVar_{\numDOF} \right)
+		\end{equation*}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The trial basis}
+    \begin{itemize}
+        \item The proper orthogonal decomposition (POD)
+        \begin{equation*}
+            \consTrial = \argmin{\dummyMatOne \in \mathbb{R}^{\numDOF \times \numConsvModes}} \norm{\consDataMat - \dummyMatOne \dummyMatOne^\top \consDataMat}_2^2
+        \end{equation*}
+        \begin{equation*}
+            \consDataMat = \basisMat \singVecMat \rightSingVecMat^\top, \quad \consTrial \leftarrow \basisMat[:, {:}\numConsvModes]
+        \end{equation*}
+    \end{itemize}
+	\vspace{-1em}
+	\centering
+	\begin{figure}
+		\includegraphics[width=0.6\linewidth]{podProfileConverge.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{The test basis}
+    \begin{itemize}
+        \item Inserting approximation, no order reduction yet
+        \begin{equation*}
+            \consScale \consTrial \ode{\consVecCoef}{\timeVar} + \rhsFunc{\consVecCent + \consScale \consTrial \consVecCoef} = \zeroVec 
+        \end{equation*}
+        \item Project via test basis $\testBasis \in \mathbb{R}^{\numDOF \times \numConsvModes}$, rearrange
+        \begin{equation*}
+            \ode{\consVecCoef}{\timeVar} + \left[ \testBasis^\top \consScale \consTrial \right]^{-1} \testBasis^\top \rhsFunc{\consVecRom} = \zeroVec
+        \end{equation*}
+        \item $\testBasis = \consTrial$: Galerkin projection
+        \item $\testBasis \neq \consTrial$: Petrov--Galerkin projection 
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Least-squares Petrov--Galerkin (LSPG)}
+    \begin{itemize}
+		\item Fully-discrete residual (e.g. BDF1)
+		\begin{equation*}
+			\resFuncIter{\timeIdx}{\consVecCoef^{\newtonIdx}} \triangleq \consScale \consTrial \left( \consVecCoef^{\newtonIdx} - \consVecCoef^{\timeIdx-1} \right) + \dt \, \rhsFunc{\consVecCent + \consScale \consTrial \consVecCoef^{\newtonIdx}} = \zeroVec
+		\end{equation*}
+		\item Minimize with Gauss--Newton
+		\begin{equation*}
+			\consVecCoef^{\timeIdx} = \argmin{\dummyVec \in \mathbb{R}^{\numConsvModes}} \norm{\resFuncIter{\timeIdx}{\dummyVec}}_2^2
+		\end{equation*}
+		\begin{equation*}
+			\delta \consVecCoef^{\newtonIdx, \timeIdx} = \argmin{\dummyVec \in \mathbb{R}^{\numConsvModes}} \norm{\pde{\resFuncIter{\timeIdx}{\dummyVec}}{\dummyVec} \dummyVec + \resFuncIter{\timeIdx}{\dummyVec}}_2^2
+		\end{equation*}
+		\item Equivalent to Petrov--Galerkin projection with test basis
+		\begin{equation*}
+			\testBasis = \pde{\resFuncIter{\timeIdx}{\consVecCoef^{\newtonIdx}}}{\consVec} \consScale \consTrial
+		\end{equation*}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Model-preserving least-squares with variable transformation}
+    \begin{itemize}
+		\item Conservative variables are cumbersome in multi-physics simulations
+		\item Choose alternative (complete) set of variables, e.g. primitive variables
+		\begin{equation*}
+			\stateVar_p \triangleq \left[ p, \; u_i, \; T, \; Y_l \right]
+		\end{equation*}
+		\begin{equation*}
+			\primVecRom(\timeVar) \triangleq \primVecCent + \primScale \primTrial \primVecCoef(\timeVar)
+		\end{equation*}
+		\item Frame residual in terms of primitive state
+		\begin{equation*}
+			\resFuncIter{\timeIdx}{\primVecCoef^{\newtonIdx}} \triangleq \consFunc{\primVecCent + \primScale \primTrial \primVecCoef^{\newtonIdx}} - \consVec^{\timeIdx-1} + \dt \, \rhsFunc{\primVecCent + \primScale \primTrial \primVecCoef^{\newtonIdx}} = \zeroVec
+		\end{equation*}
+		\item Gauss--Newton w/r/t \textbf{primitive} modal coefficients
+		\begin{equation*}
+			\testBasis = \pde{\resFuncIter{\timeIdx}{\primVecCoef^{\newtonIdx}}}{\primVec} \primScale \primTrial
+		\end{equation*}
+	\end{itemize}
+\end{frame}
+
+\section*{Hyper-reduction}
+
+\begin{frame}{The lifting bottleneck}
+    \begin{itemize}
+		\item Non-linear terms $\rhsFunc{\primVecRom}$ still scale with full dimension $\numDOF$
+		\item For same time integrator and \dt, ROM is usually \textbf{more} expensive
+		\item Can we approximate non-linear terms from a few samples?
+		\begin{equation*}
+			\rhsFunc{\primVec} \approx \sampFunc{\sampMat \rhsFunc{\primVec}}, \quad \sampMat \in \mathbb{R}^{\numSamps \times \numDOF}
+		\end{equation*}
+	\end{itemize}
+	\vspace{1em}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.55\linewidth]{samplingHelperVis.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Least-squares regression \& interpolation}
+    \begin{itemize}
+		\item Approximate non-linear terms with POD basis $\deimBasisRes \in \mathbb{R}^{\numDOF \times \numResModes}$
+		\begin{align*}
+			\resFunc{\primVecCoef} \approx \resApproxFunc{\primVecCoef} &= \deimBasisRes \dummyVec \\
+			\sampMat \resApproxFunc{\primVecCoef} &= \sampMat \deimBasisRes \dummyVec
+		\end{align*}
+		\item Gappy POD ($\numSamps > \numResModes$)
+		\begin{equation*}
+			\resApproxFunc{\primVecCoef} \triangleq \deimBasisRes \left[ \sampMat \deimBasisRes \right]^{+} \sampMat \resFunc{\primVecCoef}
+		\end{equation*}
+		\item Discrete empirical interpolation method ($\numSamps = \numResModes$)
+		\begin{equation*}
+			\resApproxFunc{\primVecCoef} \triangleq \deimBasisRes \left[ \sampMat \deimBasisRes \right]^{-1} \sampMat \resFunc{\primVecCoef}
+		\end{equation*}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Sampling algorithms}
+    
+\end{frame}
+
+\begin{frame}{Separate regression basis formulation}
+    \begin{itemize}
+		\item Hyper-reduction of residual function has several drawbacks
+		\begin{itemize}
+			\item FOM and ROM non-linear solver are never the same
+			\item Enormous range of scales during convergence, $\mathcal{O}(1\text{e-}3)-\mathcal{O}(1\text{e-}12)$
+			\item Train from first, last, all subiterations?
+		\end{itemize}
+		\item Approximate time integrator and RHS separately
+		\begin{align*}
+			\consFuncRom{\primVec} &\triangleq \deimRegressorCons \consFunc{\primVec} \\
+			\rhsApproxFunc{\primVec} &\triangleq \deimRegressorRhs \rhsFunc{\primVec}
+		\end{align*}
+		\begin{equation*}
+			\resApproxFuncIter{\timeIdx}{\primVecCoef^{\newtonIdx}} \triangleq \consFuncRom{\primVecRom^{\newtonIdx}} - \consFuncRom{\primVecRom^{\timeIdx}} + \dt \, \rhsApproxFunc{\primVecRom^{\timeIdx}} = \zeroVec
+		\end{equation*}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Separate regression basis formulation}
+	\vspace{-1.9em}
+	\begin{align*}
+		\delta \primVecCoef^{\newtonIdx} = \underset{\dummyVec \in \mathbb{R}^{\numPrimModes}}{argmin} \Bigg\lVert \bigg(\deimBasisCons \underbrace{\deimRegressorConsTiny \sampMat \pde{\consVec^{\newtonIdx}}{\primVec} \primScale \primTrial }_{\dummyMatOne} - \deimBasisRhs \underbrace{\deimRegressorRhsTiny \sampMat \, \dt \, \pde{\rhsVec^{\newtonIdx}}{\primVec} \primScale \primTrial}_{\dummyMatTwo} \bigg) \dummyVec \\
+		+ \deimBasisCons \underbrace{\deimRegressorConsTiny \sampMat \left( \consVec(\primVecRom^{\newtonIdx}) - \consVec(\primVecRom^{\newtonIdx}) \right)}_{\dummyVecOne} - \deimBasisRhs \underbrace{\deimRegressorRhsTiny \sampMat \rhsFunc{\primVecRom^{\newtonIdx}}}_{\dummyVecTwo} \Bigg\rVert_2^2
+	\end{align*}
+	\vspace{-1em}
+	\begin{itemize}
+		\item Normal equations
+		\begin{align*}
+			\left(\dummyMatOne^\top \dummyMatOne - \dummyMatOne^\top \deimBasisCons^\top \deimBasisRhs \dummyMatTwo - \dummyMatTwo^\top \deimBasisRhs^\top \deimBasisCons \dummyMatOne + \dummyMatTwo^\top \dummyMatTwo \right) \delta \primVecCoef^{\newtonIdx} \\
+			= -\left(\dummyMatOne^\top \dummyVecOne - \dummyMatOne^\top \deimBasisCons^\top \deimBasisRhs \dummyVecTwo - \dummyMatTwo^\top \deimBasisRhs^\top \deimBasisCons \dummyVecOne + \dummyMatTwo^\top \dummyVecTwo\right)
+		\end{align*}
+		\item Precomputed:
+		\begin{itemize}
+			\item $\deimRegressorConsTiny \in \mathbb{R}^{\numConsvModes \times \numSamps}$
+			\item $\deimRegressorRhsTiny \in \mathbb{R}^{\numRHSModes \times \numSamps}$
+			\item $\deimBasisRhs^\top \deimBasisCons \in \mathbb{R}^{\numRHSModes \times \numConsvModes}$
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\section*{Numerical Experiments}
+
+\begin{frame}{Numerical Experiments}
+    \begin{itemize}
+		\item The General Equations and Mesh Solver (GEMS)
+		\begin{itemize}
+			\item 2nd-order unstructured finite volume
+			\item BDF2 time integration w/ pseudo time-stepping
+			\item Finite-rate and flamelet-progress variable chemistry models
+		\end{itemize}
+		\item Compressible Navier--Stokes equations with scalar transport
+	\end{itemize}
+	\begin{equation*}
+		\pde{\consVec}{\timeVar} + \nabla \cdot (\invFluxDir - \viscFluxDir) = \sourceVec
+	\end{equation*}
+	\scriptsize
+	\def\arraystretch{2}
+	\begin{equation*}
+		\consVec = \left[
+		\begin{array}{c}
+		\rho \\ \rho u \\ \rho v \\ \rho w \\ \rho h^0 - p \\ \hdashline[2pt/2pt] \rho Y_{\specIdx} \\
+		\end{array}
+		\right]  \; \;
+		\invFluxDir = \left[
+		\begin{array}{c}
+		\rho u_i \\  \rho uu_i + \delta_{xi} p \\ \rho vu_i + \delta_{yi} p \\ \rho wu_i + \delta_{zi} p \\ \rho h^0 u_i \\ \hdashline[2pt/2pt] \rho Y_{\specIdx} u_i 
+		\end{array}
+		\right]  \; \;
+		\viscFluxDir = \left[
+		\begin{array}{c}
+		0 \\ \tau_{ix} \\ \tau_{iy} \\ \tau_{iz} \\ u_j \tau_{ji} - q_i \\ \hdashline[2pt/2pt] \rho D  \pde{Y_{\specIdx}}{x_i}
+		\end{array}
+		\right]  \; \;
+		\mathbf{s} = \left[
+		\begin{array}{c}
+		0 \\ 0 \\ 0 \\ 0 \\ 0 \\ \hdashline[2pt/2pt] \dot{\omega}
+		\end{array} \right]
+	\end{equation*}
+	\normalsize
+\end{frame}
+
+\begin{frame}{2D transonic flow over open cavity}
+    
+\end{frame}
+
+\begin{frame}{3D truncated CVRC}
+    
+\end{frame}
+
+\begin{frame}{3D nine-element combustor}
+    
+\end{frame}
+
+\section*{Miscellaneous}
+
+\begin{frame}{PERFORM}
+    % picture of API
+    % hierarchy of test cases
+    % uses (Elnaz, Wayne, 577 students)
+\end{frame}
+
+\begin{frame}{HPROM toolchain (contribution to PDP)}
+    % make sure to emphasize that this is Nick's
+    % Method of snapshots, sampling, projection/regression error
+\end{frame}
+
+\section*{Conclusions}
+
+\begin{frame}{Contributions}
+    \begin{enumerate}
+        \item Assessment and improvement of state-of-the-art PROMs for practical CFD systems (e.g. 2D transonic cavity and 3D rocket combustor)
+        \item Improved solution/RHS formulation of hyper-reduced MP-LSVT method with enhanced accuracy and robustness
+        \item Memory- and compute-scalable HPROM framework in high-performance combustion CFD code
+        \item Open-source toolchain for pre- and post-processing of HPROMs for very large CFD datasets
+        \item End-to-end analysis of the computational cost, accuracy, and robustness of sparse-sampling hyper-reduction methods
+        \item The first study of PROMs for a 3D multi-injector rocket combustor, containing 250 million DOFs
+        \item PERFORM, an open-source Python package for rapid prototyping of novel ROM methods
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Publications and presentations}
+	\begin{itemize}
+		\item Journal articles
+		\vspace{0.5em}
+		\begin{itemize}
+			\item \tiny \textbf{Wentland, C.R.}, Huang, C., and Duraisamy, K., ``Efficient Projection-based Reduced-order Models for Large Multi-scale Fluid Systems,'' in preparation.
+			\item \textbf{Wentland, C.R.} and Duraisamy, K., ``PERFORM: A Python package for developing reduced-order models for reacting fluid flows,'' Under review, \textit{J. Open Source Softw.}, https://github.com/cwentland0/perform.
+			\item Huang, C., \textbf{Wentland, C.R.}, Duraisamy, K., and Merkle, C., ``Model reduction for multi-scale transport problems using model-form preserving least-squares projections with variable transformation,'' \textit{J. Comp. Phys.}, 2021, Vol. 448, 2021.
+        	\item Parish, E.J., \textbf{Wentland, C.R.}, Duraisamy, K., ``The Adjoint Petrov--Galerkin method for non-linear model reduction,'' \textit{Comput. Method Appl. M.}, Vol. 365, 2020.
+		\end{itemize}
+		\item \normalsize Conference proceedings
+		\vspace{0.5em}
+		\begin{itemize}
+			\item \tiny \textbf{Wentland, C.R.}, Huang, C., and Duraisamy, K., ``Investigation of Sampling Strategies for Reduced-Order Models of Rocket Combustors,'' \textit{AIAA Scitech Forum}, 2021.
+			\item \textbf{Wentland, C.R.}, Huang, C., and Duraisamy, K., ``Closure of Reacting Flow Reduced-Order Models via the Adjoint Petrov-Galerkin Method,'' \textit{AIAA Aviation Forum}, 2019.
+		\end{itemize}
+		\item \normalsize Conference presentations
+		\vspace{0.5em}
+		\begin{itemize}
+			\item \tiny \textbf{Wentland, C.R.} and Duraisamy, K., ``Intrusive and Non-intrusive Non-linear Reduced-order Models for Reacting Flows,'' \textit{2021 Annual Meeting of the APS Division of Fluid Dynamics}, Phoenix, AZ, USA.
+			\item \textbf{Wentland, C.R.}, Nair, A.S., and Duraisamy, K., ``Nonlinear Manifold Reduced-Order Models for Complex Fluid Flow Systems,'' \textit{2021 SIAM Conference on Computational Science and Engineering}, virtual.
+			\item \tiny \textbf{Wentland, C.R.}, Parish, E.J., and Duraisamy, K., ``Closure of Reduced-Order Models Using Statistical Mechanics Approaches,'' \textit{2018 World Congress on Computational Mechanics}, New York, NY, USA.
+		\end{itemize}
+	\end{itemize}
+	
+\end{frame}
+
+\begin{frame}{Future work}
+	\begin{itemize}
+		\item Complete investigation of nine-element combustor
+		\item Implementation of efficient ScaLAPACK/PETSc NLLS solves
+		\item Comparison of full residual vs. component-based hyper-reduction
+		\item Thorough exploration of effects of feature scaling
+		\item Memory-scalable adaptive basis and sampling in GEMS
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Acknowledgements}
+	\begin{itemize}
+	    \item Financial support from the US Air Force Office of Scientific Research through the Center of Excellence Grant FA9550-17-1-0195
+	    \item Compute support from the US Department of Defense High Performance Computing Modernization Program
+		\item Compute support of ConFlux and Lighthouse systems from the University of Michigan Advanced Research Computing division
+		\item Nicholas Arnold-Medabalimi for development and maintenance of the Parallel Data Processing toolbox
+	\end{itemize}
+	\begin{minipage}{0.36\linewidth}
+		\begin{figure}
+			\includegraphics[width=0.99\linewidth,trim={0em 3cm 0em 3cm},clip]{afosr.jpg}
+		\end{figure}
+	\end{minipage}
+	\begin{minipage}{0.3\linewidth}
+		\begin{figure}
+			\includegraphics[width=0.99\linewidth]{hpcmp.png}
+		\end{figure}
+	\end{minipage}
+	\begin{minipage}{0.3\linewidth}
+		\begin{figure}
+			\includegraphics[width=0.99\linewidth,trim={0em 3cm 0em 3cm},clip]{arc.png}
+		\end{figure}
+	\end{minipage}
+\end{frame}
+
+\end{document}
