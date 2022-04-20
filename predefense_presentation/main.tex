@@ -389,14 +389,14 @@ Krzysztof Fidkowski \\
 		\end{equation*}
 		\item Minimize with Gauss--Newton
 		\begin{equation*}
-			\consVecCoef^{\timeIdx} = \argmin{\dummyVec \in \mathbb{R}^{\numConsvModes}} \norm{\resFuncIter{\timeIdx}{\dummyVec}}_2^2
+			\consVecCoef^{\timeIdx} = \argmin{\dummyVec \in \mathbb{R}^{\numConsvModes}} \norm{\consScaleInv \resFuncIter{\timeIdx}{\dummyVec}}_2^2
 		\end{equation*}
 		\begin{equation*}
-			\delta \consVecCoef^{\newtonIdx, \timeIdx} = \argmin{\dummyVec \in \mathbb{R}^{\numConsvModes}} \norm{\pde{\resFuncIter{\timeIdx}{\dummyVec}}{\dummyVec} \dummyVec + \resFuncIter{\timeIdx}{\dummyVec}}_2^2
+			\delta \consVecCoef^{\newtonIdx, \timeIdx} = \argmin{\dummyVec \in \mathbb{R}^{\numConsvModes}} \norm{\consScaleInv \left(\pde{\resFuncIter{\timeIdx}{\dummyVec}}{\dummyVec} \dummyVec + \resFuncIter{\timeIdx}{\dummyVec}\right)}_2^2
 		\end{equation*}
 		\item Equivalent to Petrov--Galerkin projection with test basis
 		\begin{equation*}
-			\testBasis = \pde{\resFuncIter{\timeIdx}{\consVecCoef^{\newtonIdx}}}{\consVec} \consScale \consTrial
+			\testBasis = \consScaleInv \pde{\resFuncIter{\timeIdx}{\consVecCoef^{\newtonIdx}}}{\consVec} \consScale \consTrial
 		\end{equation*}
 	\end{itemize}
 \end{frame}
@@ -417,7 +417,7 @@ Krzysztof Fidkowski \\
 		\end{equation*}
 		\item Gauss--Newton w/r/t \textbf{primitive} modal coefficients
 		\begin{equation*}
-			\testBasis = \pde{\resFuncIter{\timeIdx}{\primVecCoef^{\newtonIdx}}}{\primVec} \primScale \primTrial
+			\testBasis = \consScaleInv \pde{\resFuncIter{\timeIdx}{\primVecCoef^{\newtonIdx}}}{\primVec} \primScale \primTrial
 		\end{equation*}
 	\end{itemize}
 \end{frame}
@@ -444,16 +444,16 @@ Krzysztof Fidkowski \\
     \begin{itemize}
 		\item Approximate non-linear terms with POD basis $\deimBasisRes \in \mathbb{R}^{\numDOF \times \numResModes}$
 		\begin{align*}
-			\resFunc{\primVecCoef} \approx \resApproxFunc{\primVecCoef} &= \deimBasisRes \dummyVec \\
-			\sampMat \resApproxFunc{\primVecCoef} &= \sampMat \deimBasisRes \dummyVec
+			\resFunc{\primVecCoef} \approx \resApproxFunc{\primVecCoef} &= \consScale \deimBasisRes \dummyVec \\
+			\sampMat \consScaleInv \resApproxFunc{\primVecCoef} &= \sampMat \deimBasisRes \dummyVec
 		\end{align*}
-		\item Gappy POD ($\numSamps > \numResModes$)
+		\item Least-squares regression, ``gappy POD'' ($\numSamps > \numResModes$)
 		\begin{equation*}
-			\resApproxFunc{\primVecCoef} \triangleq \deimBasisRes \left[ \sampMat \deimBasisRes \right]^{+} \sampMat \resFunc{\primVecCoef}
+			\resApproxFunc{\primVecCoef} \triangleq \consScale \deimBasisRes \left[ \sampMat \deimBasisRes \right]^{+} \sampMat \consScaleInv \resFunc{\primVecCoef}
 		\end{equation*}
 		\item Discrete empirical interpolation method ($\numSamps = \numResModes$)
 		\begin{equation*}
-			\resApproxFunc{\primVecCoef} \triangleq \deimBasisRes \left[ \sampMat \deimBasisRes \right]^{-1} \sampMat \resFunc{\primVecCoef}
+			\resApproxFunc{\primVecCoef} \triangleq \consScale \deimBasisRes \left[ \sampMat \deimBasisRes \right]^{-1} \sampMat \consScaleInv \resFunc{\primVecCoef}
 		\end{equation*}
 	\end{itemize}
 \end{frame}
@@ -472,8 +472,8 @@ Krzysztof Fidkowski \\
 		\end{itemize}
 		\item Approximate time integrator and RHS separately
 		\begin{align*}
-			\consFuncRom{\primVec} &\triangleq \deimRegressorCons \consFunc{\primVec} \\
-			\rhsApproxFunc{\primVec} &\triangleq \deimRegressorRhs \rhsFunc{\primVec}
+			\consFuncRom{\primVec} &\triangleq \consScale \deimRegressorCons \consScaleInv \consFunc{\primVec} \\
+			\rhsApproxFunc{\primVec} &\triangleq \rhsScale \deimRegressorRhs \rhsScaleInv \rhsFunc{\primVec}
 		\end{align*}
 		\begin{equation*}
 			\resApproxFuncIter{\timeIdx}{\primVecCoef^{\newtonIdx}} \triangleq \consFuncRom{\primVecRom^{\newtonIdx}} - \consFuncRom{\primVecRom^{\timeIdx}} + \dt \, \rhsApproxFunc{\primVecRom^{\timeIdx}} = \zeroVec
@@ -483,22 +483,24 @@ Krzysztof Fidkowski \\
 
 \begin{frame}{Separate regression basis formulation}
 	\vspace{-1.9em}
+	\footnotesize
 	\begin{align*}
-		\delta \primVecCoef^{\newtonIdx} = \underset{\dummyVec \in \mathbb{R}^{\numPrimModes}}{argmin} \Bigg\lVert \bigg(\deimBasisCons \underbrace{\deimRegressorConsTiny \sampMat \pde{\consVec^{\newtonIdx}}{\primVec} \primScale \primTrial }_{\dummyMatOne} - \deimBasisRhs \underbrace{\deimRegressorRhsTiny \sampMat \, \dt \, \pde{\rhsVec^{\newtonIdx}}{\primVec} \primScale \primTrial}_{\dummyMatTwo} \bigg) \dummyVec \\
-		+ \deimBasisCons \underbrace{\deimRegressorConsTiny \sampMat \left( \consVec(\primVecRom^{\newtonIdx}) - \consVec(\primVecRom^{\newtonIdx}) \right)}_{\dummyVecOne} - \deimBasisRhs \underbrace{\deimRegressorRhsTiny \sampMat \rhsFunc{\primVecRom^{\newtonIdx}}}_{\dummyVecTwo} \Bigg\rVert_2^2
+		\delta \primVecCoef^{\newtonIdx} = \underset{\dummyVec \in \mathbb{R}^{\numPrimModes}}{argmin} \Bigg\lVert \bigg(\deimBasisCons \underbrace{\deimRegressorConsTiny \sampMat \consScaleInv \pde{\consVec^{\newtonIdx}}{\primVec} \primScale \primTrial }_{\dummyMatOne} - \consScaleInv \rhsScale \deimBasisRhs \underbrace{\deimRegressorRhsTiny \sampMat \, \dt \, \rhsScaleInv \pde{\rhsVec^{\newtonIdx}}{\primVec} \primScale \primTrial}_{\dummyMatTwo} \bigg) \dummyVec \\
+		+ \deimBasisCons \underbrace{\deimRegressorConsTiny \sampMat \consScaleInv \left( \consVec(\primVecRom^{\newtonIdx}) - \consVec(\primVecRom^{\newtonIdx}) \right)}_{\dummyVecOne} - \consScaleInv \rhsScale \deimBasisRhs \underbrace{\deimRegressorRhsTiny \sampMat \rhsScaleInv \rhsFunc{\primVecRom^{\newtonIdx}}}_{\dummyVecTwo} \Bigg\rVert_2^2
 	\end{align*}
+	\normalsize
 	\vspace{-1em}
 	\begin{itemize}
 		\item Normal equations
 		\begin{align*}
-			\left(\dummyMatOne^\top \dummyMatOne - \dummyMatOne^\top \deimBasisCons^\top \deimBasisRhs \dummyMatTwo - \dummyMatTwo^\top \deimBasisRhs^\top \deimBasisCons \dummyMatOne + \dummyMatTwo^\top \dummyMatTwo \right) \delta \primVecCoef^{\newtonIdx} \\
+			\left(\dummyMatOne^\top \dummyMatOne - \dummyMatOne^\top \deimBasisCons^\top \consScaleInv \rhsScale \deimBasisRhs \dummyMatTwo - \dummyMatTwo^\top \deimBasisRhs^\top \rhsScale \consScaleInv \deimBasisCons \dummyMatOne + \dummyMatTwo^\top \dummyMatTwo \right) \delta \primVecCoef^{\newtonIdx} \\
 			= -\left(\dummyMatOne^\top \dummyVecOne - \dummyMatOne^\top \deimBasisCons^\top \deimBasisRhs \dummyVecTwo - \dummyMatTwo^\top \deimBasisRhs^\top \deimBasisCons \dummyVecOne + \dummyMatTwo^\top \dummyVecTwo\right)
 		\end{align*}
 		\item Precomputed:
 		\begin{itemize}
 			\item $\deimRegressorConsTiny \in \mathbb{R}^{\numConsvModes \times \numSamps}$
 			\item $\deimRegressorRhsTiny \in \mathbb{R}^{\numRHSModes \times \numSamps}$
-			\item $\deimBasisRhs^\top \deimBasisCons \in \mathbb{R}^{\numRHSModes \times \numConsvModes}$
+			\item $\deimBasisCons^\top \consScaleInv \rhsScale \deimBasisRhs \in \mathbb{R}^{\numConsvModes \times \numRHSModes}$
 		\end{itemize}
 	\end{itemize}
 \end{frame}
