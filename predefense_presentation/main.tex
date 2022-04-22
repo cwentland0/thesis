@@ -161,21 +161,22 @@ Krzysztof Fidkowski \\
     \begin{minipage}{0.4\linewidth}
         \begin{figure}
             \centering
-            \includegraphics[width=0.99\linewidth]{engineeringCycle.png}
+            \includegraphics[width=0.99\linewidth]{intro/engineeringCycle.png}
         \end{figure}
+		\vspace{0.25em}
     \end{minipage}
 	\centering
 	\begin{minipage}{0.55\linewidth}
         \begin{figure}
             \centering
-            \includegraphics[width=0.99\linewidth]{crash_test.jpg}
+            \includegraphics[width=0.99\linewidth]{intro/crash_test.jpg}
+			\caption*{\tiny{Volvo Cars of North America, 2014}}
         \end{figure}
     \end{minipage}
 \end{frame}
 
 \begin{frame}{``New space'' era}
     \begin{itemize}
-        \item Space launch startup boom in the last decade
         \item Varying mission parameters
         \begin{itemize}
             \item Payload: satellite, probe, lander, humans
@@ -193,17 +194,20 @@ Krzysztof Fidkowski \\
     \end{itemize}
 	\begin{minipage}{0.33\linewidth}
 		\begin{figure}
-			\includegraphics[width=0.99\linewidth]{be4.jpg}
+			\includegraphics[width=0.99\linewidth]{intro/be4.jpg}
+			\caption*{\tiny{Blue Origin, 2018}}
 		\end{figure}
 	\end{minipage}
 	\begin{minipage}{0.33\linewidth}
 		\begin{figure}
-			\includegraphics[width=0.99\linewidth]{aeonR.png}
+			\includegraphics[width=0.99\linewidth]{intro/aeonR.png}
+			\caption*{\tiny{Relativity Space, 2022}}
 		\end{figure}
 	\end{minipage}
 	\begin{minipage}{0.28\linewidth}
 		\begin{figure}
-			\includegraphics[width=0.99\linewidth]{delphin.jpeg}
+			\includegraphics[width=0.99\linewidth]{intro/delphin.jpeg}
+			\caption*{\tiny{John Kraus, 2021}}
 		\end{figure}
 	\end{minipage}
 \end{frame}
@@ -224,12 +228,14 @@ Krzysztof Fidkowski \\
     \end{itemize}
 	\begin{minipage}{0.49\linewidth}
 		\begin{figure}
-			\includegraphics[width=0.99\linewidth]{f1TestStand.jpg}
+			\includegraphics[width=0.9\linewidth]{intro/f1TestStand.jpg}
+			\caption*{\tiny{NASA, 1966}}
 		\end{figure}
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
 		\begin{figure}
-			\includegraphics[width=0.99\linewidth]{merlin1dTestStand.jpg}
+			\includegraphics[width=0.9\linewidth]{intro/merlin1dTestStand.jpg}
+			\caption*{\tiny{SpaceX, 2013}}
 		\end{figure}
 	\end{minipage}
 \end{frame}
@@ -254,7 +260,8 @@ Krzysztof Fidkowski \\
 		\centering
 		\begin{figure}
 			\centering
-			\includegraphics[width=0.95\linewidth]{combustionDNS.png}
+			\includegraphics[width=0.91\linewidth]{intro/combustionDNS.png}
+			\caption*{\tiny{Treichler et al, 2017}}
 		\end{figure}
 	\end{minipage}
 	\hspace{1cm}
@@ -263,7 +270,8 @@ Krzysztof Fidkowski \\
 		\centering
 		\begin{figure}
 			\centering
-			\includegraphics[width=0.95\linewidth]{jetCrossflowDNS.png}
+			\includegraphics[width=0.95\linewidth]{intro/jetCrossflowDNS.png}
+			\caption*{\tiny{Grout et al., 2011}}
 		\end{figure}
 	\end{minipage}
 	
@@ -305,7 +313,7 @@ Krzysztof Fidkowski \\
 	\hspace{-2em}
 	\begin{minipage}{0.49\linewidth}
 		\begin{figure}
-			\includegraphics[width=0.99\linewidth,trim={2em 2em 2em 2em},clip]{tangentPlane.png}
+			\includegraphics[width=0.99\linewidth,trim={2em 2em 2em 2em},clip]{theory/tangentPlane.png}
 		\end{figure}
 	\end{minipage}
 	\begin{tcolorbox}[colframe=red!50!white,halign=center]
@@ -362,7 +370,7 @@ Krzysztof Fidkowski \\
 	\vspace{-1em}
 	\centering
 	\begin{figure}
-		\includegraphics[width=0.6\linewidth]{podProfileConverge.png}
+		\includegraphics[width=0.6\linewidth]{theory/podProfileConverge.png}
 	\end{figure}
 \end{frame}
 
@@ -436,7 +444,7 @@ Krzysztof Fidkowski \\
 	\vspace{1em}
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.55\linewidth]{samplingHelperVis.png}
+		\includegraphics[width=0.55\linewidth]{theory/samplingHelperVis.png}
 	\end{figure}
 \end{frame}
 
@@ -471,14 +479,14 @@ Krzysztof Fidkowski \\
 			\item Train from first, last, all subiterations?
 		\end{itemize}
 		\item Approximate time integrator and RHS separately
-		\begin{align*}
-			\consFuncRom{\primVec} &\triangleq \consScale \deimRegressorCons \consScaleInv \consFunc{\primVec} \\
-			\rhsApproxFunc{\primVec} &\triangleq \rhsScale \deimRegressorRhs \rhsScaleInv \rhsFunc{\primVec}
-		\end{align*}
-		\begin{equation*}
-			\resApproxFuncIter{\timeIdx}{\primVecCoef^{\newtonIdx}} \triangleq \consFuncRom{\primVecRom^{\newtonIdx}} - \consFuncRom{\primVecRom^{\timeIdx}} + \dt \, \rhsApproxFunc{\primVecRom^{\timeIdx}} = \zeroVec
-		\end{equation*}
 	\end{itemize}
+	\begin{align*}
+		\consFuncRom{\primVec} &\triangleq \consScale \deimRegressorCons \consScaleInv \consFunc{\primVec} \\
+		\rhsApproxFunc{\primVec} &\triangleq \rhsScale \deimRegressorRhs \rhsScaleInv \rhsFunc{\primVec}
+	\end{align*}
+	\begin{equation*}
+		\resApproxFuncIter{\timeIdx}{\primVecCoef^{\newtonIdx}} \triangleq \consFuncRom{\primVecRom^{\newtonIdx}} - \consFuncRom{\primVecRom^{\timeIdx}} + \dt \, \rhsApproxFunc{\primVecRom^{\timeIdx}} = \zeroVec
+	\end{equation*}
 \end{frame}
 
 \begin{frame}{Separate regression basis formulation}
@@ -494,15 +502,31 @@ Krzysztof Fidkowski \\
 		\item Normal equations
 		\begin{align*}
 			\left(\dummyMatOne^\top \dummyMatOne - \dummyMatOne^\top \deimBasisCons^\top \consScaleInv \rhsScale \deimBasisRhs \dummyMatTwo - \dummyMatTwo^\top \deimBasisRhs^\top \rhsScale \consScaleInv \deimBasisCons \dummyMatOne + \dummyMatTwo^\top \dummyMatTwo \right) \delta \primVecCoef^{\newtonIdx} \\
-			= -\left(\dummyMatOne^\top \dummyVecOne - \dummyMatOne^\top \deimBasisCons^\top \deimBasisRhs \dummyVecTwo - \dummyMatTwo^\top \deimBasisRhs^\top \deimBasisCons \dummyVecOne + \dummyMatTwo^\top \dummyVecTwo\right)
+			= -\left(\dummyMatOne^\top \dummyVecOne - \dummyMatOne^\top \deimBasisCons^\top \consScaleInv \rhsScale \deimBasisRhs \dummyVecTwo - \dummyMatTwo^\top \deimBasisRhs^\top \rhsScaleInv \consScale \deimBasisCons \dummyVecOne + \dummyMatTwo^\top \dummyVecTwo\right)
 		\end{align*}
-		\item Precomputed:
-		\begin{itemize}
-			\item $\deimRegressorConsTiny \in \mathbb{R}^{\numConsvModes \times \numSamps}$
-			\item $\deimRegressorRhsTiny \in \mathbb{R}^{\numRHSModes \times \numSamps}$
-			\item $\deimBasisCons^\top \consScaleInv \rhsScale \deimBasisRhs \in \mathbb{R}^{\numConsvModes \times \numRHSModes}$
-		\end{itemize}
 	\end{itemize}
+	\begin{minipage}{0.49\linewidth}
+		\begin{itemize}
+			\item Precomputed:
+			\begin{itemize}
+				\item $\deimRegressorConsTiny \in \mathbb{R}^{\numConsvModes \times \numSamps}$
+				\item $\deimRegressorRhsTiny \in \mathbb{R}^{\numRHSModes \times \numSamps}$
+				\item $\deimBasisCons^\top \consScaleInv \rhsScale \deimBasisRhs \in \mathbb{R}^{\numConsvModes \times \numRHSModes}$
+			\end{itemize}
+			\vspace{0.7em}
+		\end{itemize}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\begin{itemize}
+			\item Online:
+			\begin{itemize}
+				\item $\dummyMatOne \in \mathbb{R}^{\numConsvModes \times \numPrimModes}$
+				\item $\dummyMatTwo \in \mathbb{R}^{\numRHSModes \times \numPrimModes}$
+				\item $\dummyVecOne \in \mathbb{R}^{\numConsvModes}$
+				\item $\dummyVecTwo \in \mathbb{R}^{\numRHSModes}$
+			\end{itemize}
+		\end{itemize}
+	\end{minipage}
 \end{frame}
 
 \section*{Numerical Experiments}
@@ -555,24 +579,121 @@ Krzysztof Fidkowski \\
 \end{frame}
 
 \begin{frame}{3D nine-element combustor}
-    
+    % 14,387,292 cells
+	% ~250 million DOF
+	% 1T = 2.5 kHz, 4 periods
+	%	-> dt = 2.5e-8
+	%	-> 100 iters/hr w/ 2,200 CPUs
+	%	-> 1,408,000 CPU-hours
+	\begin{itemize}
+		\item Air Force Center of Excellence ``grand challenge'' case
+		\item 14 million cells, 12 species, 38 reactions
+		\item Four 1T mode periods =$~\sim$1.5 million CPU-h
+		\item Scalable localized bases, adaptive bases/sampling
+	\end{itemize}
+	\begin{minipage}{0.49\linewidth}
+		\begin{figure}
+			\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth]{10}{experiments/9elem/temp_slices/fig_}{000001}{000040}
+		\end{figure}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\centering
+		\begin{figure}
+			\includegraphics[width=0.55\linewidth]{experiments/9elem/multicomponent.png}
+			\caption*{\tiny{Cheng Huang, 2020}}
+		\end{figure}
+		\vspace{-3em}
+	\end{minipage}
 \end{frame}
 
 \section*{Miscellaneous}
 
-\begin{frame}{Best practices}
+\begin{frame}{Misc: Best practices}
 	
 \end{frame}
 
-\begin{frame}{PERFORM}
+\begin{frame}{Misc: The Adjoint Petrov--Galerkin method}
+	\begin{itemize}
+		\item Data-driven closure of PROMs based on Mori--Zwanzig formalism
+		\item Allows explicit time integrators and JFNK solvers, less sensitive to $\dt$
+	\end{itemize}
+	\begin{minipage}{0.49\linewidth}
+		\scriptsize
+		\begin{equation*}
+			\pde{}{\timeVar} e^{\timeVar\MC{L}} \consVecCoef^0 = {\underbrace{\vphantom{ \int_0^{\timeVar} e^{(\timeVar-\text{s}) }} e^{\timeVar\MC{L}} \MC{PL} \consVecCoef^0}_{\text{Markovian}}} + \underbrace{\int_0^{\timeVar} e^{(\timeVar-\text{s}) \MC{L}} \MC{PL} e^{\text{s}\MC{QL}} \MC{QL}\consVecCoef^0 d\text{s}}_{\text{Memory}}
+		\end{equation*}
+		\begin{equation*}
+			\frac{d \consVecCoef}{d t} = \consTrial^\top \left( \rhsFunc{\consVecRom} + \tau \mathbf{J}[\consVecRom] \left(\identMat - \consTrial \consTrial^\top \right) \rhsFunc{\consVecRom} \right)
+		\end{equation*}
+		\normalsize
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\vspace{2em}
+		\begin{figure}
+			\includegraphics[width=0.8\linewidth]{misc/apg_cylinder.png}
+			\caption*{\tiny{Parish et al., 2020}}
+		\end{figure}
+	\end{minipage}
+	
+\end{frame}
+
+\begin{frame}{\small{Misc: \textbf{P}rototyping \textbf{E}nvironment for \textbf{R}eacting \textbf{F}low \textbf{O}rder \textbf{R}eduction \textbf{M}ethods}}
     % picture of API
     % hierarchy of test cases
     % uses (Elnaz, Wayne, 577 students)
+	\begin{itemize}
+		\small
+		\item Open-source 1D reacting flow solver w/ flexible ROM API
+		\item AIAA Workshop on Data-Driven Modeling for Complex Fluid Physics
+		\item Already in use for linearized ROMs (Rezaian et al., 2022), adaptive HPROMs (Wayne Uy, NYU), course projects (AERO 577)
+		\normalsize
+	\end{itemize}
+	\vspace{1em}
+	\begin{minipage}{0.4\linewidth}
+		\includegraphics[width=0.99\linewidth]{misc/performAPI.png}
+	\end{minipage}
+	\begin{minipage}{0.59\linewidth}
+		\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth]{10}{misc/perform_animation/fig_}{101}{150}
+	\end{minipage}
+
+	\vspace{1.5em}
+	\centering
+	\texttt{https://github.com/cwentland0/perform}
 \end{frame}
 
-\begin{frame}{HPROM toolchain (contribution to PDP)}
+\begin{frame}{Misc: Non-linear manifold ROMs}
+	\begin{itemize}
+		\item Linear basis approximates non-linear solution manifold poorly
+		\item Autoencoders learn mapping b/w solution and latent manifolds
+		\item Recurrent neural networks learn evolution of latent variables
+	\end{itemize}
+	\vspace{2em}
+	\begin{minipage}{0.49\linewidth}
+		\begin{figure}
+			\includegraphics[width=0.99\linewidth]{misc/CAE_dense.png}
+		\end{figure}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\begin{figure}
+			\animategraphics[width=0.99\linewidth,autoplay,loop,every=2]{5}{misc/cae_flame_animation/fig_}{50}{150}
+		\end{figure}
+	\end{minipage}
+\end{frame}
+
+\begin{frame}{Misc: HPROM toolchain (contrib. to PDP)}
     % make sure to emphasize that this is Nick's
     % Method of snapshots, sampling, projection/regression error
+	\begin{itemize}
+		\item \textbf{P}arallel \textbf{D}ata \textbf{P}rocessor developed by \textbf{Nicholas Arnold-Medabalimi}
+		\item Scalable linear algebra with intuitive API
+		\item Personal contributions
+		\begin{itemize}
+			\item Method of snapshots POD
+			\item Expanded dataset scaling
+			\item Gappy POD sampling program
+			\item Projection and regression error calculators
+		\end{itemize}
+	\end{itemize}
 \end{frame}
 
 \section*{Conclusions}
@@ -620,7 +741,7 @@ Krzysztof Fidkowski \\
 	
 \end{frame}
 
-\begin{frame}{Future work}
+\begin{frame}{Remaining work}
 	\begin{itemize}
 		\item Complete investigation of nine-element combustor
 		\item Implementation of efficient ScaLAPACK/PETSc NLLS solves
@@ -640,22 +761,22 @@ Krzysztof Fidkowski \\
 	\begin{minipage}{0.15\linewidth}
 		\vspace{0.5em}
 		\begin{figure}
-			\includegraphics[width=0.99\linewidth]{afrlLogo.png}
+			\includegraphics[width=0.99\linewidth]{back_matter/afrlLogo.png}
 		\end{figure}
 	\end{minipage}
 	\begin{minipage}{0.34\linewidth}
 		\begin{figure}
-			\includegraphics[width=0.99\linewidth,trim={2cm 3cm 0em 3cm},clip]{afosr.jpg}
+			\includegraphics[width=0.99\linewidth,trim={2cm 3cm 0em 3cm},clip]{back_matter/afosr.jpg}
 		\end{figure}
 	\end{minipage}
 	\begin{minipage}{0.23\linewidth}
 		\begin{figure}
-			\includegraphics[width=0.99\linewidth]{hpcmp.png}
+			\includegraphics[width=0.99\linewidth]{back_matter/hpcmp.png}
 		\end{figure}
 	\end{minipage}
 	\begin{minipage}{0.23\linewidth}
 		\begin{figure}
-			\includegraphics[width=0.99\linewidth,trim={0em 3cm 0em 3cm},clip]{arc.png}
+			\includegraphics[width=0.99\linewidth,trim={0em 3cm 0em 3cm},clip]{back_matter/arc.png}
 		\end{figure}
 	\end{minipage}
 \end{frame}
