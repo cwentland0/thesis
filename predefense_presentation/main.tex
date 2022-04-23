@@ -150,30 +150,30 @@ Krzysztof Fidkowski \\
 
 \section*{Introduction}
 
-\begin{frame}{The engineering design cycle}
-	\begin{itemize}
-		\item Concept to prototyping to production
-		\item Iterative, test-driven development
-		\item Regulatory costs in high-stakes fields
-		\item Destructive testing sometimes required
-	\end{itemize}
-	\centering
-    \begin{minipage}{0.4\linewidth}
-        \begin{figure}
-            \centering
-            \includegraphics[width=0.99\linewidth]{intro/engineeringCycle.png}
-        \end{figure}
-		\vspace{0.25em}
-    \end{minipage}
-	\centering
-	\begin{minipage}{0.55\linewidth}
-        \begin{figure}
-            \centering
-            \includegraphics[width=0.99\linewidth]{intro/crash_test.jpg}
-			\caption*{\tiny{Volvo Cars of North America, 2014}}
-        \end{figure}
-    \end{minipage}
-\end{frame}
+% \begin{frame}{The engineering design cycle}
+% 	\begin{itemize}
+% 		\item Concept to prototyping to production
+% 		\item Iterative, test-driven development
+% 		\item Regulatory costs in high-stakes fields
+% 		\item Destructive testing sometimes required
+% 	\end{itemize}
+% 	\centering
+%     \begin{minipage}{0.4\linewidth}
+%         \begin{figure}
+%             \centering
+%             \includegraphics[width=0.99\linewidth]{intro/engineeringCycle.png}
+%         \end{figure}
+% 		\vspace{0.25em}
+%     \end{minipage}
+% 	\centering
+% 	\begin{minipage}{0.55\linewidth}
+%         \begin{figure}
+%             \centering
+%             \includegraphics[width=0.99\linewidth]{intro/crash_test.jpg}
+% 			\caption*{\tiny{Volvo Cars of North America, 2014}}
+%         \end{figure}
+%     \end{minipage}
+% \end{frame}
 
 \begin{frame}{``New space'' era}
     \begin{itemize}
@@ -389,7 +389,7 @@ Krzysztof Fidkowski \\
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Least-squares Petrov--Galerkin (LSPG)}
+\begin{frame}{Least-squares Petrov--Galerkin (LSPG)\footnotemark[1]}
     \begin{itemize}
 		\item Fully-discrete residual (e.g. BDF1)
 		\begin{equation*}
@@ -407,11 +407,52 @@ Krzysztof Fidkowski \\
 			\testBasis = \consScaleInv \pde{\resFuncIter{\timeIdx}{\consVecCoef^{\newtonIdx}}}{\consVec} \consScale \consTrial
 		\end{equation*}
 	\end{itemize}
+	\footnotetext[1]{\tiny{Carlberg el al., \textit{Int. J. Numer. Meth. Engng}, Vol. 86, 2010, pp. 155--181.}}
 \end{frame}
 
-\begin{frame}{Model-preserving least-squares with variable transformation}
+\begin{frame}{State of the art in 2017}
+	\begin{itemize}
+		\item PROMs for parametrized elliptic problems are extremely robust\footnotemark[2]
+		\item Galerkin ROMs are generally unstable for unsteady problems
+		\item LSPG is leap forward, biggest case in 3D Ahmed body\footnotemark[3]
+		\item First studies of PROMs for reacting flows suffer from instabilities\footnotemark[4]
+	\end{itemize}
+	
+	\begin{minipage}{0.4\linewidth}
+		\begin{figure}
+			\includegraphics[width=0.99\linewidth]{theory/ahmed.png}
+			\caption*{\tiny{Carlberg et al., 2013}}
+		\end{figure}
+	\end{minipage}
+	\begin{minipage}{0.58\linewidth}
+		\begin{figure}
+			\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth]{10}{theory/single_injector/fom/fig_}{00000}{00046}
+			\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth]{10}{theory/single_injector/rom/fig_}{00000}{00046}
+			\caption*{\tiny{Huang, 2018}}
+		\end{figure}
+	\end{minipage}
+
+	\footnotetext[2]{\tiny{Hesthaven et al., \textit{Certified Reduced Basis Methods for Parametrized Partial Differential Equations}, Springer, 2015.}}
+	\footnotetext[3]{\tiny{Carlberg et al., \textit{J Comp Phys}, Vol. 242, 2013, pp. 623--647.}}
+	\footnotetext[4]{\tiny{Huang et al., \textit{AIAA Propulsion and Energy}, 2018.}}
+\end{frame}
+
+\begin{frame}{Practical limitations of Galerkin and LSPG}
     \begin{itemize}
-		\item Conservative variables are cumbersome in multi-physics simulations
+		\item Conservative variables are cumbersome with more complex gas models
+		\begin{equation*}
+			p = \rho RT
+		\end{equation*}
+		\begin{equation*}
+			E = \frac{1}{2} \mathbf{u} \cdot \mathbf{u} + h - \frac{p}{\rho}
+		\end{equation*}
+		\begin{equation*}
+			\frac{h(T)}{RT} = a_1 + \frac{a_2}{2}T + \frac{a_3}{3}T^2 + \frac{a_4}{4}T^3 + \frac{a_5}{5}T^4 + \frac{a_6}{T}
+		\end{equation*}
+		\item Enforcing global limiters
+		\begin{equation*}
+			\consVecRom \rightarrow \mathbf{T} \rightarrow max(\mathbf{T}, T_{max}) \rightarrow \consVecRom 
+		\end{equation*}
 		\item Choose alternative (complete) set of variables, e.g. primitive variables
 		\begin{equation*}
 			\stateVar_p \triangleq \left[ p, \; u_i, \; T, \; Y_l \right]
@@ -419,15 +460,33 @@ Krzysztof Fidkowski \\
 		\begin{equation*}
 			\primVecRom(\timeVar) \triangleq \primVecCent + \primScale \primTrial \primVecCoef(\timeVar)
 		\end{equation*}
-		\item Frame residual in terms of primitive state
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{\small{Model-preserving least-squares with variable transformation (MP-LSVT)\footnotemark[2]}}
+	\begin{itemize}
+		\item Frame residual in terms of target state
 		\begin{equation*}
 			\resFuncIter{\timeIdx}{\primVecCoef^{\newtonIdx}} \triangleq \consFunc{\primVecCent + \primScale \primTrial \primVecCoef^{\newtonIdx}} - \consVec^{\timeIdx-1} + \dt \, \rhsFunc{\primVecCent + \primScale \primTrial \primVecCoef^{\newtonIdx}} = \zeroVec
 		\end{equation*}
-		\item Gauss--Newton w/r/t \textbf{primitive} modal coefficients
+		\item Gauss--Newton w/r/t \textbf{target variable} modal coefficients
 		\begin{equation*}
 			\testBasis = \consScaleInv \pde{\resFuncIter{\timeIdx}{\primVecCoef^{\newtonIdx}}}{\primVec} \primScale \primTrial
 		\end{equation*}
 	\end{itemize}
+	\begin{minipage}{0.49\linewidth}
+		\centering
+		\begin{figure}
+			\includegraphics[width=0.75\linewidth]{theory/mplsvt_err_vs_modes.png}
+		\end{figure}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\centering
+		\begin{figure}
+			\includegraphics[width=0.75\linewidth]{theory/mplsvt_pressure_probe.png}
+		\end{figure}
+	\end{minipage}
+	\footnotetext[2]{\tiny{Huang et al., \textit{J Comp Phys.}, Vol. 448, 2022, pp. 110742.}}
 \end{frame}
 
 \section*{Hyper-reduction}
@@ -455,15 +514,17 @@ Krzysztof Fidkowski \\
 			\resFunc{\primVecCoef} \approx \resApproxFunc{\primVecCoef} &= \consScale \deimBasisRes \dummyVec \\
 			\sampMat \consScaleInv \resApproxFunc{\primVecCoef} &= \sampMat \deimBasisRes \dummyVec
 		\end{align*}
-		\item Least-squares regression, ``gappy POD'' ($\numSamps > \numResModes$)
+		\item Least-squares regression, gappy POD\footnotemark[3] ($\numSamps > \numResModes$)
 		\begin{equation*}
 			\resApproxFunc{\primVecCoef} \triangleq \consScale \deimBasisRes \left[ \sampMat \deimBasisRes \right]^{+} \sampMat \consScaleInv \resFunc{\primVecCoef}
 		\end{equation*}
-		\item Discrete empirical interpolation method ($\numSamps = \numResModes$)
+		\item Discrete empirical interpolation method (DEIM)\footnotemark[4] ($\numSamps = \numResModes$)
 		\begin{equation*}
 			\resApproxFunc{\primVecCoef} \triangleq \consScale \deimBasisRes \left[ \sampMat \deimBasisRes \right]^{-1} \sampMat \consScaleInv \resFunc{\primVecCoef}
 		\end{equation*}
 	\end{itemize}
+	\footnotetext[3]{\tiny{Everson and Sirovich, \textit{J Opt Soc Am A}, Vol. 12 (8), 1995, pp 1657--1664.}}
+	\footnotetext[4]{\tiny{Chaturantabut and Sorensen, \textit{SIAM J Sci Comput}, Vol. 32 (5), 2010, pp. 2737--2764.}}
 \end{frame}
 
 \begin{frame}{Sampling algorithms}
@@ -471,12 +532,11 @@ Krzysztof Fidkowski \\
 		\item Computing optimal sampling $\sampMat$ is NP-hard
 		\item Usually resort to greedy (locally-optimal) algorithms
 		\begin{itemize}
-			\item DEIM (Chaturantabut, 2010), GNAT (Carlberg, 2013)
-			\item Accel. MPE (Zimmermann, 2016), GPOD+E (Peherstorfer, 2020)
-			\item Determinant-based (Saito, 2021)
+			\item DEIM\footnotemark[4], GNAT\footnotemark[5]
+			\item Accelerated MPE\footnotemark[6], GPOD+E\footnotemark[7]
+			\item Determinant-based\footnotemark[8]
 		\end{itemize}
 	\end{itemize}
-	\vspace{1em}
 	\begin{minipage}{0.13\linewidth}
 		\footnotesize
 		\vspace{1em}
@@ -495,9 +555,12 @@ Krzysztof Fidkowski \\
 
 		\vspace{4em}
 	\end{minipage}\hfill
-	\begin{minipage}{0.84\linewidth}
+	\begin{minipage}{0.84\linewidth}%{0.84\linewidth}
 		\includegraphics[width=0.99\linewidth]{theory/iBlanks.jpg}
 	\end{minipage}
+	\vspace{-2em}
+	\footnotetext[5]{\miniscule{Carlberg et al., \textit{J Comp Phys}, Vol. 242, 2013, pp. 623--647.} \scriptsize{\textsuperscript{6}}\miniscule{Zimmermann and Willcox, \textit{SIAM J Sci Comp}, Vol. 38, 2016, pp. 2827--2850.}}
+	\footnotetext[7]{\miniscule{Peherstorfer et al., \textit{SIAM J Comp Sci}, Vol. 42, 2020, pp. 2837--2864.} \scriptsize{\textsuperscript{8} \miniscule{Saito et al., \textit{IEEE Access}, Vol. 9, pp. 68535--68551}}}
 \end{frame}
 
 \begin{frame}{Separate regression basis formulation}
@@ -563,7 +626,7 @@ Krzysztof Fidkowski \\
 
 \begin{frame}{Numerical Experiments}
     \begin{itemize}
-		\item The General Equations and Mesh Solver (GEMS)
+		\item The General Equations and Mesh Solver (GEMS)\footnotemark[9]
 		\begin{itemize}
 			\item 2nd-order unstructured finite volume
 			\item BDF2 time integration w/ pseudo time-stepping
@@ -598,6 +661,7 @@ Krzysztof Fidkowski \\
 		\end{array} \right]
 	\end{equation*}
 	\normalsize
+	\footnotetext[9]{\tiny{Li et al., \textit{3rd Int Conf CFD}, 2006, pp. 619--624.}}
 \end{frame}
 
 \begin{frame}{2D transonic flow over an open cavity}
@@ -628,23 +692,24 @@ Krzysztof Fidkowski \\
 	\end{figure}
 \end{frame}
 
-\begin{frame}{3D truncated CVRC}
+\begin{frame}{3D truncated CVRC\footnotemark[10]}
     \begin{itemize}
 		\item Truncated single-element gaseous methane-peroxide combustor
 		\item Flamelet-progress variable combustion model (GRI-Mech 1.2)
 		\item No acoustic forcing (for now)
 	\end{itemize}
-	\vspace{1em}
-	\begin{minipage}{0.49\linewidth}
+	\vspace{0.5em}
+	\begin{minipage}{0.47\linewidth}
 		\begin{figure}
 			\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth]{10}{experiments/cvrc/temp_animation/fig_}{000001}{000050}
 		\end{figure}
 	\end{minipage}
-	\begin{minipage}{0.49\linewidth}
+	\begin{minipage}{0.51\linewidth}
 		\begin{figure}
 			\includegraphics[width=0.99\linewidth]{experiments/cvrc/point_8_Static_Pressure_FOM.png}
 		\end{figure}
 	\end{minipage}
+	\footnotetext[10]{\tiny{Yu et al., \textit{J Propul Power}, Vol. 28 (5), 2012, pp. 876--887}}
 \end{frame}
 
 \begin{frame}{3D truncated CVRC}
@@ -673,7 +738,7 @@ Krzysztof Fidkowski \\
 	\end{tcolorbox}
 \end{frame}
 
-\begin{frame}{3D nine-element combustor}
+\begin{frame}{3D nine-element combustor\footnotemark[11]}
     % 14,387,292 cells
 	% ~250 million DOF
 	% 1T = 2.5 kHz, 4 periods
@@ -686,12 +751,12 @@ Krzysztof Fidkowski \\
 		\item Four 1T mode periods =$~\sim$1.5 million CPU-h
 		\item Scalable localized bases, adaptive bases/sampling
 	\end{itemize}
-	\begin{minipage}{0.49\linewidth}
+	\begin{minipage}{0.45\linewidth}
 		\begin{figure}
-			\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth]{10}{experiments/9elem/temp_slices/fig_}{000001}{000040}
+			\animategraphics[final,autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth]{10}{experiments/9elem/temp_slices/fig_}{000001}{000040}
 		\end{figure}
 	\end{minipage}
-	\begin{minipage}{0.49\linewidth}
+	\begin{minipage}{0.53\linewidth}
 		\centering
 		\begin{figure}
 			\includegraphics[width=0.55\linewidth]{experiments/9elem/multicomponent.png}
@@ -699,6 +764,7 @@ Krzysztof Fidkowski \\
 		\end{figure}
 		\vspace{-3em}
 	\end{minipage}
+	\footnotetext[11]{\tiny{Harvazinski et al., \textit{AIAA SciTech}, 2019}}
 \end{frame}
 
 \section*{Miscellaneous}
@@ -707,7 +773,7 @@ Krzysztof Fidkowski \\
 	
 \end{frame}
 
-\begin{frame}{Misc: The Adjoint Petrov--Galerkin method}
+\begin{frame}{Misc: The Adjoint Petrov--Galerkin method\footnotemark[12]}
 	\begin{itemize}
 		\item Data-driven closure of PROMs based on Mori--Zwanzig formalism
 		\item Allows explicit time integrators and JFNK solvers, less sensitive to $\dt$
@@ -726,16 +792,12 @@ Krzysztof Fidkowski \\
 		\vspace{2em}
 		\begin{figure}
 			\includegraphics[width=0.8\linewidth]{misc/apg_cylinder.png}
-			\caption*{\tiny{Parish et al., 2020}}
 		\end{figure}
 	\end{minipage}
-	
+	\footnotetext[12]{\tiny{Parish et al., \textit{Comput Method Appl M}, Vol. 365, 2020, pp. 112991.}}
 \end{frame}
 
-\begin{frame}{\small{Misc: \textbf{P}rototyping \textbf{E}nvironment for \textbf{R}eacting \textbf{F}low \textbf{O}rder \textbf{R}eduction \textbf{M}ethods}}
-    % picture of API
-    % hierarchy of test cases
-    % uses (Elnaz, Wayne, 577 students)
+\begin{frame}{\footnotesize{Misc: Prototyping Environment for Reacting Flow Order Reduction Methods (PERFORM)\footnotemark[13]}}
 	\begin{itemize}
 		\small
 		\item Open-source 1D reacting flow solver w/ flexible ROM API
@@ -743,7 +805,7 @@ Krzysztof Fidkowski \\
 		\item Already in use for linearized ROMs (Rezaian et al., 2022), adaptive HPROMs (Wayne Uy, NYU), course projects (AERO 577)
 		\normalsize
 	\end{itemize}
-	\vspace{1em}
+	\vspace{0.5em}
 	\begin{minipage}{0.4\linewidth}
 		\includegraphics[width=0.99\linewidth]{misc/performAPI.png}
 	\end{minipage}
@@ -751,12 +813,13 @@ Krzysztof Fidkowski \\
 		\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth]{10}{misc/perform_animation/fig_}{101}{150}
 	\end{minipage}
 
-	\vspace{1.5em}
+	\vspace{1em}
 	\centering
 	\texttt{https://github.com/cwentland0/perform}
+	\footnotetext[13]{\tiny{Wentland, \textit{J Open Source Soft.}, Under review.}}
 \end{frame}
 
-\begin{frame}{Misc: Non-linear manifold ROMs}
+\begin{frame}{Misc: Non-linear manifold ROMs\footnotemark[14]}
 	\begin{itemize}
 		\item Linear basis approximates non-linear solution manifold poorly
 		\item Autoencoders learn mapping b/w solution and latent manifolds
@@ -773,13 +836,14 @@ Krzysztof Fidkowski \\
 			\animategraphics[width=0.99\linewidth,autoplay,loop,every=2]{5}{misc/cae_flame_animation/fig_}{50}{150}
 		\end{figure}
 	\end{minipage}
+	\footnotetext[14]{\tiny{Wentland et al., \textit{74th APS DFD}, Vol. 66 (17), 2021.}}
 \end{frame}
 
 \begin{frame}{Misc: HPROM toolchain (contrib. to PDP)}
     % make sure to emphasize that this is Nick's
     % Method of snapshots, sampling, projection/regression error
 	\begin{itemize}
-		\item \textbf{P}arallel \textbf{D}ata \textbf{P}rocessor developed by \textbf{Nicholas Arnold-Medabalimi}
+		\item Parallel Data Processor\footnotemark[15] developed by Nicholas Arnold-Medabalimi
 		\item Scalable linear algebra with intuitive API
 		\item Personal contributions
 		\begin{itemize}
@@ -789,6 +853,7 @@ Krzysztof Fidkowski \\
 			\item Projection and regression error calculators
 		\end{itemize}
 	\end{itemize}
+	\footnotetext[15]{\tiny{Arnold-Medabalimi, \textit{SoftwareX}, In preparation.}}
 \end{frame}
 
 \section*{Conclusions}
