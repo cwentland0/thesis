@@ -368,8 +368,8 @@ Krzysztof Fidkowski \\
             \consDataMat = \basisMat \singVecMat \rightSingVecMat^\top, \quad \consTrial \leftarrow \basisMat[:, {:}\numConsvModes]
         \end{equation*}
     \end{itemize}
-	\vspace{-1em}
 	\centering
+	\vspace{-0.8em}
 	\begin{figure}
 		\includegraphics[width=0.6\linewidth]{theory/podProfileConverge.png}
 	\end{figure}
@@ -725,7 +725,49 @@ Krzysztof Fidkowski \\
 	\footnotetext[12]{\tiny{Wentland et al., \textit{AIAA SciTech}, 2021.}}
 \end{frame}
 
-\begin{frame}\frametitle{Load balancing}
+\begin{frame}{Unsampled ROM performance}
+	\begin{minipage}{0.49\linewidth}
+		\begin{figure}
+			\includegraphics[width=0.99\linewidth]{experiments/box/timeStepModeStudy_Average_errorRaw.png}
+		\end{figure}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\begin{figure}
+			\includegraphics[width=0.99\linewidth]{experiments/box/point_1_Static_Pressure_modeStudy.png}
+		\end{figure}
+	\end{minipage}
+	\vspace{1em}
+	\begin{itemize}
+		\item MP-LSVT is quite stable, can push $\dt$
+		\item Increasing $\dt$ can even \textit{improve} error, similar to LSPG
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Hyper-reduction sampling}
+	\begin{minipage}{0.13\linewidth}
+		\footnotesize
+		\vspace{1.2em}
+		\textbf{GNAT}
+		\normalsize
+
+		\vspace{3em}
+
+		\footnotesize
+		\textbf{Random}
+
+		\vspace{3.7em}
+
+		\footnotesize
+		\textbf{GPOD+E}
+
+		\vspace{4em}
+	\end{minipage}\hfill
+	\begin{minipage}{0.8\linewidth}%{0.84\linewidth}
+		\includegraphics[width=0.99\linewidth]{theory/iBlanks.jpg}
+	\end{minipage}
+\end{frame}
+
+\begin{frame}{Hyper-reduction load balancing}
 	\begin{figure}
 		\begin{minipage}{0.49\linewidth}
 			\includegraphics[width=0.99\linewidth]{experiments/box/partitionSamplingTypeStudy_partition_stats.png}
@@ -835,6 +877,31 @@ Krzysztof Fidkowski \\
 % 	\end{tcolorbox}
 % \end{frame}
 
+\begin{frame}{Best practices}
+	\begin{itemize}
+		\item Non-dimensionalization/feature scaling
+		\begin{itemize}
+			\item Failing to non-dimensionalize ROMs leads to terrible conditioning
+			\item Constant scaling factors are simple, inexpensive, and robust
+		\end{itemize}
+		\item Global limiters
+		\begin{itemize}
+			\item ``Ringing'' from linear trial basis can lead to large over/undershoots
+			\item System-specific limiters are a simple hot-fix
+		\end{itemize}
+		\item Time step insensitivity
+		\begin{itemize}
+			\item 5-10x cost savings can come from increasing $\dt$ alone
+			\item MP-LSVT is remarkably stable at higher $\dt$
+		\end{itemize}
+		\item HPROM basis training
+		\begin{itemize}
+			\item GNAT calls for full ROM evaluation to collect HPROM training data
+			\item Defeats purpose of HPROM, FOM data works just fine
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
 \section*{Miscellaneous}
 
 \begin{frame}{Misc: The Adjoint Petrov--Galerkin method\footnotemark[13]}
@@ -920,31 +987,6 @@ Krzysztof Fidkowski \\
 	\footnotetext[16]{\tiny{Arnold-Medabalimi, \textit{SoftwareX}, In preparation.}}
 \end{frame}
 
-\begin{frame}{Misc: Best practices}
-	\begin{itemize}
-		\item Non-dimensionalization/feature scaling
-		\begin{itemize}
-			\item Failing to non-dimensionalize ROMs leads to terrible conditioning
-			\item Constant scaling factors are simple, inexpensive, and robust
-		\end{itemize}
-		\item Global limiters
-		\begin{itemize}
-			\item ``Ringing'' from linear trial basis can lead to large over/undershoots
-			\item System-specific limiters are a simple hot-fix
-		\end{itemize}
-		\item Time step insensitivity
-		\begin{itemize}
-			\item 5-10x cost savings can come from increasing $\dt$ alone
-			\item MP-LSVT is remarkably stable at higher $\dt$
-		\end{itemize}
-		\item HPROM basis training
-		\begin{itemize}
-			\item GNAT calls for full ROM evaluation to collect HPROM training data
-			\item Defeats purpose of HPROM, FOM data works just fine
-		\end{itemize}
-	\end{itemize}
-\end{frame}
-
 \section*{Conclusions}
 
 \begin{frame}{Future: 3D nine-element combustor\footnotemark[17]}
@@ -976,12 +1018,12 @@ Krzysztof Fidkowski \\
 	\footnotetext[17]{\tiny{Harvazinski et al., \textit{AIAA SciTech}, 2019}}
 \end{frame}
 
-\begin{frame}{Adaptive bases and sampling}
-	\begin{itemize}
-		\item Out-of-training predictions can only be accomplished with adaptation
-		\item  
-	\end{itemize}
-\end{frame}
+% \begin{frame}{Adaptive bases and sampling}
+% 	\begin{itemize}
+% 		\item Out-of-training predictions can only be accomplished with adaptation
+% 		\item  
+% 	\end{itemize}
+% \end{frame}
 
 \begin{frame}{Remaining work}
 	\begin{itemize}
