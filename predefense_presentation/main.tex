@@ -342,7 +342,7 @@ Krzysztof Fidkowski \\
 
 \begin{frame}{Contributions}
     \begin{enumerate}
-        \item State-of-the-art PROMs for practical CFD systems
+        \item State-of-the-art PROMs for reacting flow systems
         \item Improved formulation of hyper-reduced MP-LSVT method with enhanced accuracy and robustness
         \item Scalable ROM framework in high-performance combustion CFD code
         \item Open-source toolchain for processing HPROMs for very large datasets
@@ -683,7 +683,7 @@ Krzysztof Fidkowski \\
 
 \section*{Numerical Experiments}
 
-\begin{frame}{Numerical Experiments}
+\begin{frame}{Full-order model}
     \begin{itemize}
 		\item The General Equations and Mesh Solver (GEMS)\footnotemark[13]
 		\begin{itemize}
@@ -829,11 +829,11 @@ Krzysztof Fidkowski \\
 \begin{frame}{Hyper-reduction load balancing}
 	\begin{figure}
 		\begin{minipage}{0.49\linewidth}
-			\includegraphics[width=0.99\linewidth]{experiments/box/partitionSamplingTypeStudy_partition_stats.png}
+			\includegraphics[width=0.99\linewidth]{experiments/box/partitionSamplingTypeStudy_partition_stats_labels.png}
 			\caption*{Cells per partition, 40 cores}
 		\end{minipage}
 		\begin{minipage}{0.49\linewidth}
-			\includegraphics[width=0.99\linewidth]{experiments/box/partitionSamplingTypeStudy_partition_comms.png}
+			\includegraphics[width=0.99\linewidth]{experiments/box/partitionSamplingTypeStudy_partition_comms_labels.png}
 			\caption*{MPI comms, 40 cores}
 		\end{minipage}
 	\end{figure}
@@ -845,7 +845,7 @@ Krzysztof Fidkowski \\
 
 \begin{frame}{Computational savings}
     \begin{figure}
-		\animategraphics[controls={step},buttonsize=1.0em,width=0.6\linewidth]{10}{experiments/cvrc/pareto_PLACEHOLDER/samplingTypeStudy_Average_errorRaw_time_calcAndMPI_pareto_}{1}{3}
+		\animategraphics[controls={step},buttonsize=1.0em,width=0.6\linewidth]{10}{experiments/box/pareto/samplingTypeStudy_Average_errorRaw_time_calcAndMPI_pareto_labels_}{1}{3}
 	\end{figure}
 	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
 		Can get $10^3\text{-}10^4$x core time speedup with minimal accuracy loss!
