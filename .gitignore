@@ -9,3 +9,8 @@
 *.synctex.gz
 *.toc
 *.swp
+*.app
+*.bbl
+*.blg
+*.lof
+*.lot

@@ -1,0 +1,201 @@
+\documentclass[a4paper,12pt,openany]{book}
+
+
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{appendix}
+\usepackage{setspace}
+\usepackage{sectsty}
+\usepackage[nottoc]{tocbibind}
+\usepackage{titletoc}
+%\usepackage{tocloft}
+
+\usepackage{algorithm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{comment}
+\usepackage{float}
+\usepackage{graphicx}
+% \usepackage{calligra}
+\usepackage[hidelinks]{hyperref}
+\usepackage{longtable}
+\usepackage{mathtools}
+\usepackage[square,numbers]{natbib}
+\usepackage{pdflscape}
+\usepackage{pdfpages}
+\usepackage{relsize}
+\usepackage{subfigure}
+\usepackage{titlesec}
+\usepackage{ulem}
+\usepackage{xcolor}
+ 
+
+\setlength{\parindent}{0pt}
+\pagestyle{plain}
+\doublespacing
+
+
+% Choosing fonts for headings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sectionfont{\fontsize{14}{14}\selectfont}
+\subsectionfont{\fontsize{13}{14}\selectfont}
+\subsubsectionfont{\fontsize{12}{14}\selectfont}
+\chapterfont{\fontsize{16}{16}\selectfont}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Formatting table of contents %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+
+    \titlecontents{chapter}[0em]{\addvspace{0em}}%
+        {\bfseries\@chapapp\ \thecontentslabel:\ }%
+        {\hspace{-0em}}{\hfill\contentspage}[\addvspace{0pt}]
+        
+    \def\__mychapapp{\protect\@chapapp}
+    \g@addto@macro\appendices{
+        \addtocontents{toc}{
+            \protect\renewcommand{\__mychapapp}{\appendixname}
+        }
+    }
+ 
+\makeatother
+
+\newcommand{\stoptocwriting}{%
+  \addtocontents{toc}{\protect\setcounter{tocdepth}{-5}}}
+  
+\newcommand{\resumetocwriting}{%
+  \addtocontents{toc}{\protect\setcounter{tocdepth}{\arabic{tocdepth}}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% List of appendices %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand\listappendixname{List of Appendices}
+\makeatletter
+    \newcommand\appchapter[1]{
+        \chapter{#1}
+        \addcontentsline{app}{chapter}{Appendix \thechapter: #1}
+    }
+    
+    \newcommand\appsection[1]{
+        \section{#1}
+        \addcontentsline{app}{section}{\thesection\hspace{0.5em} #1}
+    }
+    
+    \newcommand\appsubsection[1]{
+        \subsection{#1}
+        \addcontentsline{app}{subsection}{\thesubsection\hspace{0.5em} #1}
+    }
+    
+    \newcommand\appsubsubsection[1]{
+        \subsubsection{#1}
+    }
+
+    \newcommand\listofappendices{
+        \chapter*{\listappendixname}\@starttoc{app}
+    }
+\makeatother
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Centering chapter titles %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+    \titleformat{\chapter}[display]{\bfseries\centering}{\Large \@chapapp\ \thechapter}{1em}{\Large}
+\makeatother
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Removing double page before main matter %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\renewcommand\mainmatter{\clearpage\@mainmattertrue\pagenumbering{arabic}}
+\makeatother
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Set parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \DeclareMathAlphabet{\mathcalligra}{T1}{calligra}{m}{n}
+% \DeclareFontShape{T1}{calligra}{m}{n}{<->s*[2.2]callig15}{}
+\setlength\parindent{0pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Redefine existing macros here %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \renewcommand{\algorithmicrequire}{\textbf{Inputs:}}
+% \renewcommand{\algorithmicensure}{\textbf{Outputs:}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Define colors here %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{green}{rgb}{0,0.4,0}
+\definecolor{cyan}{rgb}{0,0.7,0.7}
+\definecolor{red}{rgb}{1,0,0}
+\definecolor{blue}{rgb}{0,0,1}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Define new macros here %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\newcommand{\pd}[2]{\frac{\partial{#1}}{\partial{#2}}}
+\newcommand{\Retht}{\overline{Re_{\theta,t}}}
+\newcommand{\RFvar}{\widetilde{\bs{u}}_m}
+\newcommand{\iRFvar}{\widetilde{\bs{u}}^i_m}
+\newcommand{\siRFvar}{\widetilde{\bs{u}}^{*i}_m}
+\newcommand{\sOneRFvar}{\widetilde{\bs{u}}^{*1}_m}
+\newcommand{\sTwoRFvar}{\widetilde{\bs{u}}^{*2}_m}
+\newcommand{\sNumRFvar}{\widetilde{\bs{u}}^{*N}_m}
+\newcommand{\sr}{\mathcalligra{r}}
+\newcommand{\diverg}{\bs{\nabla}\cdot}
+\newcommand{\curl}{\bs{\nabla}\times}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Define revision formatting here %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%----------------------------------------------------------
+% FORMATTING WITH COLORING AND STRIKEOUTS
+%----------------------------------------------------------
+%\newcommand{\newadd}[2]{{\color{#1}#2}}
+%\newcommand{\newdel}[1]{{\color{blue}#1}}
+%----------------------------------------------------------
+% FORMATTING WITHOUT COLORING AND STRIKEOUTS
+%----------------------------------------------------------
+\newcommand{\newadd}[2]{#2}
+\newcommand{\newdel}[1]{\ignorespaces}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+\raggedbottom
+
+\frontmatter
+\input{./Chapters/FrontMatter/FrontPage}
+\pagenumbering{roman}
+\input{./Chapters/FrontMatter/Orcid}
+\input{./Chapters/FrontMatter/Dedication}
+\input{./Chapters/FrontMatter/Acknowledgements}
+
+\renewcommand{\contentsname}{\begin{center}\vspace{-2em}Table of Contents\end{center}}
+\tableofcontents
+\listoftables
+\listoffigures
+\listofappendices
+\addcontentsline{toc}{chapter}{List of Appendices}
+
+\input{./Chapters/FrontMatter/Abstract}
+
+\mainmatter
+\input{./Chapters/Overview/main}
+
+% \begin{appendices}
+% \appendixpage
+% \addappheadtotoc
+% \stoptocwriting
+% \input{./Chapters/A_DUU/main}
+% \input{./Chapters/B_Sensitivity/main}
+% \input{./Chapters/C_SupplementaryResults/main}
+% \resumetocwriting
+% \end{appendices}
+
+\bibliographystyle{abbrvnat}
+\bibliography{ref}
+
+\end{document}
