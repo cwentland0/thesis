@@ -1,0 +1,194 @@
+\newcommand{\MC}{\mathcal}
+
+% indices
+\newcommand{\spatialIdx}{\ensuremath{i}}
+\newcommand{\spatialIdxTwo}{\ensuremath{j}}
+\newcommand{\spatialIdxThree}{\ensuremath{k}}
+\newcommand{\specIdx}{\ensuremath{l}}
+\newcommand{\specIdxTwo}{\ensuremath{m}}
+\newcommand{\timeIdx}{\ensuremath{n}}
+\newcommand{\newtonIdx}{\ensuremath{k}}
+
+% dimensions
+\newcommand{\numDOF}{\ensuremath{N}}
+\newcommand{\numSpec}{\ensuremath{N_Y}}
+\newcommand{\numConsvModes}{\ensuremath{N_c}}
+\newcommand{\numPrimModes}{\ensuremath{N_p}}
+\newcommand{\numRHSModes}{\ensuremath{N_f}}
+\newcommand{\numResModes}{\ensuremath{N_r}}
+\newcommand{\numJacobModes}{\ensuremath{N_J}}
+\newcommand{\numSamps}{\ensuremath{N_s}}
+
+% spatial coordinates
+\newcommand{\spatialVar}{\ensuremath{x}}
+\newcommand{\spatialVarDir}{\ensuremath{\spatialVar_{\spatialIdx}}}
+
+% state variables
+\newcommand{\stateVar}{\ensuremath{q}}
+\newcommand{\stateVec}{\ensuremath{\mathbf{q}}}
+\newcommand{\consVec}{\ensuremath{\mathbf{\stateVar}_c}}
+\newcommand{\primVec}{\ensuremath{\mathbf{\stateVar}_p}}
+\newcommand{\consFunc}[1]{\ensuremath{\consVec \left(#1\right)}}
+\newcommand{\consVecCent}{\ensuremath{\mathbf{\overline{\stateVar}}_c}}
+\newcommand{\primVecCent}{\ensuremath{\mathbf{\overline{\stateVar}}_p}}
+\newcommand{\consDataMat}{\ensuremath{\mathbf{\MakeUppercase{\stateVar}}_c}}
+\newcommand{\dummyVec}{\ensuremath{\mathbf{y}}}
+\newcommand{\dummyVecOne}{\ensuremath{\mathbf{a}}}
+\newcommand{\dummyVecTwo}{\ensuremath{\mathbf{b}}}
+
+% ROM variables
+\newcommand{\consVecRom}{\ensuremath{\mathbf{\widetilde{\stateVar}}_c}}
+\newcommand{\consFuncRom}[1]{\ensuremath{\mathbf{\widetilde{\stateVar}}_c \left(#1\right)}}
+\newcommand{\primVecRom}{\ensuremath{\mathbf{\widetilde{\stateVar}}_p}}
+\newcommand{\stateVecCoef}{\ensuremath{\mathbf{\widehat{\stateVar}}}}
+\newcommand{\consVecCoef}{\ensuremath{\mathbf{\widehat{\stateVar}}_c}}
+\newcommand{\consVarCoef}{\ensuremath{\widehat{\stateVar}_{c,i}}}
+\newcommand{\primVecCoef}{\ensuremath{\mathbf{\widehat{\stateVar}}_p}}
+\newcommand{\primVarCoef}{\ensuremath{\widehat{\stateVar}}_{p,i}}
+
+% flux/source/RHS/residual functions
+\newcommand{\fluxVar}{\ensuremath{f}}
+\newcommand{\invFlux}{\ensuremath{\mathbf{\fluxVar}}}
+\newcommand{\viscFlux}{\ensuremath{\mathbf{\fluxVar}_{\nu}}}
+\newcommand{\invFluxDir}{\ensuremath{\mathbf{\fluxVar}_{\spatialIdx}}}
+\newcommand{\viscFluxDir}{\ensuremath{\mathbf{\fluxVar}_{\nu,\spatialIdx}}}
+\newcommand{\sourceVar}{\ensuremath{s}}
+\newcommand{\sourceVec}{\mathbf{\sourceVar}}
+\newcommand{\rhsVar}{\ensuremath{f}}
+\newcommand{\rhsVec}{\ensuremath{\mathbf{\rhsVar}}}
+\newcommand{\rhsFunc}[1]{\ensuremath{\rhsVec \left(#1\right)}}
+\newcommand{\rhsApproxVec}{\ensuremath{\mathbf{\widetilde{\rhsVec}}}}
+\newcommand{\rhsApproxFunc}[1]{\ensuremath{\mathbf{\widetilde{\rhsVec}}\left(#1\right)}}
+\newcommand{\resVar}{\ensuremath{r}}
+\newcommand{\resVec}{\ensuremath{\mathbf{\resVar}}}
+\newcommand{\resFunc}[1]{\ensuremath{\resVec\left(#1\right)}}
+\newcommand{\resFuncIter}[2]{\ensuremath{\resVec^{#1}\left(#2\right)}}
+\newcommand{\resApproxVec}{\ensuremath{\mathbf{\widetilde{\resVar}}}}
+\newcommand{\resApproxFunc}[1]{\ensuremath{\mathbf{\widetilde{\resVar}}\left(#1\right)}}
+\newcommand{\resApproxFuncIter}[2]{\ensuremath{\mathbf{\widetilde{\resVar}}^{#1} \left(#2\right)}}
+\newcommand{\sampFunc}[1]{\ensuremath{\mathbf{s}\left(#1\right)}}
+
+% Jacobians
+\newcommand{\jacobMat}{\ensuremath{\mathbf{J}}}
+\newcommand{\jacobFunc}[1]{\ensuremath{\mathbf{J}\left(#1\right)}}
+\newcommand{\jacobApproxFunc}[1]{\ensuremath{\widetilde{\jacobMat}}\left(#1\right)}
+\newcommand{\gm}{\ensuremath{\boldsymbol{\Gamma}}}
+\newcommand{\gmFunc}[1]{\ensuremath{\gm \left(#1\right)}}
+\newcommand{\gmInv}{\ensuremath{\boldsymbol{\Gamma}^{-1}}}
+
+% linear bases
+\newcommand{\basisVar}{u}
+\newcommand{\basisMat}{\ensuremath{\mathbf{\MakeUppercase{\basisVar}}}}
+\newcommand{\consTrial}{\ensuremath{\basisMat}_c}
+\newcommand{\consTrialVec}{\ensuremath{\mathbf{\basisVar}}_{c,i}}
+\newcommand{\primTrial}{\ensuremath{\basisMat_p}}
+\newcommand{\primTrialVec}{\ensuremath{\mathbf{\basisVar}}_{p,i}}
+\newcommand{\rightSingVecVar}{v}
+\newcommand{\rightSingVecMat}{\ensuremath{\mathbf{\MakeUppercase{\rightSingVecVar}}}}
+\newcommand{\singVecMat}{\ensuremath{\boldsymbol{\Sigma}}}
+\newcommand{\testBasisVar}{w}
+\newcommand{\testBasisMat}{\ensuremath{\mathbf{\MakeUppercase{\testBasisVar}}}}
+\newcommand{\testBasis}{\ensuremath{\testBasisMat}}
+\newcommand{\testBasisFunc}[1]{\ensuremath{\testBasisMat}\left(#1\right)}
+\newcommand{\testBasisApproxFunc}[1]{\ensuremath{\widetilde{\testBasisMat}}\left(#1\right)}
+\newcommand{\deimBasisVar}{\Psi}
+\newcommand{\deimBasisMat}{\ensuremath{\mathbf{\MakeUppercase{\deimBasisVar}}}}
+\newcommand{\deimBasisRes}{\ensuremath{\deimBasisMat_{\resVar}}}
+\newcommand{\deimBasisJac}{\ensuremath{\deimBasisMat_{J}}}
+\newcommand{\deimBasisCons}{\ensuremath{\deimBasisMat_{c}}}
+\newcommand{\deimBasisRhs}{\ensuremath{\deimBasisMat_{\rhsVar}}}
+\newcommand{\deimBasis}{\ensuremath{\deimBasisMat}}
+\newcommand{\sampMat}{\ensuremath{\mathbf{S}}}
+\newcommand{\deimRegressorCons}{\ensuremath{\deimBasisCons (\sampMat \deimBasisCons)^+ \sampMat}}
+\newcommand{\deimRegressorConsSmall}{\ensuremath{(\sampMat \deimBasisCons)^+ \sampMat}}
+\newcommand{\deimRegressorConsTiny}{\ensuremath{(\sampMat \deimBasisCons)^+}}
+\newcommand{\deimRegressorRhs}{\ensuremath{\deimBasisRhs (\sampMat \deimBasisRhs)^+ \sampMat}}
+\newcommand{\deimRegressorRhsSmall}{\ensuremath{(\sampMat \deimBasisRhs)^+ \sampMat}}
+\newcommand{\deimRegressorRhsTiny}{\ensuremath{(\sampMat \deimBasisRhs)^+}}
+\newcommand{\deimRegressorRes}{\ensuremath{\deimBasisRes (\sampMat \deimBasisRes)^+ \sampMat}}
+\newcommand{\deimRegressorResSmall}{\ensuremath{(\sampMat \deimBasisRes)^+ \sampMat}}
+\newcommand{\deimRegressorJac}{\ensuremath{\deimBasisJac (\sampMat \deimBasisJac)^+ \sampMat}}
+\newcommand{\deimRegressorJacSmall}{\ensuremath{(\sampMat \deimBasisJac)^+ \sampMat}}
+\newcommand{\dummyMatOne}{\ensuremath{\mathbf{A}}}
+\newcommand{\dummyMatTwo}{\ensuremath{\mathbf{B}}}
+\newcommand{\dummyMatThree}{\ensuremath{\mathbf{C}}}
+\newcommand{\dummyMatFour}{\ensuremath{\mathbf{D}}}
+\newcommand{\dummyMatFive}{\ensuremath{\mathbf{E}}}
+\newcommand{\dummyMatSix}{\ensuremath{\mathbf{G}}}
+\newcommand{\dummyMatSeven}{\ensuremath{\mathbf{H}}}
+\newcommand{\dummyMatEight}{\ensuremath{\mathbf{K}}}
+
+% non-linear functions
+\newcommand{\encoderFunc}[1]{\ensuremath{\mathbf{h}\left(#1\right)}}
+\newcommand{\decoderFunc}[1]{\ensuremath{\mathbf{g}\left(#1\right)}}
+
+% scaling matrices
+\newcommand{\consScaleVar}{p}
+\newcommand{\consScale}{\ensuremath{\mathbf{\MakeUppercase{\consScaleVar}}}}
+\newcommand{\consScaleInv}{\ensuremath{\mathbf{\MakeUppercase{\consScaleVar}}^{-1}}}
+\newcommand{\primScaleVar}{h}
+\newcommand{\primScale}{\ensuremath{\mathbf{\MakeUppercase{\primScaleVar}}}}
+\newcommand{\primScaleInv}{\ensuremath{\mathbf{\MakeUppercase{\primScaleVar}}^{-1}}}
+\newcommand{\rhsScaleVar}{g}
+\newcommand{\rhsScale}{\ensuremath{\mathbf{\MakeUppercase{\rhsScaleVar}}}}
+\newcommand{\rhsScaleInv}{\ensuremath{\mathbf{\MakeUppercase{\rhsScaleVar}}^{-1}}}
+
+% time
+\newcommand{\timeVar}{\text{t}}
+\newcommand{\dt}{\ensuremath{\Delta \timeVar}}
+\newcommand{\dtau}{\ensuremath{\Delta \tau}}
+
+% thermodynamic quantities
+\newcommand{\enth}{\ensuremath{h}}
+\newcommand{\stagEnth}{\ensuremath{\enth^0}}
+\newcommand{\enthSpec}{\ensuremath{\enth_{\specIdx}}}
+\newcommand{\refEnth}{\ensuremath{\enth_{\text{ref}}}}
+\newcommand{\refEnthSpec}{\ensuremath{\enth_{\text{ref,\specIdx}}}}
+\newcommand{\entropy}{\ensuremath{s}}
+\newcommand{\entropySpec}{\ensuremath{\entropy_{\specIdx}}}
+\newcommand{\cp}{\ensuremath{c_{p}}}
+\newcommand{\cpSpec}{\ensuremath{c_{p,\specIdx}}}
+
+% transport quantities
+\newcommand{\diffVelVar}{\ensuremath{V}}
+\newcommand{\diffVelDir}{\ensuremath{\diffVelVar_{\spatialIdx, \specIdx}}}
+\newcommand{\massDiffVar}{\ensuremath{D}}
+\newcommand{\massDiffSpec}{\ensuremath{\massDiffVar_{\specIdx M}}}
+\newcommand{\dynVisc}{\ensuremath{\mu}}
+\newcommand{\dynViscSpec}{\ensuremath{\dynVisc_{\specIdx}}}
+\newcommand{\constVisc}{\ensuremath{\overline{\dynVisc}}}
+\newcommand{\constViscSpec}{\ensuremath{\constVisc_{\specIdx}}}
+\newcommand{\thermCond}{\ensuremath{\lambda}}
+\newcommand{\thermCondSpec}{\ensuremath{\thermCond_{\specIdx}}}
+
+% chemical quantities
+\newcommand{\mf}{\ensuremath{Y}}
+\newcommand{\mfSpec}{\ensuremath{\mf_{\specIdx}}}
+\newcommand{\mole}{\ensuremath{X}}
+\newcommand{\moleSpec}{\ensuremath{\mole_{\specIdx}}}
+\newcommand{\moleConcSpec}{\ensuremath{[\moleSpec]}}
+\newcommand{\mw}{\ensuremath{W}}
+\newcommand{\mwSpec}{\ensuremath{\mw_{\specIdx}}}
+\newcommand{\gasConst}{\ensuremath{R}}
+\newcommand{\gasConstSpec}{\ensuremath{R_{\specIdx}}}
+\newcommand{\gasConstUniv}{\ensuremath{R_u}}
+
+% summations
+\newcommand{\specSumAll}{\ensuremath{\sum_{\specIdx = 1}^{\numSpec}}}
+\newcommand{\specSumMOne}{\ensuremath{\sum_{\specIdx = 1}^{\numSpec-1}}}
+\newcommand{\specSumAllTwo}{\ensuremath{\sum_{\specIdxTwo = 1}^{\numSpec}}}
+
+% non-dimensional quantities
+\newcommand{\prandtl}{\ensuremath{\text{Pr}}}
+\newcommand{\schmidt}{\ensuremath{\text{Sc}}}
+
+% derivatives
+\newcommand{\ode}[2]{\frac{\text{d} #1}{\text{d} #2}}
+\newcommand{\pde}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\argmin}[1]{\ensuremath{\underset{#1}{argmin} \;}}
+
+% misc
+\newcommand{\identMat}{\ensuremath{\mathbf{I}}}
+\newcommand{\zeroVec}{\ensuremath{\mathbf{0}}}
+\newcommand{\volume}{\ooalign{\hfil$V$\hfil\cr\kern0.08em--\hfil\cr}}
+\newcommand{\norm}[1]{\ensuremath{\left\lVert#1\right\rVert}}

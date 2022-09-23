@@ -170,7 +170,6 @@
 \input{./Chapters/FrontMatter/FrontPage}
 \pagenumbering{roman}
 \input{./Chapters/FrontMatter/Orcid}
-\input{./Chapters/FrontMatter/Dedication}
 \input{./Chapters/FrontMatter/Acknowledgements}
 
 \renewcommand{\contentsname}{\begin{center}\vspace{-2em}Table of Contents\end{center}}
@@ -183,17 +182,22 @@
 \input{./Chapters/FrontMatter/Abstract}
 
 \mainmatter
-\input{./Chapters/Overview/main}
+\input{Chapters/Overview/main.tex}
+\input{Chapters/FlowModeling/main.tex}
+\input{Chapters/ProjROMs/main.tex}
+\input{Chapters/TransientFlame/main.tex}
+\input{Chapters/CavityAndCVRC/main.tex}
+\input{Chapters/NineElement/main.tex}
+\input{Chapters/Conclusion/main.tex}
 
-% \begin{appendices}
-% \appendixpage
-% \addappheadtotoc
-% \stoptocwriting
-% \input{./Chapters/A_DUU/main}
-% \input{./Chapters/B_Sensitivity/main}
-% \input{./Chapters/C_SupplementaryResults/main}
-% \resumetocwriting
-% \end{appendices}
+\begin{appendices}
+\appendixpage
+\addappheadtotoc
+\stoptocwriting
+\input{Chapters/Appendices/ANNArch/main.tex}
+\input{Chapters/Appendices/CostAnalysis/main.tex}
+\resumetocwriting
+\end{appendices}
 
 \bibliographystyle{abbrvnat}
 \bibliography{ref}
