@@ -30,7 +30,7 @@
 \captionsetup{compatibility=false}
 \usepackage{blindtext}
 \usepackage{tcolorbox}
-\usepackage[final]{animate}
+\usepackage[draft]{animate}
 \usepackage{comment}
 \usepackage{appendixnumberbeamer}
 \usepackage{booktabs}
@@ -190,7 +190,6 @@ Krzysztof Fidkowski \\
             \item Injector geometry, flow rates
             \item Gas-generator, expander, tap-off power cycle
         \end{itemize}
-        \item Additive manufacturing poised to accelerate and democratize
     \end{itemize}
 	\begin{minipage}{0.33\linewidth}
 		\begin{figure}
@@ -250,6 +249,7 @@ Krzysztof Fidkowski \\
         \end{itemize}
         \item Combustion LES/DNS
         \begin{itemize}
+			\item Years to develop/validate code
             \item $\numDOF \sim \; \text{Re}^{9/4}$
             \item 50+ species, 100+ reactions
             \item $\Delta t = \mathcal{O}(1\text{e-}9 \; s)$
@@ -260,7 +260,7 @@ Krzysztof Fidkowski \\
 		\centering
 		\begin{figure}
 			\centering
-			\includegraphics[width=0.91\linewidth]{intro/combustionDNS.png}
+			\includegraphics[width=0.87\linewidth]{intro/combustionDNS.png}
 			\caption*{\tiny{Treichler et al, 2017}}
 		\end{figure}
 	\end{minipage}
@@ -270,26 +270,32 @@ Krzysztof Fidkowski \\
 		\centering
 		\begin{figure}
 			\centering
-			\includegraphics[width=0.95\linewidth]{intro/jetCrossflowDNS.png}
+			\includegraphics[width=0.91\linewidth]{intro/jetCrossflowDNS.png}
 			\caption*{\tiny{Grout et al., 2011}}
 		\end{figure}
 	\end{minipage}
-	
 \end{frame}
 
 \begin{frame}{Data-driven reduced-order models (ROMs)}
 	\begin{itemize}
 		\item Learning cheap models from high fidelity simulations, experiments
+		\item Evolving \textbf{low-dimensional} state approximation in time
 		\item Non-intrusive methods
 		\begin{itemize}
 			\item Only require system output
-			\item Black/gray box models
+			% \item Black/gray box models
 			\item Kriging, operator inference, ANNs
 		\end{itemize}
 		\item Intrusive methods
 		\begin{itemize}
 			\item Directly manipulate governing equations
 			\item Galerkin, Petrov--Galerkin projection
+		\end{itemize}
+		\item \textbf{Not} reduced-fidelity models, e.g.
+		\begin{itemize}
+			\item Reduced chemical mechanisms
+			\item Flamelet-progress variable models
+			\item Flame transfer functions
 		\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -303,12 +309,11 @@ Krzysztof Fidkowski \\
 	\begin{minipage}{0.49\linewidth}
 		\centering
 		\vspace{-2em}
-		\begin{equation*}
-			\ode{\stateVec}{\timeVar} = \rhsFunc{\stateVec}
-		\end{equation*}
-		\begin{equation*}
-			\ode{\stateVecCoef}{\timeVar} = \encoderFunc{\rhsFunc{\decoderFunc{\stateVecCoef}}}
-		\end{equation*}
+		\begin{align*}
+			\ode{\stateVec}{\timeVar} = \rhsFunc{\stateVec}&, \quad \ode{\stateVecCoef}{\timeVar} = \encoderFunc{\rhsFunc{\decoderFunc{\stateVecCoef}}} \\[1em]
+			\stateVec \in \mathbb{R}^{\numDOF}&, \quad \stateVecCoef \in \mathbb{R}^{K} \\[1em]
+			\numDOF &\gg K
+		\end{align*}
 	\end{minipage}
 	\hspace{-2em}
 	\begin{minipage}{0.49\linewidth}
@@ -322,16 +327,29 @@ Krzysztof Fidkowski \\
 	\end{tcolorbox}
 \end{frame}
 
+% \begin{frame}{Contributions}
+%     \begin{enumerate}
+%         \item Assessment and improvement of state-of-the-art PROMs for practical CFD systems (e.g. 2D transonic cavity and 3D rocket combustor)
+%         \item Improved solution/RHS formulation of hyper-reduced MP-LSVT method with enhanced accuracy and robustness
+%         \item Memory- and compute-scalable HPROM framework in high-performance combustion CFD code
+%         \item Open-source toolchain for pre- and post-processing of HPROMs for very large CFD datasets
+%         \item End-to-end analysis of the computational cost, accuracy, and robustness of sparse-sampling hyper-reduction methods
+%         \item The first study of PROMs for a 3D multi-injector rocket combustor, containing 250 million DOFs
+%         \item Insight on best practices for PROMs of multi-scale systems
+%         \item PERFORM, an open-source Python package for rapid prototyping of novel ROM methods
+%     \end{enumerate}
+% \end{frame}
+
 \begin{frame}{Contributions}
     \begin{enumerate}
-        \item Assessment and improvement of state-of-the-art PROMs for practical CFD systems (e.g. 2D transonic cavity and 3D rocket combustor)
-        \item Improved solution/RHS formulation of hyper-reduced MP-LSVT method with enhanced accuracy and robustness
-        \item Memory- and compute-scalable HPROM framework in high-performance combustion CFD code
-        \item Open-source toolchain for pre- and post-processing of HPROMs for very large CFD datasets
-        \item End-to-end analysis of the computational cost, accuracy, and robustness of sparse-sampling hyper-reduction methods
-        \item The first study of PROMs for a 3D multi-injector rocket combustor, containing 250 million DOFs
-        \item Insight on best practices for PROMs of multi-scale systems
+        \item State-of-the-art PROMs for reacting flow systems
+        \item Improved formulation of hyper-reduced MP-LSVT method with enhanced accuracy and robustness
+        \item Scalable ROM framework in high-performance combustion CFD code
+        \item Analysis of cost and performance of sparse-sampling methods
+        \item First study of PROMs for 3D multi-injector rocket combustor, containing 250 million DOFs
+        \item Open-source toolchain for processing HPROMs for very large datasets
         \item PERFORM, an open-source Python package for rapid prototyping of novel ROM methods
+        \item Insight on best practices for PROMs of multi-scale systems
     \end{enumerate}
 \end{frame}
 
@@ -360,7 +378,7 @@ Krzysztof Fidkowski \\
 
 \begin{frame}{The trial basis}
     \begin{itemize}
-        \item The proper orthogonal decomposition (POD)
+        \item The proper orthogonal decomposition (POD)\footnotemark[1]
         \begin{equation*}
             \consTrial = \argmin{\dummyMatOne \in \mathbb{R}^{\numDOF \times \numConsvModes}} \norm{\consDataMat - \dummyMatOne \dummyMatOne^\top \consDataMat}_2^2
         \end{equation*}
@@ -368,11 +386,12 @@ Krzysztof Fidkowski \\
             \consDataMat = \basisMat \singVecMat \rightSingVecMat^\top, \quad \consTrial \leftarrow \basisMat[:, {:}\numConsvModes]
         \end{equation*}
     \end{itemize}
-	\vspace{-1em}
 	\centering
+	\vspace{-0.8em}
 	\begin{figure}
-		\includegraphics[width=0.6\linewidth]{theory/podProfileConverge.png}
+		\includegraphics[width=0.5\linewidth]{theory/podProfileConverge.png}
 	\end{figure}
+	\footnotetext[1]{\tiny{Berkooz et al., \textit{Annu Rev Fluid Mech}, Vol. 25, 1993, pp. 539--575.}}
 \end{frame}
 
 \begin{frame}{The test basis}
@@ -390,7 +409,7 @@ Krzysztof Fidkowski \\
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Least-squares Petrov--Galerkin (LSPG)\footnotemark[1]}
+\begin{frame}{Least-squares Petrov--Galerkin (LSPG)\footnotemark[2]}
     \begin{itemize}
 		\item Fully-discrete residual (e.g. BDF1)
 		\begin{equation*}
@@ -412,15 +431,15 @@ Krzysztof Fidkowski \\
 	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
 		LSPG is \textbf{discrete-optimal} at every time step
 	\end{tcolorbox}
-	\footnotetext[1]{\tiny{Carlberg el al., \textit{Int. J. Numer. Meth. Engng}, Vol. 86, 2010, pp. 155--181.}}
+	\footnotetext[2]{\tiny{Carlberg el al., \textit{Int. J. Numer. Meth. Engng}, Vol. 86, 2010, pp. 155--181.}}
 \end{frame}
 
 \begin{frame}{State of the art in 2017}
 	\begin{itemize}
-		\item PROMs for parametrized elliptic problems are extremely robust\footnotemark[2]
+		\item PROMs for parametrized elliptic problems are extremely robust\footnotemark[3]
 		\item Galerkin ROMs are generally unstable for unsteady problems
-		\item LSPG is leap forward, biggest case in 3D Ahmed body\footnotemark[3]
-		\item First studies of PROMs for reacting flows suffer from instabilities\footnotemark[4]
+		\item LSPG is leap forward, biggest case in 3D Ahmed body\footnotemark[4]
+		\item First studies of PROMs for reacting flows suffer from instabilities\footnotemark[5]
 	\end{itemize}
 	
 	\begin{minipage}{0.4\linewidth}
@@ -437,9 +456,9 @@ Krzysztof Fidkowski \\
 		\end{figure}
 	\end{minipage}
 
-	\footnotetext[2]{\tiny{Hesthaven et al., \textit{Certified Reduced Basis Methods for Parametrized Partial Differential Equations}, Springer, 2015.}}
-	\footnotetext[3]{\tiny{Carlberg et al., \textit{J Comp Phys}, Vol. 242, 2013, pp. 623--647.}}
-	\footnotetext[4]{\tiny{Huang et al., \textit{AIAA Propulsion and Energy}, 2018.}}
+	\footnotetext[3]{\tiny{Hesthaven et al., \textit{Certified Reduced Basis Methods for Parametrized Partial Differential Equations}, Springer, 2015.}}
+	\footnotetext[4]{\tiny{Carlberg et al., \textit{J Comp Phys}, Vol. 242, 2013, pp. 623--647.}}
+	\footnotetext[5]{\tiny{Huang et al., \textit{AIAA Propulsion and Energy}, 2018.}}
 \end{frame}
 
 \begin{frame}{Generalizing least-squares ROMs}
@@ -464,7 +483,7 @@ Krzysztof Fidkowski \\
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{\small{Model-form preserving least-squares with variable transformation (MP-LSVT)\footnotemark[5]}}
+\begin{frame}{\small{Model-form preserving least-squares with variable transformation (MP-LSVT)\footnotemark[6]}}
 	\begin{itemize}
 		\item Frame residual in terms of target state
 		\begin{equation*}
@@ -487,7 +506,7 @@ Krzysztof Fidkowski \\
 			\includegraphics[width=0.75\linewidth]{theory/mplsvt_pressure_probe.png}
 		\end{figure}
 	\end{minipage}
-	\footnotetext[5]{\tiny{Huang et al., \textit{J Comp Phys.}, Vol. 448, 2022, pp. 110742.}}
+	\footnotetext[6]{\tiny{Huang, Wentland, and Duraisamy, \textit{J Comp Phys.}, Vol. 448, 2022, pp. 110742.}}
 \end{frame}
 
 \section*{Hyper-reduction}
@@ -515,17 +534,79 @@ Krzysztof Fidkowski \\
 			\resFunc{\primVecCoef} \approx \resApproxFunc{\primVecCoef} &= \consScale \deimBasisRes \dummyVec \\
 			\sampMat \consScaleInv \resApproxFunc{\primVecCoef} &= \sampMat \deimBasisRes \dummyVec
 		\end{align*}
-		\item Least-squares regression, gappy POD\footnotemark[6] ($\numSamps > \numResModes$)
+		\item Least-squares regression, gappy POD\footnotemark[7] ($\numSamps > \numResModes$)
 		\begin{equation*}
 			\resApproxFunc{\primVecCoef} \triangleq \consScale \deimBasisRes \left[ \sampMat \deimBasisRes \right]^{+} \sampMat \consScaleInv \resFunc{\primVecCoef}
 		\end{equation*}
-		\item Discrete empirical interpolation method (DEIM)\footnotemark[7] ($\numSamps = \numResModes$)
+		\item Discrete empirical interpolation method (DEIM)\footnotemark[8] ($\numSamps = \numResModes$)
 		\begin{equation*}
 			\resApproxFunc{\primVecCoef} \triangleq \consScale \deimBasisRes \left[ \sampMat \deimBasisRes \right]^{-1} \sampMat \consScaleInv \resFunc{\primVecCoef}
 		\end{equation*}
 	\end{itemize}
-	\footnotetext[6]{\tiny{Everson and Sirovich, \textit{J Opt Soc Am A}, Vol. 12 (8), 1995, pp 1657--1664.}}
-	\footnotetext[7]{\tiny{Chaturantabut and Sorensen, \textit{SIAM J Sci Comput}, Vol. 32 (5), 2010, pp. 2737--2764.}}
+	\footnotetext[7]{\tiny{Everson and Sirovich, \textit{J Opt Soc Am A}, Vol. 12 (8), 1995, pp 1657--1664.}}
+	\footnotetext[8]{\tiny{Chaturantabut and Sorensen, \textit{SIAM J Sci Comput}, Vol. 32 (5), 2010, pp. 2737--2764.}}
+\end{frame}
+
+\begin{frame}{Separate regression basis formulation}
+    \begin{itemize}
+		\item Hyper-reduction of residual function has several drawbacks
+		\begin{itemize}
+			\item FOM and ROM non-linear solver are never the same
+			\item Enormous range of scales during convergence, $\mathcal{O}(1\text{e-}3)-\mathcal{O}(1\text{e-}12)$
+			\item How to scale residuals without sacrificing ROM convergence?
+			\item Train from first, last, all subiterations?
+		\end{itemize}
+		\item Approximate time integrator and RHS separately
+	\end{itemize}
+	\begin{align*}
+		\consFuncRom{\primVec} &\triangleq \consScale \deimRegressorCons \consScaleInv \consFunc{\primVec} \\
+		\rhsApproxFunc{\primVec} &\triangleq \rhsScale \deimRegressorRhs \rhsScaleInv \rhsFunc{\primVec}
+	\end{align*}
+	\begin{equation*}
+		\resApproxFuncIter{\timeIdx}{\primVecCoef^{\newtonIdx}} \triangleq \consFuncRom{\primVecRom^{\newtonIdx}} - \consFuncRom{\primVecRom^{\timeIdx}} + \dt \, \rhsApproxFunc{\primVecRom^{\timeIdx}} = \zeroVec
+	\end{equation*}
+\end{frame}
+
+\begin{frame}{Separate regression basis formulation}
+	\vspace{-1.5em}
+	\footnotesize
+	\begin{align*}
+		\delta \primVecCoef^{\newtonIdx} = \underset{\dummyVec \in \mathbb{R}^{\numPrimModes}}{argmin} \Bigg\lVert \bigg(\deimBasisCons \underbrace{\deimRegressorConsTiny \sampMat \consScaleInv \pde{\consVec^{\newtonIdx}}{\primVec} \primScale \primTrial }_{\dummyMatOne} - \consScaleInv \rhsScale \deimBasisRhs \underbrace{\deimRegressorRhsTiny \sampMat \, \dt \, \rhsScaleInv \pde{\rhsVec^{\newtonIdx}}{\primVec} \primScale \primTrial}_{\dummyMatTwo} \bigg) \dummyVec \\
+		+ \deimBasisCons \underbrace{\deimRegressorConsTiny \sampMat \consScaleInv \left( \consVec(\primVecRom^{\newtonIdx}) - \consVec(\primVecRom^{\newtonIdx}) \right)}_{\dummyVecOne} - \consScaleInv \rhsScale \deimBasisRhs \underbrace{\deimRegressorRhsTiny \sampMat \rhsScaleInv \rhsFunc{\primVecRom^{\newtonIdx}}}_{\dummyVecTwo} \Bigg\rVert_2^2
+	\end{align*}
+	\vspace{-1em}
+	\begin{itemize}
+		\item Normal equations
+		\begin{align*}
+			\left(\dummyMatOne^\top \dummyMatOne - \dummyMatOne^\top \deimBasisCons^\top \consScaleInv \rhsScale \deimBasisRhs \dummyMatTwo - \dummyMatTwo^\top \deimBasisRhs^\top \rhsScale \consScaleInv \deimBasisCons \dummyMatOne + \dummyMatTwo^\top \dummyMatTwo \right) \delta \primVecCoef^{\newtonIdx} \\
+			= -\left(\dummyMatOne^\top \dummyVecOne - \dummyMatOne^\top \deimBasisCons^\top \consScaleInv \rhsScale \deimBasisRhs \dummyVecTwo - \dummyMatTwo^\top \deimBasisRhs^\top \rhsScaleInv \consScale \deimBasisCons \dummyVecOne + \dummyMatTwo^\top \dummyVecTwo\right)
+		\end{align*}
+	\end{itemize}
+	\normalsize
+	\begin{tcolorbox}[colframe=blue!50!white,halign=center]	
+	\begin{minipage}{0.49\linewidth}
+		\begin{itemize}
+			\item Precomputed:
+			\begin{itemize}
+				\item $\deimRegressorConsTiny \in \mathbb{R}^{\numConsvModes \times \numSamps}$
+				\item $\deimRegressorRhsTiny \in \mathbb{R}^{\numRHSModes \times \numSamps}$
+				\item $\deimBasisCons^\top \consScaleInv \rhsScale \deimBasisRhs \in \mathbb{R}^{\numConsvModes \times \numRHSModes}$
+			\end{itemize}
+			\vspace{1.3em}
+		\end{itemize}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\begin{itemize}
+			\item Online:
+			\begin{itemize}
+				\item $\sampMat \consScaleInv \pde{\consVec}{\primVec} \primScale \primTrial \in \mathbb{R}^{\numSamps \times \numPrimModes}$
+				\item $\sampMat \rhsScaleInv \pde{\rhsVec}{\primVec} \primScale \primTrial \in \mathbb{R}^{\numSamps \times \numPrimModes}$
+				\item $\sampMat \consScaleInv \consVec(\primVecRom) \in \mathbb{R}^{\numSamps}$
+				\item $\sampMat \rhsScaleInv \rhsFunc{\primVecRom} \in \mathbb{R}^{\numSamps}$
+			\end{itemize}
+		\end{itemize}
+	\end{minipage}
+	\end{tcolorbox}
 \end{frame}
 
 \begin{frame}{Sampling algorithms}
@@ -533,9 +614,9 @@ Krzysztof Fidkowski \\
 		\item Computing optimal sampling $\sampMat$ is NP-hard
 		\item Usually resort to greedy (locally-optimal) algorithms
 		\begin{itemize}
-			\item DEIM\footnotemark[7], GNAT\footnotemark[3]
-			\item Accelerated MPE\footnotemark[8], GPOD+E\footnotemark[9]
-			\item Determinant-based\footnotemark[10]
+			\item DEIM\footnotemark[8], GNAT\footnotemark[4]
+			\item Accelerated MPE\footnotemark[9], GPOD+E\footnotemark[10]
+			\item Determinant-based\footnotemark[11]
 		\end{itemize}
 	\end{itemize}
 	\begin{minipage}{0.13\linewidth}
@@ -560,75 +641,51 @@ Krzysztof Fidkowski \\
 		\includegraphics[width=0.99\linewidth]{theory/iBlanks.jpg}
 	\end{minipage}
 	\vspace{-2em}
-	\footnotetext[8]{\miniscule{Zimmermann and Willcox, \textit{SIAM J Sci Comp}, Vol. 38, 2016, pp. 2827--2850.}}
-	\footnotetext[9]{\miniscule{Peherstorfer et al., \textit{SIAM J Comp Sci}, Vol. 42, 2020, pp. 2837--2864.}}
-	\footnotetext[10]{\miniscule{Saito et al., \textit{IEEE Access}, Vol. 9, pp. 68535--68551}}
+	\footnotetext[9]{\miniscule{Zimmermann and Willcox, \textit{SIAM J Sci Comp}, Vol. 38, 2016, pp. 2827--2850.}}
+	\footnotetext[10]{\miniscule{Peherstorfer et al., \textit{SIAM J Comp Sci}, Vol. 42, 2020, pp. 2837--2864.}}
+	\footnotetext[11]{\miniscule{Saito et al., \textit{IEEE Access}, Vol. 9, pp. 68535--68551}}
 \end{frame}
 
-\begin{frame}{Separate regression basis formulation}
-    \begin{itemize}
-		\item Hyper-reduction of residual function has several drawbacks
-		\begin{itemize}
-			\item FOM and ROM non-linear solver are never the same
-			\item Enormous range of scales during convergence, $\mathcal{O}(1\text{e-}3)-\mathcal{O}(1\text{e-}12)$
-			\item Train from first, last, all subiterations?
-		\end{itemize}
-		\item Approximate time integrator and RHS separately
-	\end{itemize}
-	\begin{align*}
-		\consFuncRom{\primVec} &\triangleq \consScale \deimRegressorCons \consScaleInv \consFunc{\primVec} \\
-		\rhsApproxFunc{\primVec} &\triangleq \rhsScale \deimRegressorRhs \rhsScaleInv \rhsFunc{\primVec}
-	\end{align*}
-	\begin{equation*}
-		\resApproxFuncIter{\timeIdx}{\primVecCoef^{\newtonIdx}} \triangleq \consFuncRom{\primVecRom^{\newtonIdx}} - \consFuncRom{\primVecRom^{\timeIdx}} + \dt \, \rhsApproxFunc{\primVecRom^{\timeIdx}} = \zeroVec
-	\end{equation*}
-\end{frame}
-
-\begin{frame}{Separate regression basis formulation}
-	\vspace{-1.9em}
-	\footnotesize
-	\begin{align*}
-		\delta \primVecCoef^{\newtonIdx} = \underset{\dummyVec \in \mathbb{R}^{\numPrimModes}}{argmin} \Bigg\lVert \bigg(\deimBasisCons \underbrace{\deimRegressorConsTiny \sampMat \consScaleInv \pde{\consVec^{\newtonIdx}}{\primVec} \primScale \primTrial }_{\dummyMatOne} - \consScaleInv \rhsScale \deimBasisRhs \underbrace{\deimRegressorRhsTiny \sampMat \, \dt \, \rhsScaleInv \pde{\rhsVec^{\newtonIdx}}{\primVec} \primScale \primTrial}_{\dummyMatTwo} \bigg) \dummyVec \\
-		+ \deimBasisCons \underbrace{\deimRegressorConsTiny \sampMat \consScaleInv \left( \consVec(\primVecRom^{\newtonIdx}) - \consVec(\primVecRom^{\newtonIdx}) \right)}_{\dummyVecOne} - \consScaleInv \rhsScale \deimBasisRhs \underbrace{\deimRegressorRhsTiny \sampMat \rhsScaleInv \rhsFunc{\primVecRom^{\newtonIdx}}}_{\dummyVecTwo} \Bigg\rVert_2^2
-	\end{align*}
-	\normalsize
-	\vspace{-1em}
+\begin{frame}{Offline pre- and post-processing scalability}
 	\begin{itemize}
-		\item Normal equations
-		\begin{align*}
-			\left(\dummyMatOne^\top \dummyMatOne - \dummyMatOne^\top \deimBasisCons^\top \consScaleInv \rhsScale \deimBasisRhs \dummyMatTwo - \dummyMatTwo^\top \deimBasisRhs^\top \rhsScale \consScaleInv \deimBasisCons \dummyMatOne + \dummyMatTwo^\top \dummyMatTwo \right) \delta \primVecCoef^{\newtonIdx} \\
-			= -\left(\dummyMatOne^\top \dummyVecOne - \dummyMatOne^\top \deimBasisCons^\top \consScaleInv \rhsScale \deimBasisRhs \dummyVecTwo - \dummyMatTwo^\top \deimBasisRhs^\top \rhsScaleInv \consScale \deimBasisCons \dummyVecOne + \dummyMatTwo^\top \dummyVecTwo\right)
-		\end{align*}
+		\item Data snapshots are $\MC{O}$(GB), need distributed processing tools
+		\item Parallel Data Processor\footnotemark[12] developed by Nicholas Arnold-Medabalimi
+		\item Scalable linear algebra with intuitive API
+		\item Personal contributions
+		\begin{itemize}
+			\item Method of snapshots POD
+			\item Expanded dataset scaling
+			\item Gappy POD sampling program
+			\item Projection and regression error calculators
+		\end{itemize}
+	\end{itemize}
+	\footnotetext[12]{\tiny{Arnold-Medabalimi, \textit{SoftwareX}, In preparation.}}
+\end{frame}
+
+\begin{frame}{Online HPROM scalability}
+	\begin{itemize}
+		\item Compute scalability is easy; memory scalability is tricky
+		\item Only allocate mesh elements required for calculating $\sampMat \rhsFunc{\cdot}$
+		\item Disjoint graphs induce much lower MPI overhead
+		\item Field reconstruction done as post-processing step
 	\end{itemize}
 	\begin{minipage}{0.49\linewidth}
-		\begin{itemize}
-			\item Precomputed:
-			\begin{itemize}
-				\item $\deimRegressorConsTiny \in \mathbb{R}^{\numConsvModes \times \numSamps}$
-				\item $\deimRegressorRhsTiny \in \mathbb{R}^{\numRHSModes \times \numSamps}$
-				\item $\deimBasisCons^\top \consScaleInv \rhsScale \deimBasisRhs \in \mathbb{R}^{\numConsvModes \times \numRHSModes}$
-			\end{itemize}
-			\vspace{0.7em}
-		\end{itemize}
+		\begin{figure}
+			\includegraphics[width=0.8\linewidth]{theory/sampling_3d_2ndOrder.png}
+		\end{figure}
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
-		\begin{itemize}
-			\item Online:
-			\begin{itemize}
-				\item $\dummyMatOne \in \mathbb{R}^{\numConsvModes \times \numPrimModes}$
-				\item $\dummyMatTwo \in \mathbb{R}^{\numRHSModes \times \numPrimModes}$
-				\item $\dummyVecOne \in \mathbb{R}^{\numConsvModes}$
-				\item $\dummyVecTwo \in \mathbb{R}^{\numRHSModes}$
-			\end{itemize}
-		\end{itemize}
+		\begin{figure}
+			\includegraphics[width=0.8\linewidth]{theory/load_balancing_withEdgeCuts_noSyms.png}
+		\end{figure}
 	\end{minipage}
 \end{frame}
 
 \section*{Numerical Experiments}
 
-\begin{frame}{Numerical Experiments}
+\begin{frame}{Full-order model}
     \begin{itemize}
-		\item The General Equations and Mesh Solver (GEMS)\footnotemark[11]
+		\item The General Equations and Mesh Solver (GEMS)\footnotemark[13]
 		\begin{itemize}
 			\item 2nd-order unstructured finite volume
 			\item BDF2 time integration w/ pseudo time-stepping
@@ -663,12 +720,13 @@ Krzysztof Fidkowski \\
 		\end{array} \right]
 	\end{equation*}
 	\normalsize
-	\footnotetext[11]{\tiny{Li et al., \textit{3rd Int Conf CFD}, 2006, pp. 619--624.}}
+	\footnotetext[13]{\tiny{Li et al., \textit{3rd Int Conf CFD}, 2006, pp. 619--624.}}
 \end{frame}
 
 \begin{frame}{2D transonic flow over an open cavity}
     \begin{itemize}
 		\item Ma = 0.6 flow over rectangular cavity (L/D = 2)
+		\item 500k DOF, 120 cores $\rightarrow$ 10 hours per 100 ms simulated 
 		\item Acoustic resonance between shear layer and trailing edge
 		\item Interested in \textbf{long-time predictions}
 	\end{itemize}
@@ -698,15 +756,16 @@ Krzysztof Fidkowski \\
 	\begin{figure}
 		\begin{minipage}{0.49\linewidth}
 			\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth,every=5]{10}{/experiments/2d_cavity/fom_zoom/fig_Static_Pressure_zoom_}{15005}{15250}
+			\caption*{FOM, $\numDOF = 500,000$}
 		\end{minipage}
 		\begin{minipage}{0.49\linewidth}
 				\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth,every=5]{10}{experiments/2d_cavity/rom_zoom/fig_Static_Pressure_zoom_}{15005}{15250}
+				\caption*{MP-LSVT ROM, $\numPrimModes =$ 152}
 		\end{minipage}
-		\caption*{T = 8 ms, $\numPrimModes =$152}
 	\end{figure}
 \end{frame}
 
-\begin{frame}{3D ``box'' combustor\footnotemark[12]}
+\begin{frame}{3D ``box'' combustor\footnotemark[14]}
 	\begin{itemize}
 		\item Truncated single-element gaseous methane-peroxide combustor
 		\item Flamelet-progress variable combustion model (GRI-Mech 1.2)
@@ -722,17 +781,59 @@ Krzysztof Fidkowski \\
 			\includegraphics[width=0.95\linewidth]{experiments/box/point_1_Static_Pressure_FOM.png}
 		\end{figure}
 	\end{minipage}
-	\footnotetext[12]{\tiny{Wentland et al., \textit{AIAA SciTech}, 2021.}}
+	\footnotetext[14]{\tiny{Wentland, Huang, and Duraisamy, \textit{AIAA SciTech}, 2021.}}
 \end{frame}
 
-\begin{frame}\frametitle{Load balancing}
+\begin{frame}{Unsampled ROM performance}
+	\begin{minipage}{0.49\linewidth}
+		\begin{figure}
+			\includegraphics[width=0.99\linewidth]{experiments/box/timeStepModeStudy_Average_errorRaw.png}
+		\end{figure}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\begin{figure}
+			\includegraphics[width=0.99\linewidth]{experiments/box/point_1_Static_Pressure_modeStudy.png}
+		\end{figure}
+	\end{minipage}
+	\vspace{1em}
+	\begin{itemize}
+		\item MP-LSVT is quite stable, can push $\dt$
+		\item Increasing $\dt$ can even \textit{improve} error, similar to LSPG
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Hyper-reduction sampling}
+	\begin{minipage}{0.13\linewidth}
+		\footnotesize
+		\vspace{1.2em}
+		\textbf{GNAT}
+		\normalsize
+
+		\vspace{3em}
+
+		\footnotesize
+		\textbf{Random}
+
+		\vspace{3.7em}
+
+		\footnotesize
+		\textbf{GPOD+E}
+
+		\vspace{4em}
+	\end{minipage}\hfill
+	\begin{minipage}{0.8\linewidth}%{0.84\linewidth}
+		\includegraphics[width=0.99\linewidth]{theory/iBlanks.jpg}
+	\end{minipage}
+\end{frame}
+
+\begin{frame}{Hyper-reduction load balancing}
 	\begin{figure}
 		\begin{minipage}{0.49\linewidth}
-			\includegraphics[width=0.99\linewidth]{experiments/box/partitionSamplingTypeStudy_partition_stats.png}
+			\includegraphics[width=0.99\linewidth]{experiments/box/partitionSamplingTypeStudy_partition_stats_labels.png}
 			\caption*{Cells per partition, 40 cores}
 		\end{minipage}
 		\begin{minipage}{0.49\linewidth}
-			\includegraphics[width=0.99\linewidth]{experiments/box/partitionSamplingTypeStudy_partition_comms.png}
+			\includegraphics[width=0.99\linewidth]{experiments/box/partitionSamplingTypeStudy_partition_comms_labels.png}
 			\caption*{MPI comms, 40 cores}
 		\end{minipage}
 	\end{figure}
@@ -744,7 +845,7 @@ Krzysztof Fidkowski \\
 
 \begin{frame}{Computational savings}
     \begin{figure}
-		\animategraphics[controls={step},buttonsize=1.0em,width=0.6\linewidth]{10}{experiments/cvrc/pareto_PLACEHOLDER/samplingTypeStudy_Average_errorRaw_time_calcAndMPI_pareto_}{1}{3}
+		\animategraphics[controls={step},buttonsize=1.0em,width=0.6\linewidth]{10}{experiments/box/pareto/samplingTypeStudy_Average_errorRaw_time_calcAndMPI_pareto_labels_}{1}{3}
 	\end{figure}
 	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
 		Can get $10^3\text{-}10^4$x core time speedup with minimal accuracy loss!
@@ -835,33 +936,7 @@ Krzysztof Fidkowski \\
 % 	\end{tcolorbox}
 % \end{frame}
 
-\section*{Miscellaneous}
-
-\begin{frame}{Misc: The Adjoint Petrov--Galerkin method\footnotemark[13]}
-	\begin{itemize}
-		\item Data-driven closure of PROMs based on Mori--Zwanzig formalism
-		\item Allows explicit time integrators and JFNK solvers, less sensitive to $\dt$
-	\end{itemize}
-	\begin{minipage}{0.49\linewidth}
-		\scriptsize
-		\begin{equation*}
-			\pde{}{\timeVar} e^{\timeVar\MC{L}} \consVecCoef^0 = {\underbrace{\vphantom{ \int_0^{\timeVar} e^{(\timeVar-\text{s}) }} e^{\timeVar\MC{L}} \MC{PL} \consVecCoef^0}_{\text{Markovian}}} + \underbrace{\int_0^{\timeVar} e^{(\timeVar-\text{s}) \MC{L}} \MC{PL} e^{\text{s}\MC{QL}} \MC{QL}\consVecCoef^0 d\text{s}}_{\text{Memory}}
-		\end{equation*}
-		\begin{equation*}
-			\frac{d \consVecCoef}{d t} = \consTrial^\top \left( \rhsFunc{\consVecRom} + \tau \mathbf{J}[\consVecRom] \left(\identMat - \consTrial \consTrial^\top \right) \rhsFunc{\consVecRom} \right)
-		\end{equation*}
-		\normalsize
-	\end{minipage}
-	\begin{minipage}{0.49\linewidth}
-		\vspace{2em}
-		\begin{figure}
-			\includegraphics[width=0.8\linewidth]{misc/apg_cylinder.png}
-		\end{figure}
-	\end{minipage}
-	\footnotetext[13]{\tiny{Parish et al., \textit{Comput Method Appl M}, Vol. 365, 2020, pp. 112991.}}
-\end{frame}
-
-\begin{frame}{\footnotesize{Misc: Prototyping Environment for Reacting Flow Order Reduction Methods (PERFORM)\footnotemark[14]}}
+\begin{frame}{\footnotesize{Prototyping Environment for Reacting Flow Order Reduction Methods (PERFORM)\footnotemark[15]}}
 	\begin{itemize}
 		\small
 		\item Open-source 1D reacting flow solver w/ flexible ROM API
@@ -880,10 +955,10 @@ Krzysztof Fidkowski \\
 	\vspace{1em}
 	\centering
 	\texttt{https://github.com/cwentland0/perform}
-	\footnotetext[14]{\tiny{Wentland, \textit{J Open Source Soft.}, Under review.}}
+	\footnotetext[15]{\tiny{Wentland, \textit{J Open Source Soft.}, Under review.}}
 \end{frame}
 
-\begin{frame}{Misc: Non-linear manifold ROMs\footnotemark[15]}
+\begin{frame}{Non-linear manifold ROMs\footnotemark[16]}
 	\begin{itemize}
 		\item Linear basis approximates non-linear solution manifold poorly
 		\item Autoencoders learn mapping b/w solution and latent manifolds
@@ -900,34 +975,17 @@ Krzysztof Fidkowski \\
 			\animategraphics[width=0.99\linewidth,autoplay,loop,every=2]{5}{misc/cae_flame_animation/fig_}{50}{150}
 		\end{figure}
 	\end{minipage}
-	\footnotetext[15]{\tiny{Wentland et al., \textit{74th APS DFD}, Vol. 66 (17), 2021.}}
+	\footnotetext[16]{\tiny{Wentland, Huang, and Duraisamy, \textit{74th APS DFD}, Vol. 66 (17), 2021.}}
 \end{frame}
 
-\begin{frame}{Misc: HPROM toolchain (contrib. to PDP)}
-    % make sure to emphasize that this is Nick's
-    % Method of snapshots, sampling, projection/regression error
-	\begin{itemize}
-		\item Parallel Data Processor\footnotemark[16] developed by Nicholas Arnold-Medabalimi
-		\item Scalable linear algebra with intuitive API
-		\item Personal contributions
-		\begin{itemize}
-			\item Method of snapshots POD
-			\item Expanded dataset scaling
-			\item Gappy POD sampling program
-			\item Projection and regression error calculators
-		\end{itemize}
-	\end{itemize}
-	\footnotetext[16]{\tiny{Arnold-Medabalimi, \textit{SoftwareX}, In preparation.}}
-\end{frame}
-
-\begin{frame}{Misc: Best practices}
+\begin{frame}{Best practices}
 	\begin{itemize}
 		\item Non-dimensionalization/feature scaling
 		\begin{itemize}
 			\item Failing to non-dimensionalize ROMs leads to terrible conditioning
 			\item Constant scaling factors are simple, inexpensive, and robust
 		\end{itemize}
-		\item Global limiters
+		\item Local limiters
 		\begin{itemize}
 			\item ``Ringing'' from linear trial basis can lead to large over/undershoots
 			\item System-specific limiters are a simple hot-fix
@@ -939,15 +997,42 @@ Krzysztof Fidkowski \\
 		\end{itemize}
 		\item HPROM basis training
 		\begin{itemize}
+			\item Residual basis is the norm, but separate bases are attractive
 			\item GNAT calls for full ROM evaluation to collect HPROM training data
 			\item Defeats purpose of HPROM, FOM data works just fine
 		\end{itemize}
 	\end{itemize}
 \end{frame}
 
+\section*{Miscellaneous}
+
+% \begin{frame}{Misc: The Adjoint Petrov--Galerkin method\footnotemark[13]}
+% 	\begin{itemize}
+% 		\item Data-driven closure of PROMs based on Mori--Zwanzig formalism
+% 		\item Allows explicit time integrators and JFNK solvers, less sensitive to $\dt$
+% 	\end{itemize}
+% 	\begin{minipage}{0.49\linewidth}
+% 		\scriptsize
+% 		\begin{equation*}
+% 			\pde{}{\timeVar} e^{\timeVar\MC{L}} \consVecCoef^0 = {\underbrace{\vphantom{ \int_0^{\timeVar} e^{(\timeVar-\text{s}) }} e^{\timeVar\MC{L}} \MC{PL} \consVecCoef^0}_{\text{Markovian}}} + \underbrace{\int_0^{\timeVar} e^{(\timeVar-\text{s}) \MC{L}} \MC{PL} e^{\text{s}\MC{QL}} \MC{QL}\consVecCoef^0 d\text{s}}_{\text{Memory}}
+% 		\end{equation*}
+% 		\begin{equation*}
+% 			\frac{d \consVecCoef}{d t} = \consTrial^\top \left( \rhsFunc{\consVecRom} + \tau \mathbf{J}[\consVecRom] \left(\identMat - \consTrial \consTrial^\top \right) \rhsFunc{\consVecRom} \right)
+% 		\end{equation*}
+% 		\normalsize
+% 	\end{minipage}
+% 	\begin{minipage}{0.49\linewidth}
+% 		\vspace{2em}
+% 		\begin{figure}
+% 			\includegraphics[width=0.8\linewidth]{misc/apg_cylinder.png}
+% 		\end{figure}
+% 	\end{minipage}
+% 	\footnotetext[13]{\tiny{Parish et al., \textit{Comput Method Appl M}, Vol. 365, 2020, pp. 112991.}}
+% \end{frame}
+
 \section*{Conclusions}
 
-\begin{frame}{Future: 3D nine-element combustor\footnotemark[17]}
+\begin{frame}{Continuing work: 3D nine-element combustor\footnotemark[17]}
     % 14,387,292 cells
 	% ~250 million DOF
 	% 1T = 2.5 kHz, 4 periods
@@ -962,7 +1047,7 @@ Krzysztof Fidkowski \\
 	\end{itemize}
 	\begin{minipage}{0.45\linewidth}
 		\begin{figure}
-			\animategraphics[final,autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth]{10}{experiments/9elem/temp_slices/fig_}{000001}{000040}
+			\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth]{10}{experiments/9elem/temp_slices/fig_}{000001}{000040}
 		\end{figure}
 	\end{minipage}
 	\begin{minipage}{0.53\linewidth}
@@ -976,11 +1061,25 @@ Krzysztof Fidkowski \\
 	\footnotetext[17]{\tiny{Harvazinski et al., \textit{AIAA SciTech}, 2019}}
 \end{frame}
 
-\begin{frame}{Adaptive bases and sampling}
+\begin{frame}{Continuing work: scalable basis and sampling adaptation}
 	\begin{itemize}
-		\item Out-of-training predictions can only be accomplished with adaptation
-		\item  
+		\item Out-of-training predictions may require adaptation
+		\item Adaptive DEIM (ADEIM)\footnotemark[18] formulates low-cost rank-$z$ updates
+		\small
+		\begin{equation*}
+			\boldsymbol{\alpha}_{\newtonIdx}, \; \boldsymbol{\beta}_{\newtonIdx} = \argmin{\boldsymbol{\alpha} \in \mathbb{R}^{\numDOF \times z}, \boldsymbol{\beta} \in \mathbb{R}^{\numPrimModes \times z}} \norm{\sampMat^{\newtonIdx} \left( \left( \primTrial^{\newtonIdx} + \boldsymbol{\alpha}_{\newtonIdx} \boldsymbol{\beta}_{\newtonIdx}^\top \right) \left(\sampMat^{\newtonIdx} \deimBasisRhs\right)^{-1} \sampMat \rhsDataMat^{\newtonIdx} - \rhsDataMat^{\newtonIdx} \right)}_F^2
+		\end{equation*}
+		\normalsize
+		\begin{equation*}
+			\primTrial^{\newtonIdx + 1} = \primTrial^{\newtonIdx} + \boldsymbol{\alpha}_{\newtonIdx} \boldsymbol{\beta}_{\newtonIdx}^\top
+		\end{equation*}
+		\begin{equation*}
+			\sampMat^{\newtonIdx+1} = \texttt{qdeim}\left( \primTrial^{\newtonIdx + 1} \right)
+		\end{equation*}
+		\item Must be memory and compute scalable
+		\item May need to extend to gappy POD
 	\end{itemize}
+	\footnotetext[18]{\tiny{Peherstorfer, \textit{SIAM J Sci Comp}, Vol. 42 (5), 2020, pp. A2803--A2836}}
 \end{frame}
 
 \begin{frame}{Remaining work}
@@ -994,14 +1093,14 @@ Krzysztof Fidkowski \\
 
 \begin{frame}{Contributions}
     \begin{enumerate}
-        \item Assessment and improvement of state-of-the-art PROMs for practical CFD systems (e.g. 2D transonic cavity and 3D rocket combustor)
-        \item Improved solution/RHS formulation of hyper-reduced MP-LSVT method with enhanced accuracy and robustness
-        \item Memory- and compute-scalable HPROM framework in high-performance combustion CFD code
-        \item Open-source toolchain for pre- and post-processing of HPROMs for very large CFD datasets
-        \item End-to-end analysis of the computational cost, accuracy, and robustness of sparse-sampling hyper-reduction methods
-        \item The first study of PROMs for a 3D multi-injector rocket combustor, containing 250 million DOFs
-        \item Insight on best practices for PROMs of multi-scale systems
+        \item State-of-the-art PROMs for reacting flow systems
+        \item Improved formulation of hyper-reduced MP-LSVT method with enhanced accuracy and robustness
+        \item Scalable ROM framework in high-performance combustion CFD code
+        \item Analysis of cost and performance of sparse-sampling methods
+        \item First study of PROMs for 3D multi-injector rocket combustor, containing 250 million DOFs
+        \item Open-source toolchain for processing HPROMs for very large datasets
         \item PERFORM, an open-source Python package for rapid prototyping of novel ROM methods
+        \item Insight on best practices for PROMs of multi-scale systems
     \end{enumerate}
 \end{frame}
 
