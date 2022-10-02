@@ -14,3 +14,6 @@
 *.blg
 *.lof
 *.lot
+*.odt
+*.bcf
+*.xml
