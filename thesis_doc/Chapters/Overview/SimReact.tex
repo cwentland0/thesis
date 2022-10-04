@@ -1,7 +1,16 @@
 \section{Simulation of Reacting Fluid Flows}
 
+Computer simulations of physical processes have existed since the World War II era, in which the development of early supercomputers and researchers' access to them expanded greatly, all in pursuit of the atomic bomb. Broadly, the purpose of numerical simulations is to approximately reconstruct a physical process which has no tractable analytical solution and is either impossible or cost-prohibitive to experimentally measure. Naturally, rocket engines seem an ideal candidate for simulation due to their physical complexity and high cost of production. We break this process into its two major components: the modeling of fluid flows and the modeling of chemical reactions.
+
+Numerical fluid modeling, or computational fluid dynamics (CFD), is a fairly mature field based in the modeling of the Naver-Stokes equations (detailed in Sec.~\ref{1}), a set of partial differential equations which describe the conservation of mass, momentum, and energy of a fluid flow. Analytical solutions for these equations are limited to extremely simple scenarios, such as Poiselle pipe flow or the Taylor--Greene vortex. \textcolor{red}{EXPAND}
+
+Modeling chemical reactions is also a well-studied field. Combustion, any exothermic reaction of a fuel (often a hydrocarbon) with an oxidizer (often oxygen), is of particular interest due to its importance in energy generation, both for electricity in power plants and for thrust in jet and rocket engines. \textcolor{red}{EXPAND}
+
+The combination of these two fields, reacting fluids flows, is much less understood than its component fields alone.
+
 \begin{itemize}
     \item Brief description of simulating fluid flows
+    \item Mention difficulties in computational chemistry, idea of continuum?
     \item Explain difficulties in modeling reacting flows, small characteristic spatio-temporal scales
     \item Computational cost of well-resolved rocket combustion simulations
     \item Range of available reaction models (finite rate w/ or w/o reduced mechanism, flame transfer functions, FPV), varying accuracy and cost

@@ -33,7 +33,7 @@
     style=numeric,
     sorting=none,
 ]{biblatex}
-\addbibresource{ref.bib} 
+\addbibresource{ref.bib}
 
 % \setlength{\parindent}{0pt}
 \pagestyle{plain}
@@ -46,19 +46,19 @@
     \titlecontents{chapter}[0em]{\addvspace{0em}}%
         {\bfseries\@chapapp\ \thecontentslabel:\ }%
         {\hspace{-0em}}{\hfill\contentspage}[\addvspace{0pt}]
-        
+
     \def\__mychapapp{\protect\@chapapp}
     \g@addto@macro\appendices{
         \addtocontents{toc}{
             \protect\renewcommand{\__mychapapp}{\appendixname}
         }
     }
- 
+
 \makeatother
 
 \newcommand{\stoptocwriting}{%
   \addtocontents{toc}{\protect\setcounter{tocdepth}{-5}}}
-  
+
 \newcommand{\resumetocwriting}{%
   \addtocontents{toc}{\protect\setcounter{tocdepth}{\arabic{tocdepth}}}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -71,17 +71,17 @@
         \chapter{#1}
         \addcontentsline{app}{chapter}{Appendix \thechapter: #1}
     }
-    
+
     \newcommand\appsection[1]{
         \section{#1}
         \addcontentsline{app}{section}{\thesection\hspace{0.5em} #1}
     }
-    
+
     \newcommand\appsubsection[1]{
         \subsection{#1}
         \addcontentsline{app}{subsection}{\thesubsection\hspace{0.5em} #1}
     }
-    
+
     \newcommand\appsubsubsection[1]{
         \subsubsection{#1}
     }
