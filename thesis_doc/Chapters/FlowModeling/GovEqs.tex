@@ -1,6 +1,190 @@
 \section{Governing Equations}
 
-\subsection{Gas Models}
+All fluid flows that can be treated as a continuum (exceptions include nanofluidics and rarefied flows) are governed by the unsteady Navier--Stokes equations. They describe the conservation of mass, momentum, energy, and transported scalars in an arbitrary control volume. Neglecting body forces, these equations are given by the PDE
+
+\begin{equation}\label{eq:gemsGovPDE}
+    \pde{\consVec}{\timeVar} + \nabla \cdot (\invFluxDir - \viscFluxDir) = \sourceVec,
+\end{equation}
+where $\consVec$ is the conservative state, $\invFluxDir \defEq [\invFlux_x, \; \invFlux_y, \; \invFlux_z]$ and $\viscFluxDir \defEq [\viscFluxDirArg{x}, \; \viscFluxDirArg{y}, \; \viscFluxDirArg{z}]$ are the inviscid and viscous flux terms in each spatial direction, respectively, and $\sourceVec$ are source terms. These terms are given as
+
+\begin{equation}\label{eq:gemsGovVecs}
+    \consVec \defEq \left[
+    \begin{array}{c}
+    \density \\
+	\density \velX \\
+	\density \velY \\
+	\density \velZ \\
+	\density \stagEnth - \pressure \\ \hdashline[2pt/2pt]
+	\density \mfSpec \\ \hdashline[2pt/2pt]
+	\density \mixFrac \\
+	\density \progVar
+    \end{array}
+    \right] , \quad
+    \invFluxDir \defEq \left[
+    \begin{array}{c}
+    \density \vel_{\spatialIdx} \\
+	\density \velX \vel_{\spatialIdx} + \delta_{x \spatialIdx} \pressure \\
+	\density \velY \vel_{\spatialIdx} + \delta_{y \spatialIdx} \pressure \\
+	\density \velZ \vel_{\spatialIdx} + \delta_{z \spatialIdx} \pressure \\
+	\density \stagEnth \vel_{\spatialIdx} \\ \hdashline[2pt/2pt]
+	\density \mfSpec \vel_{\spatialIdx} \\ \hdashline[2pt/2pt]
+	\density \mixFrac \vel_{\spatialIdx} \\
+	\density \progVar \vel_{\spatialIdx}
+    \end{array}
+    \right] , \quad
+	\viscFluxDir \defEq \left[
+    \begin{array}{c}
+    0 \\
+	\shearStress_{\spatialIdx x} \\
+	\shearStress_{\spatialIdx y} \\
+	\shearStress_{\spatialIdx z} \\
+	\vel_{\spatialIdxTwo} \shearStress_{\spatialIdxTwo \spatialIdx} - \heatFlux_{\spatialIdx} \\ \hdashline[2pt/2pt]
+	\density \massDiffSpec \pde{\mfSpec}{x_{\spatialIdx}} \\ \hdashline[2pt/2pt]
+	\density \massDiffVar_{\mixFrac} \pde{\mixFrac}{x_{\spatialIdx}} \\
+	\density \massDiffVar_{\progVar} \pde{\progVar}{x_{\spatialIdx}}
+    \end{array}
+    \right], \quad
+	\sourceVec \defEq \left[
+    \begin{array}{c}
+    0 \\
+	0 \\
+	0 \\
+	0 \\
+	0 \\ \hdashline[2pt/2pt]
+	\prodRateSpecFR \\ \hdashline[2pt/2pt]
+	0 \\
+	\prodRateFPV
+    \end{array} \right].
+\end{equation}
+Horizontal dashed lines separate additional equations which are included for different chemical transport and reaction models. The first five equations (the continuity equation, three momentum equations, and the energy equation) generally describe three-dimension fluid flows. The z-momentum equation is neglected in two-dimensional flows, and the y-momentum equation is also neglected in one-dimensional flows. The relevant terms are as follows: $\density$ is the density, $\vel_{\spatialIdx} \in \{\velX, \; \velY, \; \velZ\}$ is the velocity in each spatial direction, $\pressure$ is the static pressure, and $\delta_{\dummyIdx \dummyIdxTwo}$ is the Kronecker delta. The stagnation enthalpy is given by
+\begin{equation}\label{eq:stagEnth}
+	\stagEnth \defEq \frac{1}{2} (\velX^2 + \velY^2 + \velZ^2) + \specSumAll \enthSpec \mfSpec,
+\end{equation}
+the viscous shear stress is given by
+\begin{equation}\label{eq:shearStress}
+	\shearStress_{\spatialIdx \spatialIdxTwo} \defEq \dynVisc \left( \pde{\vel_{\spatialIdx}}{x_{\spatialIdxTwo}} + \pde{\vel_{\spatialIdxTwo}}{x_{\spatialIdx}} - \frac{2}{3} \pde{\vel_{\spatialIdxThree}}{x_{\spatialIdxThree}} \delta_{\spatialIdx \spatialIdxTwo} \right),
+\end{equation}
+and the heat flux is given by
+\begin{equation}\label{eq:heatFlux}
+	\heatFlux_{\spatialIdx} \defEq -\thermCond \pde{\temperature}{x_{\spatialIdx}} - \density \specSumAll \massDiffSpec \pde{\mfSpec}{x_{\spatialIdx}} \enthSpec.
+\end{equation}
+Calculation of thermodynamic properties (the species enthalpy $\enthSpec$) and transport properties (the dynamic viscosity $\dynVisc$, thermal conductivity $\thermCond$, and species mass diffusivity $\massDiffSpec$) depend on the gas and transport models used in the simulation. These are described in greater detail in Section~\ref{subsec:gasModels}.
+
+The sixth line of terms in Eq.~\ref{eq:gemsGovVecs} describes the scalar transport equation of the $\specIdx$th chemical species, for $\specIdx \in \{1, \hdots, \numSpec - 1\}$, where $\numSpec$ is the number of chemical species to be modeled. Here, $\mfSpec$ is the mass fraction of the $\specIdx$th species in the mixture, and $\massDiffSpec$ is the mass diffusivity of the $\specIdx$th species into the mixture. The reaction source term, also described as the production rate, for the $\specIdx$th species is given by the specified reaction model; the laminar finite-rate reaction model used in this thesis is described in Section~\ref{sec:finiterate}. Note that only $\numSpec - 1$ chemical transport equations are solved. The mass fraction of the $\numSpec$th species can, by definition of the mass fraction, be computed from
+
+\begin{equation}
+	\mf_{\numSpec} = 1 - \specSumMOne \mfSpec.
+\end{equation}
+
+The seventh and eighth line of terms in Eq.~\ref{eq:gemsGovVecs} describe the scalar transport of the fuel mixture fraction $\mixFrac$ and progress variable $\progVar$. These equations arise from the flamelet/progress variable (FPV) model for reacting flows, which is described in greater detail in Section~\ref{sec:fpv}. In a broad sense, the classic FPV model replaces the energy and species transport equations with these two equations, and uses a pre-computed lookup table which maps the fuel mixture fraction and progress variable to the temperature and species mass fractions. As will be described later, the FPV model implemented in GEMS does not eliminate the energy equation, and hence conserves energy while incurring additional computational cost.
+
+As Eq.~\ref{eq:gemsGovPDE} is not closed (there are more unknowns than equations), we provide an equation of state the relate several quantities explicitly. For all results shown here, the system is treated as a mixture of ideal gases, and the ideal gas law is given by.
+
+\begin{equation}\label{eq:idealGas}
+	\pressure = \density \gasConst \temperature,
+\end{equation}
+where $\temperature$ is the temperature, and $\gasConst$ is the mixture specific gas constant.
+
+Throughout this thesis, we will frequently refer to the set of ``primitive variables,'' given by
+
+\begin{equation}\label{eq:gemsPrimVec}
+    \primVec \defEq \left[
+    \begin{array}{ccccc;{2pt/2pt}c;{2pt/2pt}cc}
+    \pressure & \velX & \velY & \velZ & \temperature & \mfSpec & \mixFrac & \progVar
+    \end{array}
+    \right]^\top.
+\end{equation}
+These quantities have practical use in that they can be easily interpreted in practical terms, are used to tabulate empirical fit models, and are easily used to compute secondary quantities such as total pressure and heat transfer rate. Additionally, these variables have several numerical benefits that benefit the construction of robust and accurate reduced-order models, which will be detailed later. The conservative variables, while important in that they have the useful property of conservation, are less immediately useful in an engineering context.
+
+\subsection{Gas Models}\label{subsec:gasModels}
+
+GEMS is equipped with several models to compute thermodynamic and transport properties of gases, each with varying levels of accuracy in different pressure and temperature regimes. As this work primarily deals with multi-species mixtures, we describe the methods used for computing mixture quantities which are universal for all models detailed here. To begin, the mixture entropy and enthalpy are computed simply as
+
+\begin{equation}
+	\enth = \specSumAll \mfSpec \enthSpec, \quad \entropy = \specSumAll \mfSpec \entropySpec.
+\end{equation}
+The mixture dynamic viscosity is given by Wilke's mixing law,
+
+\begin{equation}\label{eq:viscMix}
+	\dynVisc = 2 \sqrt{2} \specSumAll \frac{\moleSpec \dynViscSpec}{\phi_{\specIdx}}
+\end{equation}
+where $\moleSpec$ is the mole fraction of the $\specIdx$th species. The denominator term is given by
+
+\begin{equation}\label{eq:viscMixDenom}
+	\phi_{\specIdx} = \specSumAllTwo \moleSpecTwo \left( 1 + \left( \frac{\dynViscSpec}{\dynViscSpecTwo} \right)^{1/2} \left( \frac{\mwSpecTwo}{\mwSpec} \right)^{1/4} \right)^2 \left( 1 + \frac{\mwSpec}{\mwSpecTwo} \right)^{-1/2},
+\end{equation}
+where $\mwSpec$ is the molecular weight of the $\specIdx$th species. Finally, the mixture thermal conductivity is given by the formulation of Mathur, Tondon, and Saxena,
+
+\begin{equation}\label{eq:thermCondMix}
+    \thermCond = \frac{1}{2} \left( \specSumAll \moleSpec \thermCondSpec + \left(\specSumAll \frac{\moleSpec}{\thermCondSpec} \right)^{-1} \right),
+\end{equation}
+
+
+\paragraph*{Calorically-perfect Gas with Simplified Transport Properties}\mbox{}\\
+
+The one-dimensional transient flame case (Section~\ref{}) and the 2D transonic cavity flow (Section~\ref{}) utilize the calorically-perfect gas (CPG) model with approximate, analytical models for transport properties. The CPG model makes the assumption that the heat capacity at constant pressure of each species, $\cpSpec$, is constant, i.e. $\cpSpec(\temperature) = \cpSpec$.
+
+\begin{equation}\label{eq:cpgEnthSpec}
+	\enthSpec = \refEnthSpec + \cpSpec \temperature
+\end{equation}
+
+\begin{equation}\label{eq:cpgEntropySpec}
+	\entropySpec = \cpSpec \text{ln}\left(\frac{\temperature}{278.0 \; \text{K}}\right) - \gasConstSpec \text{ln}\left(\frac{\pressure}{1 \; \text{atm}}\right)
+\end{equation}
+
+\begin{equation}\label{eq:viscSuthSpec}
+	\dynViscSpec = \dynVisc_{\text{ref}, \specIdx} \left( \frac{\temperature}{\temperature_{\text{ref},\specIdx}} \right)^{3/2} \left( \frac{\temperature_{\text{ref}, \specIdx} + S_{\specIdx}}{\temperature + S_{\specIdx}} \right)
+\end{equation}
+
+\begin{equation}\label{eq:cpgThermCondSpec}
+	\thermCondSpec = \frac{\dynViscSpec \cpSpec}{\prandtlSpec}
+\end{equation}
+
+\begin{equation}\label{eq:cpgMassDiffSpec}
+	\massDiffSpec = \frac{\dynViscSpec}{\density \schmidtSpec}
+\end{equation}
+
+\paragraph*{Thermally-perfect Gas with Empirical Fit Transport Properties}
+
+\begin{equation}
+	\frac{\cpSpec}{\gasConstSpec} = a_1 + a_2 \temperature + a_3 \temperature^2 + a_4 \temperature^3 + a_5 \temperature^4
+\end{equation}
+
+\begin{equation}
+	\frac{\enthSpec}{\gasConstSpec \temperature} = a_1 + a_2 \frac{\temperature}{2} + a_3 \frac{\temperature^2}{3} + a_3 \frac{\temperature^3}{4} + a_3 \frac{\temperature^4}{5} + \frac{a_6}{\temperature}
+\end{equation}
+
+\begin{equation}
+	\frac{\entropySpec}{\gasConstSpec} = a_1 \text{ln}\temperature + a_2 \temperature + a_3 \frac{\temperature^2}{2} + a_4 \frac{\temperature^3}{3} + a_5 \frac{\temperature^4}{4} + a_7
+\end{equation}
+
+\textcolor{red}{LEWIS/LENNARD-JONES}
+
+\begin{equation}
+	\dynViscSpec = \text{exp} \left(b_1 \text{ln} \temperature + \frac{b_2}{\temperature} + \frac{b_3}{\temperature^2} + b_4 \right) \times 10^{-7}
+\end{equation}
+
+\begin{equation}
+	\thermCondSpec = \text{exp} \left(c_1 \text{ln} \temperature + \frac{c_2}{\temperature} + \frac{c_3}{\temperature^2} + c_4 \right) \times 10^{-4}
+\end{equation}
+
+\begin{equation}
+	\massDiffSpec =
+\end{equation}
+
+\textcolor{red}{CURVE FIT}
+
+\begin{equation}
+	\dynViscSpec =
+\end{equation}
+
+\begin{equation}
+	\thermCondSpec =
+\end{equation}
+
+\begin{equation}
+	\massDiffSpec =
+\end{equation}
 
 % \subsection{Nicoud Subgrid-scale $\sigma$-model}
 \subsection{Subgrid-scale Modeling}

@@ -1,23 +1,35 @@
 \newcommand{\MC}{\mathcal}
 
+% time
+\newcommand{\timeVar}{\ensuremath{\text{t}}}
+\newcommand{\initTime}{\ensuremath{\timeVar^0}}
+\newcommand{\dt}{\ensuremath{\Delta \timeVar}}
+\newcommand{\dtau}{\ensuremath{\Delta \tau}}
+\newcommand{\finalTime}{\ensuremath{\text{T}}}
+
 % indices
 \newcommand{\spatialIdx}{\ensuremath{i}}
 \newcommand{\spatialIdxTwo}{\ensuremath{j}}
 \newcommand{\spatialIdxThree}{\ensuremath{k}}
+\newcommand{\spatialIdxFour}{\ensuremath{m}}
 \newcommand{\specIdx}{\ensuremath{l}}
 \newcommand{\specIdxTwo}{\ensuremath{m}}
 \newcommand{\timeIdx}{\ensuremath{n}}
 \newcommand{\newtonIdx}{\ensuremath{k}}
+\newcommand{\reacIdx}{\ensuremath{r}}
 
 % dimensions
 \newcommand{\numDOF}{\ensuremath{N}}
 \newcommand{\numSpec}{\ensuremath{N_Y}}
-\newcommand{\numConsvModes}{\ensuremath{N_c}}
+\newcommand{\numConsModes}{\ensuremath{N_c}}
 \newcommand{\numPrimModes}{\ensuremath{N_p}}
 \newcommand{\numRHSModes}{\ensuremath{N_f}}
 \newcommand{\numResModes}{\ensuremath{N_r}}
 \newcommand{\numJacobModes}{\ensuremath{N_J}}
 \newcommand{\numSamps}{\ensuremath{N_s}}
+\newcommand{\numReacs}{\ensuremath{N_r}}
+\newcommand{\numSnaps}{\ensuremath{N_{\finalTime}}}
+\newcommand{\numProg}{\ensuremath{N_{\text{prog}}}}
 
 % spatial coordinates
 \newcommand{\spatialVar}{\ensuremath{x}}
@@ -29,12 +41,25 @@
 \newcommand{\consVec}{\ensuremath{\mathbf{\stateVar}_c}}
 \newcommand{\primVec}{\ensuremath{\mathbf{\stateVar}_p}}
 \newcommand{\consFunc}[1]{\ensuremath{\consVec \left(#1\right)}}
+\newcommand{\consFuncUns}[1]{\ensuremath{\consVec' \left(#1\right)}}
 \newcommand{\consVecCent}{\ensuremath{\mathbf{\overline{\stateVar}}_c}}
 \newcommand{\primVecCent}{\ensuremath{\mathbf{\overline{\stateVar}}_p}}
-\newcommand{\consDataMat}{\ensuremath{\mathbf{\MakeUppercase{\stateVar}}_c}}
+\newcommand{\consDataMatUns}{\ensuremath{\mathbf{\MakeUppercase{\stateVar}}_c'}}
+
+% dummies
 \newcommand{\dummyVec}{\ensuremath{\mathbf{y}}}
 \newcommand{\dummyVecOne}{\ensuremath{\mathbf{a}}}
 \newcommand{\dummyVecTwo}{\ensuremath{\mathbf{b}}}
+\newcommand{\dummyIdx}{\ensuremath{i}}
+\newcommand{\dummyIdxTwo}{\ensuremath{j}}
+\newcommand{\dummyMatOne}{\ensuremath{\mathbf{A}}}
+\newcommand{\dummyMatTwo}{\ensuremath{\mathbf{B}}}
+\newcommand{\dummyMatThree}{\ensuremath{\mathbf{C}}}
+\newcommand{\dummyMatFour}{\ensuremath{\mathbf{D}}}
+\newcommand{\dummyMatFive}{\ensuremath{\mathbf{E}}}
+\newcommand{\dummyMatSix}{\ensuremath{\mathbf{G}}}
+\newcommand{\dummyMatSeven}{\ensuremath{\mathbf{H}}}
+\newcommand{\dummyMatEight}{\ensuremath{\mathbf{K}}}
 
 % ROM variables
 \newcommand{\consVecRom}{\ensuremath{\mathbf{\widetilde{\stateVar}}_c}}
@@ -42,9 +67,9 @@
 \newcommand{\primVecRom}{\ensuremath{\mathbf{\widetilde{\stateVar}}_p}}
 \newcommand{\stateVecCoef}{\ensuremath{\mathbf{\widehat{\stateVar}}}}
 \newcommand{\consVecCoef}{\ensuremath{\mathbf{\widehat{\stateVar}}_c}}
-\newcommand{\consVarCoef}{\ensuremath{\widehat{\stateVar}_{c,i}}}
+\newcommand{\consVarCoef}{\ensuremath{\widehat{\stateVar}_{c,\dummyIdx}}}
 \newcommand{\primVecCoef}{\ensuremath{\mathbf{\widehat{\stateVar}}_p}}
-\newcommand{\primVarCoef}{\ensuremath{\widehat{\stateVar}}_{p,i}}
+\newcommand{\primVarCoef}{\ensuremath{\widehat{\stateVar}}_{p,\dummyIdx}}
 
 % flux/source/RHS/residual functions
 \newcommand{\fluxVar}{\ensuremath{f}}
@@ -52,6 +77,7 @@
 \newcommand{\viscFlux}{\ensuremath{\mathbf{\fluxVar}_{\nu}}}
 \newcommand{\invFluxDir}{\ensuremath{\mathbf{\fluxVar}_{\spatialIdx}}}
 \newcommand{\viscFluxDir}{\ensuremath{\mathbf{\fluxVar}_{\nu,\spatialIdx}}}
+\newcommand{\viscFluxDirArg}[1]{\ensuremath{\mathbf{\fluxVar}_{\nu,#1}}}
 \newcommand{\sourceVar}{\ensuremath{s}}
 \newcommand{\sourceVec}{\mathbf{\sourceVar}}
 \newcommand{\rhsVar}{\ensuremath{f}}
@@ -80,9 +106,9 @@
 \newcommand{\basisVar}{u}
 \newcommand{\basisMat}{\ensuremath{\mathbf{\MakeUppercase{\basisVar}}}}
 \newcommand{\consTrial}{\ensuremath{\basisMat}_c}
-\newcommand{\consTrialVec}{\ensuremath{\mathbf{\basisVar}}_{c,i}}
+\newcommand{\consTrialVecIdx}{\ensuremath{\mathbf{\basisVar}}_{c,\dummyIdx}}
 \newcommand{\primTrial}{\ensuremath{\basisMat_p}}
-\newcommand{\primTrialVec}{\ensuremath{\mathbf{\basisVar}}_{p,i}}
+\newcommand{\primTrialVecIdx}{\ensuremath{\mathbf{\basisVar}}_{p,\dummyIdx}}
 \newcommand{\rightSingVecVar}{v}
 \newcommand{\rightSingVecMat}{\ensuremath{\mathbf{\MakeUppercase{\rightSingVecVar}}}}
 \newcommand{\singVecMat}{\ensuremath{\boldsymbol{\Sigma}}}
@@ -109,14 +135,6 @@
 \newcommand{\deimRegressorResSmall}{\ensuremath{(\sampMat \deimBasisRes)^+ \sampMat}}
 \newcommand{\deimRegressorJac}{\ensuremath{\deimBasisJac (\sampMat \deimBasisJac)^+ \sampMat}}
 \newcommand{\deimRegressorJacSmall}{\ensuremath{(\sampMat \deimBasisJac)^+ \sampMat}}
-\newcommand{\dummyMatOne}{\ensuremath{\mathbf{A}}}
-\newcommand{\dummyMatTwo}{\ensuremath{\mathbf{B}}}
-\newcommand{\dummyMatThree}{\ensuremath{\mathbf{C}}}
-\newcommand{\dummyMatFour}{\ensuremath{\mathbf{D}}}
-\newcommand{\dummyMatFive}{\ensuremath{\mathbf{E}}}
-\newcommand{\dummyMatSix}{\ensuremath{\mathbf{G}}}
-\newcommand{\dummyMatSeven}{\ensuremath{\mathbf{H}}}
-\newcommand{\dummyMatEight}{\ensuremath{\mathbf{K}}}
 
 % non-linear functions
 \newcommand{\encoderFunc}[1]{\ensuremath{\mathbf{h}\left(#1\right)}}
@@ -133,12 +151,8 @@
 \newcommand{\rhsScale}{\ensuremath{\mathbf{\MakeUppercase{\rhsScaleVar}}}}
 \newcommand{\rhsScaleInv}{\ensuremath{\mathbf{\MakeUppercase{\rhsScaleVar}}^{-1}}}
 
-% time
-\newcommand{\timeVar}{\text{t}}
-\newcommand{\dt}{\ensuremath{\Delta \timeVar}}
-\newcommand{\dtau}{\ensuremath{\Delta \tau}}
-
 % thermodynamic quantities
+\newcommand{\density}{\ensuremath{\rho}}
 \newcommand{\enth}{\ensuremath{h}}
 \newcommand{\stagEnth}{\ensuremath{\enth^0}}
 \newcommand{\enthSpec}{\ensuremath{\enth_{\specIdx}}}
@@ -146,8 +160,18 @@
 \newcommand{\refEnthSpec}{\ensuremath{\enth_{\text{ref,\specIdx}}}}
 \newcommand{\entropy}{\ensuremath{s}}
 \newcommand{\entropySpec}{\ensuremath{\entropy_{\specIdx}}}
+\newcommand{\shearStress}{\ensuremath{\tau}}
 \newcommand{\cp}{\ensuremath{c_{p}}}
 \newcommand{\cpSpec}{\ensuremath{c_{p,\specIdx}}}
+\newcommand{\gibbs}{\ensuremath{g}}
+\newcommand{\gibbsSpec}{\ensuremath{g}_{\specIdx}}
+\newcommand{\pressure}{\ensuremath{p}}
+\newcommand{\temperature}{\ensuremath{T}}
+\newcommand{\heatFlux}{\ensuremath{q}}
+\newcommand{\vel}{\ensuremath{u}}
+\newcommand{\velX}{\ensuremath{u}}
+\newcommand{\velY}{\ensuremath{v}}
+\newcommand{\velZ}{\ensuremath{w}}
 
 % transport quantities
 \newcommand{\diffVelVar}{\ensuremath{V}}
@@ -156,6 +180,7 @@
 \newcommand{\massDiffSpec}{\ensuremath{\massDiffVar_{\specIdx M}}}
 \newcommand{\dynVisc}{\ensuremath{\mu}}
 \newcommand{\dynViscSpec}{\ensuremath{\dynVisc_{\specIdx}}}
+\newcommand{\dynViscSpecTwo}{\ensuremath{\dynVisc_{\specIdxTwo}}}
 \newcommand{\constVisc}{\ensuremath{\overline{\dynVisc}}}
 \newcommand{\constViscSpec}{\ensuremath{\constVisc_{\specIdx}}}
 \newcommand{\thermCond}{\ensuremath{\lambda}}
@@ -164,31 +189,65 @@
 % chemical quantities
 \newcommand{\mf}{\ensuremath{Y}}
 \newcommand{\mfSpec}{\ensuremath{\mf_{\specIdx}}}
+\newcommand{\mfSpecTwo}{\ensuremath{\mf_{\specIdxTwo}}}
 \newcommand{\mole}{\ensuremath{X}}
 \newcommand{\moleSpec}{\ensuremath{\mole_{\specIdx}}}
+\newcommand{\moleSpecTwo}{\ensuremath{\mole_{\specIdxTwo}}}
 \newcommand{\moleConcSpec}{\ensuremath{[\moleSpec]}}
 \newcommand{\mw}{\ensuremath{W}}
 \newcommand{\mwSpec}{\ensuremath{\mw_{\specIdx}}}
+\newcommand{\mwSpecTwo}{\ensuremath{\mw_{\specIdxTwo}}}
 \newcommand{\gasConst}{\ensuremath{R}}
-\newcommand{\gasConstSpec}{\ensuremath{R_{\specIdx}}}
-\newcommand{\gasConstUniv}{\ensuremath{R_u}}
+\newcommand{\gasConstSpec}{\ensuremath{\gasConst_{\specIdx}}}
+\newcommand{\gasConstUniv}{\ensuremath{\gasConst_u}}
+\newcommand{\mixFrac}{Z}
+\newcommand{\progVar}{C}
+
+% reaction quantities
+\newcommand{\prodRate}{\ensuremath{\dot{\omega}}}
+\newcommand{\prodRateSpec}{\ensuremath{\prodRate_{\specIdx}}}
+\newcommand{\prodRateSpecFR}{\ensuremath{\prodRate_{\specIdx}}}
+\newcommand{\prodRateFPV}{\ensuremath{\prodRate_{\text{FPV}}}}
+\newcommand{\stoichCoef}{\ensuremath{\nu}}
+\newcommand{\stoichCoefSpecReac}{\ensuremath{\stoichCoef_{\specIdx,\reacIdx}}}
+\newcommand{\rateofprog}{\ensuremath{w}}
+\newcommand{\rateofprogReac}{\ensuremath{\rateofprog_{\reacIdx}}}
+\newcommand{\reacRate}{\ensuremath{k}}
+\newcommand{\forwardRate}{\ensuremath{\reacRate_{F}}}
+\newcommand{\forwardRateReac}{\ensuremath{\reacRate_{F,\reacIdx}}}
+\newcommand{\reverseRate}{\ensuremath{\reacRate_{R}}}
+\newcommand{\reverseRateReac}{\ensuremath{\reacRate_{R,\reacIdx}}}
+\newcommand{\equilConstReac}{\ensuremath{\reacRate_{C,\reacIdx}}}
 
 % summations
 \newcommand{\specSumAll}{\ensuremath{\sum_{\specIdx = 1}^{\numSpec}}}
 \newcommand{\specSumMOne}{\ensuremath{\sum_{\specIdx = 1}^{\numSpec-1}}}
 \newcommand{\specSumAllTwo}{\ensuremath{\sum_{\specIdxTwo = 1}^{\numSpec}}}
+\newcommand{\reacSumAll}{\ensuremath{\sum_{\reacIdx = 1}^{\numReacs}}}
 
 % non-dimensional quantities
 \newcommand{\prandtl}{\ensuremath{\text{Pr}}}
+\newcommand{\prandtlSpec}{\ensuremath{\text{Pr}_{\specIdx}}}
 \newcommand{\schmidt}{\ensuremath{\text{Sc}}}
+\newcommand{\schmidtSpec}{\ensuremath{\text{Sc}_{\specIdx}}}
 
-% derivatives
+% equations
 \newcommand{\ode}[2]{\frac{\text{d} #1}{\text{d} #2}}
 \newcommand{\pde}[2]{\frac{\partial #1}{\partial #2}}
 \newcommand{\argmin}[1]{\ensuremath{\underset{#1}{argmin} \;}}
+\newcommand{\affineTransform}[3]{#1 + #2 #3}
+\newcommand{\consAffineMap}{\affineTransform{\consVecCent}{\consScale \consTrial}{\consVecCoef}}
+\newcommand{\ROne}[1]{\ensuremath{\mathbb{R}^{#1}}}
+\newcommand{\inROne}[1]{\ensuremath{\in \ROne{#1}}}
+\newcommand{\RTwo}[2]{\ensuremath{\mathbb{R}^{#1 \times #2}}}
+\newcommand{\inRTwo}[2]{\ensuremath{\in \RTwo{#1}{#2}}}
+\newcommand{\nonnegReals}{\ensuremath{\mathbb{R}_{\ge 0}}}
+\newcommand{\inNonNegReals}{\in \nonnegReals}
+\newcommand{\funcMap}[3]{\ensuremath{#1: #2 \rightarrow #3}}
 
 % misc
 \newcommand{\identMat}{\ensuremath{\mathbf{I}}}
 \newcommand{\zeroVec}{\ensuremath{\mathbf{0}}}
 \newcommand{\volume}{\ooalign{\hfil$V$\hfil\cr\kern0.08em--\hfil\cr}}
 \newcommand{\norm}[1]{\ensuremath{\left\lVert#1\right\rVert}}
+\newcommand{\defEq}{\ensuremath{:=}}

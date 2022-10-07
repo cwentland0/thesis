@@ -1,5 +1,41 @@
 \section{Reaction Modeling}
 
-\subsection{Finite Rate Reactions}
+\subsection{Finite Rate Reactions}\label{sec:finiterate}
 
-\subsection{Flamelet/Progress Variable Modeling}
+\begin{equation}
+	\specSumAll \stoichCoefSpecReac' \chi_\specIdx \xrightleftharpoons[\forwardRateReac]{\reverseRateReac} \specSumAll \stoichCoefSpecReac'' \chi_\specIdx
+\end{equation}
+
+\begin{equation}
+	\prodRateSpec = \mwSpec \reacSumAll (\stoichCoefSpecReac'' - \stoichCoefSpecReac') \rateofprogReac
+\end{equation}
+
+\begin{equation}
+	\rateofprogReac = \forwardRateReac \prod_{\specIdx=1}^{\numSpec} [\moleSpec]^{\stoichCoefSpecReac'} - \reverseRateReac \prod_{\specIdx=1}^{\numSpec} [\moleSpec]^{\stoichCoefSpecReac''}
+\end{equation}
+
+\begin{equation}
+	\forwardRateReac = A_\reacIdx \temperature^{b_\reacIdx} \text{exp} \left( \frac{-E_{a,\reacIdx}}{\gasConstUniv \temperature} \right)
+\end{equation}
+
+\begin{equation}
+	\reverseRateReac = \frac{\forwardRateReac}{\equilConstReac}
+\end{equation}
+
+\begin{equation}
+	\equilConstReac = \text{exp}\left(-\specSumAll (\stoichCoefSpecReac'' - \stoichCoefSpecReac') \gibbsSpec\right) \left(\frac{1 \; \text{atm}}{\temperature \gasConstUniv}\right)^{\specSumAll (\stoichCoefSpecReac'' - \stoichCoefSpecReac')}
+\end{equation}
+
+\begin{equation}\label{eq:gibbsSpec}
+	\gibbsSpec = \frac{\enthSpec}{\gasConstSpec \temperature} - \frac{\entropySpec}{\gasConstSpec}
+\end{equation}
+
+\subsection{Flamelet/Progress Variable Modeling}\label{sec:fpv}
+
+\begin{equation}\label{eq:mixFracDef}
+    \mixFrac \defEq \frac{ \nu_{\text{st}} \mf_{\text{f}} - \mf_{\text{ox}} + \mf^0_{\text{ox}} }{ \nu_{\text{st}} \mf^0_{\text{f}} + \mf^0_{\text{ox}} }
+\end{equation}
+
+\begin{equation}\label{eq:progVarDef}
+	\progVar \defEq \sum_{\specIdxTwo = 1}^{\numProg} \mf_{\specIdx_{\specIdxTwo}}
+\end{equation}

@@ -1,7 +1,24 @@
 \section{Trial Space Selection}
 
+\begin{equation}\label{eq:solApprox}
+    \begin{aligned}
+        \consFunc{\timeVar} \approx \consFuncRom{\timeVar} &= \consVecCent + \sum_{\dummyIdx=1}^{\numConsModes} \consScaleVar_\dummyIdx \consTrialVecIdx \consVarCoef (\timeVar) \\
+        &= \consAffineMap(\timeVar),
+    \end{aligned}
+\end{equation}
 
 \subsection{Proper Orthogonal Decomposition}
 
+\begin{equation}
+	\consDataMatUns = \left[ \consFuncUns{\initTime}, \; \consFuncUns{\timeVar^1}, \; \hdots \; , \; \consFuncUns{\finalTime} \right]
+\end{equation}
+
+\begin{equation}\label{eq:podL2Min}
+    \consTrial = \argmin{\dummyMatOne \inRTwo{\numDOF}{\numConsModes}} \norm{ \consDataMatUns - \dummyMatOne \dummyMatOne^\top \consDataMatUns }_\text{F}
+\end{equation}
+
+\begin{equation}\label{eq:svd}
+    \consDataMatUns = \basisMat \singVecMat \rightSingVecMat^\top
+\end{equation}
 
 \subsection{Non-linear Autoencoders}
