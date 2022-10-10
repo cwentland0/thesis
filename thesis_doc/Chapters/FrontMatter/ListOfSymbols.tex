@@ -1,0 +1,50 @@
+\chapter*{List of Symbols}
+
+\begin{longtable}{cp{0.8\textwidth}}
+	$\timeVar$ & time, measured in seconds unless noted otherwise \\
+	$\initTime$ & initial time of modeled system \\
+	$\dt$ & discrete time step size of temporally-discretized O$\Delta$E \\
+	$\finalTime$ & final time of modeled system \\
+	$\numDOF$ & total number of degrees of freedom in spatially-discretized ODE/O$\Delta$E \\
+	$\numSpec$ & number of chemical species modeled in system\\
+	$\numReacs$ & number of reactions in chemical kinetics model \\
+	$\numSnaps$ & number of snapshots collected from full-order model(s) \\
+	$\spatialVarDir$ & spatial coordinate, of \{x, y, z\}, measured in meters unless noted otherwise \\
+	$\consVec$ & conservative state of Navier--Stokes, see Eq.~\ref{eq:gemsGovVecs} \\
+	$\primVec$ & primitive state, see Eq.~\ref{eq:gemsPrimVec}  \\
+	$\invFluxDir$ & inviscid fluxes of Navier--Stokes, of \{$\invFlux_x, \; \invFlux_y, \; \invFlux_z$\}, see Eq.~\ref{eq:gemsGovVecs} \\
+	$\viscFluxDir$ & viscous fluxes of Navier--Stokes, of \{$\viscFluxDirArg{x}, \;\viscFluxDirArg{y}, \; \viscFluxDirArg{z}$\}, see Eq.~\ref{eq:gemsGovVecs} \\
+	$\sourceVec$ & source terms of Navier--Stokes, see Eq.~\ref{eq:gemsGovVecs} \\
+	$\resVec$ & \\
+	$\density$ & density, measured in kg/m$^3$ \\
+	$\enth$ & enthalpy, measured in Joules \\
+	$\entropy$ & entropy, measured in J/K \\
+	$\shearStress_{\spatialIdx,\spatialIdxTwo}$ & viscous shear stress in the $\spatialIdx\text{-}\spatialIdxTwo$ plane \\
+	$\cp$ & heat capacity at constant pressure, measured in J/K \\
+	$\gibbs$ & Gibbs free energy, measured in Joules\\
+	$\pressure$ & static pressure, measured in pascals unless noted otherwise \\
+	$\temperature$ & static temperature, measured in Kelvin unless noted otherwise \\
+	$\heatFlux$ & heat flux, measured in W/m$^2$ \\
+	$\vel_{\spatialIdx}$ & velocity in the $\spatialIdx$th spatial direction, of \{\velX, \velY, \velZ\}, measured in m/s \\
+	$\massDiffSpec$ & mass diffusivity of the $\specIdx$th species into the mixture, measured in m$^2$/s \\
+	$\dynVisc$ & dynamic viscosity, measured in Pa-s \\
+	$\thermCond$ & thermal conductivity, measured in W/m-K \\
+	$\mfSpec$ & mass fraction of the $\specIdx$th species, unitless \\
+	$\moleSpec$ & mole fraction of the $\specIdx$th species, unitless \\
+	$\mwSpec$ & molar mass of the $\specIdx$th species, measured in g/mol \\
+	$\gasConst$ & mixture specific gas constant, measured in J/kg-K \\
+	$\gasConstUniv$ & universal gas constant, equal to 8,314.4621 J/kmol-K \\
+	$\mixFrac$ & fuel mixture fraction of flamelet/progress variable model, unitless \\
+	$\progVar$ & progress variable of flamelet/progress variable model, unitless \\
+	$\prodRateSpec$ & production rate of the $\specIdx$th species, measured in kg/m$^3$-s \\
+	$\stoichCoefSpecReac$ & stoichiometric coefficient of the $\specIdx$th species in the $\reacIdx$th reaction, unitless \\
+	$\rateofprogReac$ & rate of progress of the $\reacIdx$th reaction, measured in mol/m$^3$-s \\
+	$\forwardRateReac$ & forward reaction rate of the $\reacIdx$th reaction, measured in 1/s  \\
+	$\reverseRateReac$ & reverse reaction rate of the $\reacIdx$th reaction, measured in 1/s \\
+	$\equilConstReac$ & equilibrium constant of the $\reacIdx$th reaction, unitless \\
+	$\prandtl$ & mixture Prandtl number, unitless \\
+	$\schmidt$ & mixture Schmidt number, unitless \\
+	$\identMat$ & identity matrix \\
+	$\zeroVec$ & zero vector \\
+	 &  \\
+\end{longtable}

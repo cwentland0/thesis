@@ -9,6 +9,7 @@
 % \usepackage{sectsty}
 \usepackage[nottoc]{tocbibind}
 \usepackage{titletoc}
+\usepackage{nomencl}
 %\usepackage{tocloft}
 
 \usepackage{algorithm}
@@ -29,13 +30,15 @@
 \usepackage{xcolor}
 \usepackage{csquotes}
 \usepackage{arydshln}
-\usepackage{url}
+
+\makenomenclature
+\renewcommand{\nomname}{List of Symbols}
 
 \usepackage[
     style=numeric,
     sorting=none,
 ]{biblatex}
-\bibliography{ref}
+\addbibresource{ref.bib}
 
 % \setlength{\parindent}{0pt}
 \pagestyle{plain}
@@ -116,19 +119,21 @@
 \raggedbottom
 
 \frontmatter
-\input{./Chapters/FrontMatter/FrontPage}
+\input{Chapters/FrontMatter/FrontPage}
 \pagenumbering{roman}
-\input{./Chapters/FrontMatter/Orcid}
-\input{./Chapters/FrontMatter/Acknowledgements}
+\input{Chapters/FrontMatter/Orcid}
+\input{Chapters/FrontMatter/Acknowledgements}
 
 \renewcommand{\contentsname}{\begin{center}\vspace{-2em}Table of Contents\end{center}}
 \tableofcontents
 \listoftables
 \listoffigures
+\input{Chapters/FrontMatter/ListOfSymbols.tex}
+\addcontentsline{toc}{chapter}{List of Symbols}
 \listofappendices
 \addcontentsline{toc}{chapter}{List of Appendices}
 
-\input{./Chapters/FrontMatter/Abstract}
+\input{Chapters/FrontMatter/Abstract}
 
 \mainmatter
 \input{Chapters/Overview/main.tex}
