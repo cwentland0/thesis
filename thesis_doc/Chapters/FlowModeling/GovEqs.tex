@@ -1,6 +1,6 @@
-\section{Governing Equations}
+\section{Governing Equations}\label{sec:govEqs}
 
-All fluid flows that can be treated as a continuum (exceptions include nanofluidics and rarefied flows) are governed by the unsteady Navier--Stokes equations. They describe the conservation of mass, momentum, energy, and transported scalars in an arbitrary control volume. Neglecting body forces, these equations are given by the PDE
+All fluid flows that can be treated as a continuum are governed by the unsteady Navier--Stokes equations. They describe the conservation of mass, momentum, energy, and transported scalars in an arbitrary control volume. Neglecting body forces, these equations are given by the PDE
 
 \begin{equation}\label{eq:gemsGovPDE}
     \pde{\consVec}{\timeVar} + \nabla \cdot (\invFluxDir - \viscFluxDir) = \sourceVec,
@@ -122,7 +122,7 @@ where $\mwSpec$ is the molecular weight of the $\specIdx$th species. Finally, th
 
 \paragraph*{Calorically-perfect Gas with Simplified Transport Properties}\mbox{}\\
 
-The one-dimensional transient flame case (Section~\ref{}) and the 2D transonic cavity flow (Section~\ref{}) utilize the calorically-perfect gas (CPG) model with approximate, analytical models for transport properties. The CPG model makes the assumption that the heat capacity at constant pressure of each species, $\cpSpec$, is constant, i.e. $\cpSpec(\temperature) = \cpSpec$.
+The one-dimensional transient flame case (Section~\ref{sec:oneDFlame}) and the 2D transonic cavity flow (Section~\ref{sec:cavity}) utilize the calorically-perfect gas (CPG) model with approximate, analytical models for transport properties. The CPG model makes the assumption that the heat capacity at constant pressure of each species, $\cpSpec$, is constant, i.e. $\cpSpec(\temperature) = \cpSpec$.
 
 \begin{equation}\label{eq:cpgEnthSpec}
 	\enthSpec = \refEnthSpec + \cpSpec \temperature
