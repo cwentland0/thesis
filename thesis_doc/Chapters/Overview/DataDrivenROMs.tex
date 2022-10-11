@@ -1,6 +1,6 @@
 \section{Data-driven Reduced-order Modeling}
 
-In recent years, the term ``data-driven'' has become a veritable buzzword in every field imaginable, including medicine, finance, agriculture, logistics, and of course engineering. The term is thrown around with abandon, hinting at advanced new technology to propel productivity and profit to new heights. Underneath the marketing hubbub, data-driven methods generally follow the same core process:
+In recent years, the term ``data-driven'' has become a veritable buzzword in every field imaginable, including medicine, finance, agriculture, logistics, and engineering. The term vaguely hints at advanced new technology to propel productivity and profit to new heights. Underneath the marketing hubbub, data-driven methods generally follow the same core process:
 
 \begin{enumerate}
     \item Gather ``real-world'' information about an extremely complex system which humans cannot parse efficiently. This could be customer purchase records for an online marketplace, or biomarker responses to a new drug and the patients' health outcomes.
@@ -8,7 +8,9 @@ In recent years, the term ``data-driven'' has become a veritable buzzword in eve
     \item Apply the model to make useful predictions on new, unseen data points.
 \end{enumerate}
 
-Data-driven modeling is not new. Linear regression has been used extensively for over two centuries, and many statistical models still used regularly in modern times (k-means clustering )
+This process, and data-driven modeling in general, are not new. Linear regression has been used extensively for over two centuries, and many statistical models still used regularly in modern times (e.g., k-means clustering, principal component analysis) were formulated over 50 years ago. What has changed in recent years is the exponential growth in computing power, data storage, and data collection mechanisms available to data scientists. As an illustrative example of this enormous technological leap, the iPhone 14 has three times the memory and approximately 1,000 times the computing speed of the Cray-2, the world's most powerful supercomputer in 1985. With this explosive increase in computational power has come a commensurate explosion of modeling techniques which can make accurate predictions for highly complex non-linear problems, particularly in the realm of artificial neural networks. While these technologies have enabled radical transformations of many industries through computer vision, natural language processing, and recommender systems, they have also made deep impacts in fluid flow modeling.
+
+The phrase ``reduced-order model'' has taken on two distinct meanings in the fluid mechanics and combustion literature. The first type of ROM refers to models which are derived by simplifying complex physics with physically-meaningful (but lower-cost) approximations, or by fitting compact analytical equations to empirically-observed patterns. Examples of the former include axisymmetric models of three-dimensional systems, or flame transfer function models of gas turbines. The latter includes polynomial models of gas thermodynamic and transport properties, or Arrhenius rates for chemical reactions. For this type of ROM, the result of order reduction (relative to, perhaps, DNS or atomistic reaction models) is a natural consequence of approximating physical processes, not of learning a lower-dimension solution to the original governing equations. In this sense, we will refer to this type of model instead as a ``reduced-physics model.'' The second type of ROM refers to to models which attempt to
 
 \begin{itemize}
     \item Necessity of finding low-cost models for design, uncertainty quantification, failure analysis (``many-query'' buzzword)
