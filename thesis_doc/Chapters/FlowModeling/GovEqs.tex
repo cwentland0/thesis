@@ -64,7 +64,7 @@ the viscous shear stress is given by
 \begin{equation}\label{eq:shearStress}
 	\shearStress_{\spatialIdx \spatialIdxTwo} \defEq \dynVisc \left( \pde{\vel_{\spatialIdx}}{x_{\spatialIdxTwo}} + \pde{\vel_{\spatialIdxTwo}}{x_{\spatialIdx}} - \frac{2}{3} \pde{\vel_{\spatialIdxThree}}{x_{\spatialIdxThree}} \delta_{\spatialIdx \spatialIdxTwo} \right),
 \end{equation}
-and the heat flux is given by
+and the heat flux is given by \textcolor{red}{density of mass diffusion might be wrong?}
 \begin{equation}\label{eq:heatFlux}
 	\heatFlux_{\spatialIdx} \defEq -\thermCond \pde{\temperature}{x_{\spatialIdx}} - \density \specSumAll \massDiffSpec \pde{\mfSpec}{x_{\spatialIdx}} \enthSpec.
 \end{equation}
