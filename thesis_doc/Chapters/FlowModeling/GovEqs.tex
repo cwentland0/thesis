@@ -122,67 +122,87 @@ where $\mwSpec$ is the molecular weight of the $\specIdx$th species. Finally, th
 
 \paragraph*{Calorically-perfect Gas with Simplified Transport Properties}\mbox{}\\
 
-The one-dimensional transient flame case (Section~\ref{sec:oneDFlame}) and the 2D transonic cavity flow (Section~\ref{sec:cavity}) utilize the calorically-perfect gas (CPG) model with approximate, analytical models for transport properties. The CPG model makes the assumption that the heat capacity at constant pressure of each species, $\cpSpec$, is constant, i.e. $\cpSpec(\temperature) = \cpSpec$.
+The one-dimensional transient flame case (Section~\ref{sec:oneDFlame}) and the 2D transonic cavity flow (Section~\ref{sec:cavity}) utilize the calorically-perfect gas (CPG) model with approximate, analytical models for transport properties. The CPG model makes the assumption that the heat capacity at constant pressure of the $\specIdx$th species, $\cpSpec$, is constant, i.e. $\cpSpec(\temperature) = \cpSpec$. The species enthalpy is thus computed simply as
 
 \begin{equation}\label{eq:cpgEnthSpec}
 	\enthSpec = \refEnthSpec + \cpSpec \temperature
 \end{equation}
+where $\refEnthSpec$ is the standard enthalpy of formation for the $\specIdx$th species. Similarly, entropy of the $\specIdx$th species is computed from the analytical relationship
 
 \begin{equation}\label{eq:cpgEntropySpec}
 	\entropySpec = \cpSpec \text{ln}\left(\frac{\temperature}{278.0 \; \text{K}}\right) - \gasConstSpec \text{ln}\left(\frac{\pressure}{1 \; \text{atm}}\right)
 \end{equation}
+where $\gasConstSpec$ is the specific gas constant of the $\specIdx$th species. The dynamic viscosity of the $\specIdx$th species, on the other hand, is computed from the empirical Sutherland's law~\cite{Sutherland1893}, given by 
 
 \begin{equation}\label{eq:viscSuthSpec}
-	\dynViscSpec = \dynVisc_{\text{ref}, \specIdx} \left( \frac{\temperature}{\temperature_{\text{ref},\specIdx}} \right)^{3/2} \left( \frac{\temperature_{\text{ref}, \specIdx} + S_{\specIdx}}{\temperature + S_{\specIdx}} \right)
+	\dynViscSpec = \dynViscRefSpec \left( \frac{\temperature}{\tempRefSpec} \right)^{3/2} \left( \frac{\tempRefSpec + \suthTempSpec}{\temperature + \suthTempSpec} \right)
 \end{equation}
+Here, $\dynViscRefSpec$ is the experimentally-measured dynamic viscosity at temperature $\tempRefSpec$, and $\suthTempSpec$ is an independent empirical parameter for the $\specIdx$th species. With the dynamic viscosity in hand, the thermal conductivity of the $\specIdx$th species may be computed from the definition of the Prandtl number, rearranged as
 
 \begin{equation}\label{eq:cpgThermCondSpec}
 	\thermCondSpec = \frac{\dynViscSpec \cpSpec}{\prandtlSpec}
 \end{equation}
+The Prandtl number of the $\specIdx$th species is tabulated experimentally. Similarly, the mass diffusivity of the $\specIdx$th species into the mixture can be computed from the definition of the Schmidt number, rearranged as
 
 \begin{equation}\label{eq:cpgMassDiffSpec}
 	\massDiffSpec = \frac{\dynViscSpec}{\density \schmidtSpec}
 \end{equation}
+Again, the Schmidt number of the $\specIdx$th species is tabulated experimentally.
 
 \paragraph*{Thermally-perfect Gas with Empirical Fit Transport Properties}
 
+At high temperatures, especially temperature ranges of 1,000 - 3,000 K normally experienced in rocket combustors, the assumption that the specific heat capacity of a fluid is constant with temperature is not valid. The general formulation for the species enthalpy is thus given by
+
+\begin{eqnarray}
+	\enthSpec = \refEnthSpec + \int_{\temperature^{\standardstate}}^{\temperature} \cpSpec(\temperature) \text{d}\temperature
+\end{eqnarray}
+In this work, we use the empirical fits of McBride, Gordon, and Reno~\cite{McBride1993} to compute thermodynamic quantities which incorporate this temperature dependence. The species specific heat capacity at constant pressure, species enthalpy, and species entropy are given by the model forms
+
 \begin{equation}
-	\frac{\cpSpec}{\gasConstSpec} = a_1 + a_2 \temperature + a_3 \temperature^2 + a_4 \temperature^3 + a_5 \temperature^4
+	\frac{\cpSpec}{\gasConstSpec} = \fitScalOneSpec{1} + \fitScalOneSpec{2} \temperature + \fitScalOneSpec{3} \temperature^2 + \fitScalOneSpec{4} \temperature^3 + \fitScalOneSpec{5} \temperature^4
 \end{equation}
 
 \begin{equation}
-	\frac{\enthSpec}{\gasConstSpec \temperature} = a_1 + a_2 \frac{\temperature}{2} + a_3 \frac{\temperature^2}{3} + a_3 \frac{\temperature^3}{4} + a_3 \frac{\temperature^4}{5} + \frac{a_6}{\temperature}
+	\frac{\enthSpec}{\gasConstSpec \temperature} = \fitScalOneSpec{1} + \fitScalOneSpec{2} \frac{\temperature}{2} + \fitScalOneSpec{3} \frac{\temperature^2}{3} + \fitScalOneSpec{4} \frac{\temperature^3}{4} + \fitScalOneSpec{5} \frac{\temperature^4}{5} + \frac{\fitScalOneSpec{6}}{\temperature}
 \end{equation}
 
 \begin{equation}
-	\frac{\entropySpec}{\gasConstSpec} = a_1 \text{ln}\temperature + a_2 \temperature + a_3 \frac{\temperature^2}{2} + a_4 \frac{\temperature^3}{3} + a_5 \frac{\temperature^4}{4} + a_7
+	\frac{\entropySpec}{\gasConstSpec} = \fitScalOneSpec{1} \text{ln}\temperature + \fitScalOneSpec{2} \temperature + \fitScalOneSpec{3} \frac{\temperature^2}{2} + \fitScalOneSpec{4} \frac{\temperature^3}{3} + \fitScalOneSpec{5} \frac{\temperature^4}{4} + \fitScalOneSpec{7}
 \end{equation}
+where $\fitScalOneSpec{\dummyIdx}$, $\dummyIdx \in \{1 \hdots 7\}$ are tabulated for the $\specIdx$th species.
 
-\textcolor{red}{LEWIS/LENNARD-JONES}
-
-\begin{equation}
-	\dynViscSpec = \text{exp} \left(b_1 \text{ln} \temperature + \frac{b_2}{\temperature} + \frac{b_3}{\temperature^2} + b_4 \right) \times 10^{-7}
-\end{equation}
+Two different empirical models for transport properties are available in GEMS. The first, which is used in the single-element combustor simulations presented in Section~\ref{sec:cvrc}, computes the species dynamic viscosities and thermal conductivities from the NASA Lewis Research Center model~\cite{Svehla1995}, given by, 
 
 \begin{equation}
-	\thermCondSpec = \text{exp} \left(c_1 \text{ln} \temperature + \frac{c_2}{\temperature} + \frac{c_3}{\temperature^2} + c_4 \right) \times 10^{-4}
+	\dynViscSpec = \text{exp} \left(\fitScalTwoSpec{1} \text{ln} \temperature + \frac{\fitScalTwoSpec{2}}{\temperature} + \frac{\fitScalTwoSpec{3}}{\temperature^2} + \fitScalTwoSpec{4} \right) \times 10^{-7}
 \end{equation}
+
+\begin{equation}
+	\thermCondSpec = \text{exp} \left(\fitScalThreeSpec{1} \text{ln} \temperature + \frac{\fitScalThreeSpec{2}}{\temperature} + \frac{\fitScalThreeSpec{3}}{\temperature^2} + \fitScalThreeSpec{4} \right) \times 10^{-4}
+\end{equation}
+The scalar factors $\fitScalTwoSpec{\dummyIdx}, \; \fitScalThreeSpec{\dummyIdx}$, $\dummyIdx \in \{1 \hdots 4\}$ are tabulated for the $\specIdx$th species.
+
+The mass diffusivity of the $\specIdx$th species into the mixture is given as 
 
 \begin{equation}
 	\massDiffSpec = \frac{1 - \moleSpec}{\sum_{\specIdxTwo \neq \specIdx} \frac{\moleSpecTwo}{\massDiffSpecTwo}}
 \end{equation}
+The binary diffusion coefficient between the $\specIdx$th and $\specIdxTwo$th species is modeled via Chapman--Enskog theory (from~\cite{propGasLiquid})
 
 \begin{equation}
-	\massDiffSpecTwo = \frac{0.0266}{\pressure \left(\collisionDiamSpec + \collisionDiamSpecTwo\right)^2 \ljPotential} \sqrt{\temperature^3 \left(\frac{1}{\mwSpec} + \frac{1}{\mwSpecTwo}\right)}
+	\massDiffSpecTwo = \frac{0.0266}{\pressure \left(\frac{\collisionDiamSpec + \collisionDiamSpecTwo}{2}\right)^2 \ljPotential} \sqrt{\temperature^3 \left(\frac{1}{\mwSpec} + \frac{1}{\mwSpecTwo}\right)}
 \end{equation}
+where $\collisionDiamSpec$ is the collision diameter of the $\specIdx$th species in Angstroms. Self diffusion is ignored ($\massDiffSpecTwo = 0 \; \forall \; \specIdx = \specIdxTwo$). The diffusion collision integral, $\ljPotential$, is computed from the relations of Neufeld, Janzen, and Aziz~\cite{Neufeld1972}
 
 \begin{equation}
-	\ljPotential = d_1 \left(\tempReduced\right)^{d_2} + d_3 \left(\tempReduced\right)^{d_4} + d_5 \left(\tempReduced\right)^{d_6} +  d_7 \left(\tempReduced\right)^{d_8}
+	\ljPotential = \frac{\fitScalFour{1}}{\text{exp} \left(\fitScalFour{2} \tempReduced\right)} + \frac{\fitScalFour{3}}{\text{exp} \left(\fitScalFour{4} \tempReduced\right)} + \frac{\fitScalFour{5}}{\text{exp} \left(\fitScalFour{6} \tempReduced\right)} + \frac{\fitScalFour{7}}{\text{exp} \left(\fitScalFour{8} \tempReduced\right)}
 \end{equation}
+where the scalar factors $\fitScalFour{\dummyIdx}$, $\dummyIdx \in \{1 \hdots 8\}$ are empirically determined, and universal for every species pairing. The reduced temperature $\tempReduced$ is computed as
 
 \begin{equation}
 	\tempReduced = \temperature \left( \frac{k_B}{\sqrt{\ljEnergySpec \ljEnergySpecTwo}} \right)
 \end{equation}
+where $k_B$ is the Boltzmann constant, and $\ljEnergySpec$ is the tabulated Lennard--Jones energy of the $\specIdx$th species.
 
 \textcolor{red}{CURVE FIT}
 
