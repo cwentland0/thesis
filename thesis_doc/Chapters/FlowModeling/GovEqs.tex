@@ -58,13 +58,13 @@ where $\consVec$ is the conservative state, $\invFluxDir \defEq [\invFlux_x, \; 
 \end{equation}
 Horizontal dashed lines separate additional equations which are included for different chemical transport and reaction models. The first five equations (the continuity equation, three momentum equations, and the energy equation) generally describe three-dimension fluid flows. The z-momentum equation is neglected in two-dimensional flows, and the y-momentum equation is also neglected in one-dimensional flows. The relevant terms are as follows: $\density$ is the density, $\vel_{\spatialIdx} \in \{\velX, \; \velY, \; \velZ\}$ is the velocity in each spatial direction, $\pressure$ is the static pressure, and $\delta_{\dummyIdx \dummyIdxTwo}$ is the Kronecker delta. The stagnation enthalpy is given by
 \begin{equation}\label{eq:stagEnth}
-	\stagEnth \defEq \frac{1}{2} (\velX^2 + \velY^2 + \velZ^2) + \specSumAll \enthSpec \mfSpec,
+	\stagEnth \defEq \frac{1}{2} \sum_{\spatialIdx=1}^3 \vel_{\spatialIdx}^2 + \specSumAll \enthSpec \mfSpec,
 \end{equation}
 the viscous shear stress is given by
 \begin{equation}\label{eq:shearStress}
-	\shearStress_{\spatialIdx \spatialIdxTwo} \defEq \dynVisc \left( \pde{\vel_{\spatialIdx}}{x_{\spatialIdxTwo}} + \pde{\vel_{\spatialIdxTwo}}{x_{\spatialIdx}} - \frac{2}{3} \pde{\vel_{\spatialIdxThree}}{x_{\spatialIdxThree}} \delta_{\spatialIdx \spatialIdxTwo} \right),
+	\shearStress_{\spatialIdx \spatialIdxTwo} \defEq \dynVisc \left( \pde{\vel_{\spatialIdx}}{x_{\spatialIdxTwo}} + \pde{\vel_{\spatialIdxTwo}}{x_{\spatialIdx}} - \delta_{\spatialIdx \spatialIdxTwo} \frac{2}{3} \sum_{\spatialIdxThree=1}^3 \pde{\vel_{\spatialIdxThree}}{x_{\spatialIdxThree}} \right),
 \end{equation}
-and the heat flux is given by \textcolor{red}{density of mass diffusion might be wrong?}
+and the heat flux is given by
 \begin{equation}\label{eq:heatFlux}
 	\heatFlux_{\spatialIdx} \defEq -\thermCond \pde{\temperature}{x_{\spatialIdx}} - \density \specSumAll \massDiffSpec \pde{\mfSpec}{x_{\spatialIdx}} \enthSpec.
 \end{equation}
@@ -169,21 +169,33 @@ The one-dimensional transient flame case (Section~\ref{sec:oneDFlame}) and the 2
 \end{equation}
 
 \begin{equation}
-	\massDiffSpec =
+	\massDiffSpec = \frac{1 - \moleSpec}{\sum_{\specIdxTwo \neq \specIdx} \frac{\moleSpecTwo}{\massDiffSpecTwo}}
+\end{equation}
+
+\begin{equation}
+	\massDiffSpecTwo = \frac{0.0266}{\pressure \left(\collisionDiamSpec + \collisionDiamSpecTwo\right)^2 \ljPotential} \sqrt{\temperature^3 \left(\frac{1}{\mwSpec} + \frac{1}{\mwSpecTwo}\right)}
+\end{equation}
+
+\begin{equation}
+	\ljPotential = d_1 \left(\tempReduced\right)^{d_2} + d_3 \left(\tempReduced\right)^{d_4} + d_5 \left(\tempReduced\right)^{d_6} +  d_7 \left(\tempReduced\right)^{d_8}
+\end{equation}
+
+\begin{equation}
+	\tempReduced = \temperature \left( \frac{k_B}{\sqrt{\ljEnergySpec \ljEnergySpecTwo}} \right)
 \end{equation}
 
 \textcolor{red}{CURVE FIT}
 
 \begin{equation}
-	\dynViscSpec =
+	\dynViscSpec = \text{exp} \left( b_1 + b_2 \text{ln}T + b_3 (\text{ln}T)^2 + b_4 (\text{ln}T)^3  \right) \times 10^{-1}
 \end{equation}
 
 \begin{equation}
-	\thermCondSpec =
+	\thermCondSpec = \text{exp} \left( c_1 + c_2 \text{ln}T + c_3 (\text{ln}T)^2 + c_4 (\text{ln}T)^3  \right) \times 10^{-5}
 \end{equation}
 
 \begin{equation}
-	\massDiffSpec =
+	\massDiffSpecTwo = \left(\frac{1 \; \text{atm}}{\pressure}\right) \text{exp} \left( d_1 + d_2 \text{ln}T + d_3 (\text{ln}T)^2 + d_4 (\text{ln}T)^3 \right) \times 10^{-4}
 \end{equation}
 
 % \subsection{Nicoud Subgrid-scale $\sigma$-model}

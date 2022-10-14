@@ -1,5 +1,13 @@
 \newcommand{\MC}{\mathcal}
 
+% misc
+\newcommand{\identMat}{\ensuremath{\mathbf{I}}}
+\newcommand{\zeroVec}{\ensuremath{\mathbf{0}}}
+\newcommand{\volume}{\ooalign{\hfil$V$\hfil\cr\kern0.08em--\hfil\cr}}
+\newcommand{\norm}[1]{\ensuremath{\left\lVert#1\right\rVert}}
+\newcommand{\defEq}{\ensuremath{:=}}
+\newcommand{\standardstate}{\circ\kern-0.47em-}
+
 % time
 \newcommand{\timeVar}{\ensuremath{\text{t}}}
 \newcommand{\initTime}{\ensuremath{\timeVar^0}}
@@ -156,8 +164,8 @@
 \newcommand{\enth}{\ensuremath{h}}
 \newcommand{\stagEnth}{\ensuremath{\enth^0}}
 \newcommand{\enthSpec}{\ensuremath{\enth_{\specIdx}}}
-\newcommand{\refEnth}{\ensuremath{\enth_{\text{ref}}}}
-\newcommand{\refEnthSpec}{\ensuremath{\enth_{\text{ref,\specIdx}}}}
+\newcommand{\refEnth}{\ensuremath{\enth^{\standardstate}}}
+\newcommand{\refEnthSpec}{\ensuremath{\enth^{\standardstate}_{\specIdx}}}
 \newcommand{\entropy}{\ensuremath{s}}
 \newcommand{\entropySpec}{\ensuremath{\entropy_{\specIdx}}}
 \newcommand{\shearStress}{\ensuremath{\tau}}
@@ -167,6 +175,7 @@
 \newcommand{\gibbsSpec}{\ensuremath{g}_{\specIdx}}
 \newcommand{\pressure}{\ensuremath{p}}
 \newcommand{\temperature}{\ensuremath{T}}
+\newcommand{\tempReduced}{\ensuremath{T^*}}
 \newcommand{\heatFlux}{\ensuremath{q}}
 \newcommand{\vel}{\ensuremath{u}}
 \newcommand{\velX}{\ensuremath{u}}
@@ -178,6 +187,7 @@
 \newcommand{\diffVelDir}{\ensuremath{\diffVelVar_{\spatialIdx, \specIdx}}}
 \newcommand{\massDiffVar}{\ensuremath{D}}
 \newcommand{\massDiffSpec}{\ensuremath{\massDiffVar_{\specIdx M}}}
+\newcommand{\massDiffSpecTwo}{\ensuremath{\massDiffVar_{\specIdx, \specIdxTwo}}}
 \newcommand{\dynVisc}{\ensuremath{\mu}}
 \newcommand{\dynViscSpec}{\ensuremath{\dynVisc_{\specIdx}}}
 \newcommand{\dynViscSpecTwo}{\ensuremath{\dynVisc_{\specIdxTwo}}}
@@ -185,6 +195,13 @@
 \newcommand{\constViscSpec}{\ensuremath{\constVisc_{\specIdx}}}
 \newcommand{\thermCond}{\ensuremath{\lambda}}
 \newcommand{\thermCondSpec}{\ensuremath{\thermCond_{\specIdx}}}
+\newcommand{\ljEnergy}{\ensuremath{\epsilon}}
+\newcommand{\ljEnergySpec}{\ensuremath{\ljEnergy_{\specIdx}}}
+\newcommand{\ljEnergySpecTwo}{\ensuremath{\ljEnergy_{\specIdxTwo}}}
+\newcommand{\ljPotential}{\ensuremath{\Omega}}
+\newcommand{\collisionDiam}{\ensuremath{\sigma}}
+\newcommand{\collisionDiamSpec}{\ensuremath{\sigma_{\specIdx}}}
+\newcommand{\collisionDiamSpecTwo}{\ensuremath{\sigma_{\specIdxTwo}}}
 
 % chemical quantities
 \newcommand{\mf}{\ensuremath{Y}}
@@ -244,10 +261,3 @@
 \newcommand{\nonnegReals}{\ensuremath{\mathbb{R}_{\ge 0}}}
 \newcommand{\inNonNegReals}{\in \nonnegReals}
 \newcommand{\funcMap}[3]{\ensuremath{#1: #2 \rightarrow #3}}
-
-% misc
-\newcommand{\identMat}{\ensuremath{\mathbf{I}}}
-\newcommand{\zeroVec}{\ensuremath{\mathbf{0}}}
-\newcommand{\volume}{\ooalign{\hfil$V$\hfil\cr\kern0.08em--\hfil\cr}}
-\newcommand{\norm}[1]{\ensuremath{\left\lVert#1\right\rVert}}
-\newcommand{\defEq}{\ensuremath{:=}}
