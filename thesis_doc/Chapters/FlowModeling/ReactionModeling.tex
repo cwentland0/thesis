@@ -1,38 +1,105 @@
 \section{Reaction Modeling}
 
-Two reaction models are used to simulate chemical reactions in this thesis: the laminar finite rate model and the flamelet/progress variable model. We detail each in turn.
+Two reaction models are used to simulate chemical reactions in this thesis: the laminar finite rate model and the flamelet/progress variable model. In both models, we describe the $\reacIdx$th chemical reaction of a mechanism with the general form
+%
+\begin{equation}
+	\specSumAll \stoichCoefSpecReac' \chi_{\specIdx} \xrightleftharpoons[]{} \specSumAll \stoichCoefSpecReac'' \chi_{\specIdx}
+\end{equation}
+%
+where $\stoichCoefSpecReac'$ and $\stoichCoefSpecReac''$ are the stoichiometric coefficients of the $\specIdx$th species as reactants and products of the $\reacIdx$th reaction, respectively. The $\specIdx$th chemical species is denoted by the symbol $\chi_{\specIdx}$. A simple example of this format is the reaction of carbon monoxide and hydroperoxyl, or
+%
+\begin{equation}\label{eq:exampleReac}
+	\carbonmonox + \hydroperoxyl \xrightleftharpoons[]{} \hydroxide + \carbondiox
+\end{equation}
+%
+The stoichiometry of this reaction is written in Table~\ref{tab:exampleReac}.
+
+\begin{table}
+	\centering
+	\setlength{\tabcolsep}{12pt}
+	\begin{tabular}{llll}
+		\toprule
+		$\specIdx$ & $\chi_{\specIdx}$ & $\stoichCoefSpec'$ & $\stoichCoefSpec''$ \\
+		\midrule
+		% 1 & $\methane$ & 1 & 0 \\
+		% 2 & $\oxygen$ & 2 & 0 \\
+		% 3 & $\carbondiox$ & 0 & 1 \\
+		% 4 & $\water$ & 0 & 2 \\
+		1 & $\carbonmonox$ & 1 & 0 \\
+		2 & $\hydroperoxyl$ & 1 & 0 \\
+		3 & $\hydroxide$ & 0 & 1 \\
+		4 & $\carbondiox$ & 0 & 1 \\
+		\bottomrule
+	\end{tabular}
+	\caption{\label{tab:exampleReac}Stoichiometry of example reaction, Eq.~\ref{eq:exampleReac}}
+\end{table}
 
 \subsection{Finite Rate Reactions}\label{sec:finiterate}
 
-\begin{equation}
-	\specSumAll \stoichCoefSpecReac' \chi_\specIdx \xrightleftharpoons[\forwardRateReac]{\reverseRateReac} \specSumAll \stoichCoefSpecReac'' \chi_\specIdx
+The laminar finite rate chemistry model is used to compute results for the one-dimensional model premixed flame in Chapter~\ref{chap:TransientFlame} and the nine-element combustor in Chapter~\ref{chap:NineElement}. In this model, the production rate of the $\specIdx$th species (in kg/m$^3$-s) is given by the relationship
+%
+\begin{equation}\label{eq:specProd}
+	\prodRateSpec = \mwSpec \reacSumAll (\stoichCoefSpecReac'' - \stoichCoefSpecReac') \rateofprogReac,
 \end{equation}
-
-\begin{equation}
-	\prodRateSpec = \mwSpec \reacSumAll (\stoichCoefSpecReac'' - \stoichCoefSpecReac') \rateofprogReac
+%
+where $\numReacs$ is the total number of reactions in the mechanism. The rate-of-progress of the $\reacIdx$th reaction is computed as
+%
+\begin{equation}\label{eq:rateOfProg}
+	\rateofprogReac = \forwardRateReac \prod_{\specIdx=1}^{\numSpec} [\moleSpec]^{\stoichCoefSpecReac'} - \reverseRateReac \prod_{\specIdx=1}^{\numSpec} [\moleSpec]^{\stoichCoefSpecReac''},
 \end{equation}
-
-\begin{equation}
-	\rateofprogReac = \forwardRateReac \prod_{\specIdx=1}^{\numSpec} [\moleSpec]^{\stoichCoefSpecReac'} - \reverseRateReac \prod_{\specIdx=1}^{\numSpec} [\moleSpec]^{\stoichCoefSpecReac''}
-\end{equation}
-
+%
+where $\forwardRateReac$ and $\reverseRateReac$ are the forward and reverse reaction rates, respectively. Here, $[\moleSpec]$ is the molar concentration of the $\specIdx$th species. The forward reaction rate (or the rate at which reactants are converted to products) is computed as an Arrhenius rate, given by the general form
+%
 \begin{equation}
 	\forwardRateReac = A_\reacIdx \temperature^{b_\reacIdx} \text{exp} \left( \frac{-E_{a,\reacIdx}}{\gasConstUniv \temperature} \right)
 \end{equation}
-
+%
+where $A_\reacIdx$ is the pre-exponential factor, $b_\reacIdx$ is the temperature exponent, and $E_{a,\reacIdx}$ is the activation energy of the $\reacIdx$th reaction. These constant factors are tabulated for each reaction in the mechanism, generally fit to match experimental results. Next, we assume that chemical reactions occur at a much smaller time scale than that of transport phenomena, and thus any chemical reactions are assumed to be in local equilibrium. The reverse reaction rate can then be computed as
+%
 \begin{equation}
-	\reverseRateReac = \frac{\forwardRateReac}{\equilConstReac}
+	\reverseRateReac = \frac{\forwardRateReac}{\equilConstReac},
 \end{equation}
-
+%
+where $\equilConstReac$ is the equilibrium constant for the $\reacIdx$th reaction. The equilibrium constant is computed by
+%
 \begin{equation}
-	\equilConstReac = \text{exp}\left(-\specSumAll (\stoichCoefSpecReac'' - \stoichCoefSpecReac') \gibbsSpec\right) \left(\frac{1 \; \text{atm}}{\temperature \gasConstUniv}\right)^{\specSumAll (\stoichCoefSpecReac'' - \stoichCoefSpecReac')}
+	\equilConstReac = \text{exp}\left(-\specSumAll (\stoichCoefSpecReac'' - \stoichCoefSpecReac') \gibbsSpec\right) \left(\frac{101,325 \; \text{Pa}}{\temperature \gasConstUniv}\right)^{\specSumAll (\stoichCoefSpecReac'' - \stoichCoefSpecReac')}
 \end{equation}
-
+%
+where $\gibbsSpec$ is the Gibbs free energy of the $\specIdx$th species in the mixture, given by
+%
 \begin{equation}\label{eq:gibbsSpec}
-	\gibbsSpec = \frac{\enthSpec}{\gasConstSpec \temperature} - \frac{\entropySpec}{\gasConstSpec}
+	\gibbsSpec = \frac{\enthSpec}{\gasConstSpec \temperature} - \frac{\entropySpec}{\gasConstSpec}.
+\end{equation}
+%
+After the species production rates (Eq.~\ref{eq:specProd}) are computed, they substituted into the corresponding scalar transport equations for each chemical species, as outlined in the sixth equation in Eq.~\ref{eq:gemsGovVecs}.
+
+For an \textit{irreversible} reaction, it is assumed that the reaction only proceeds in the forward direction, i.e. $\reverseRateReac = 0$. Irreversible reactions are denoted by a single rightward arrow, such as
+%
+\begin{equation}
+	\methyl + \oAtom \rightarrow \hAtom + \hydrogen + \carbonmonox
+\end{equation}
+%
+While no reaction is truly irreversible, in some cases the reverse reaction is so unlikely (relative to the forward reaction) that it may be safely ignored. This greatly simplifies the calculation of the reaction rate-of-progress (Eq.~\ref{eq:rateOfProg}). The one-dimensional model premixed flame in Chapter~\ref{chap:TransientFlame} utilizes a single irreversible reaction, and some reactions of the mechanism used for the nine-element combustor in Chapter~\ref{chap:NineElement} are treated as irreversible.
+
+We also briefly note that the reaction mechanism used in simulations of the nine-element combustor studied in Chapter~\ref{chap:NineElement} includes reactions involving third-body effects in the low-pressure limit. These corrections are either of the Lindemann--Hinshelwood form~\cite{Hinshelwood1926} or Troe form~\cite{Gilbert1983}.
+
+\subsection{Steady Flamelet/Progress Variable Modeling}\label{sec:fpv}
+
+{\color{red}
+\begin{itemize}
+	\item Unity Lewis number for all implies that all species have a common diffusivity
+\end{itemize}
+}
+In order to capture complex phenomena in turbulent combustion (such as local extinction and ignition), particularly for complex hydrocarbon fuels, chemical mechanisms for finite rate reaction models often account for dozens of species and hundreds of reactions. For high-fidelity simulations of reacting flows, the cost of accurately evaluating these processes during CFD calculations can be extremely computationally expensive.
+
+\begin{equation}
+	-\density \chi \ode{^2 \mfSpec}{\mixFrac^2} = \omega_{\specIdx}
 \end{equation}
 
-\subsection{Flamelet/Progress Variable Modeling}\label{sec:fpv}
+\begin{equation}
+	\chi = 2 D_{\mixFrac} \left(\nabla \mixFrac\right)^2
+\end{equation}
 
 \begin{equation}\label{eq:mixFracDef}
     \mixFrac \defEq \frac{ \nu_{\text{st}} \mf_{\text{f}} - \mf_{\text{ox}} + \mf^0_{\text{ox}} }{ \nu_{\text{st}} \mf^0_{\text{f}} + \mf^0_{\text{ox}} }
