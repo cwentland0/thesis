@@ -41,8 +41,8 @@ where $\consVec$ is the conservative state, $\invFluxDir \defEq [\invFlux_x, \; 
 	\shearStress_{\spatialIdx z} \\
 	- \heatFlux_{\spatialIdx} + \sum_{\spatialIdxTwo} \vel_{\spatialIdxTwo} \shearStress_{\spatialIdx \spatialIdxTwo}\\ \hdashline[2pt/2pt]
 	\density \massDiffSpec \pde{\mfSpec}{x_{\spatialIdx}} \\ \hdashline[2pt/2pt]
-	\density \massDiffVar_{\mixFrac} \pde{\mixFrac}{x_{\spatialIdx}} \\
-	\density \massDiffVar_{\progVar} \pde{\progVar}{x_{\spatialIdx}}
+	\density \massDiffMixFrac \pde{\mixFrac}{x_{\spatialIdx}} \\
+	\density \massDiffProgVar \pde{\progVar}{x_{\spatialIdx}}
     \end{array}
     \right], \quad
 	\sourceVec \defEq \left[

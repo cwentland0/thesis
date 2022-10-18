@@ -192,12 +192,31 @@
 \newcommand{\fitScalFourSpec}[1]{\ensuremath{\fitScalFourVar_{#1,\specIdx}}}
 \newcommand{\fitScalFourSpecTwo}[1]{\ensuremath{\fitScalFourVar_{#1,\specIdx \specIdxTwo}}}
 
+% chemical quantities
+\newcommand{\mf}{\ensuremath{Y}}
+\newcommand{\mfSpec}{\ensuremath{\mf_{\specIdx}}}
+\newcommand{\mfSpecTwo}{\ensuremath{\mf_{\specIdxTwo}}}
+\newcommand{\mole}{\ensuremath{X}}
+\newcommand{\moleSpec}{\ensuremath{\mole_{\specIdx}}}
+\newcommand{\moleSpecTwo}{\ensuremath{\mole_{\specIdxTwo}}}
+\newcommand{\moleConcSpec}{\ensuremath{[\moleSpec]}}
+\newcommand{\mw}{\ensuremath{M}}
+\newcommand{\mwSpec}{\ensuremath{\mw_{\specIdx}}}
+\newcommand{\mwSpecTwo}{\ensuremath{\mw_{\specIdxTwo}}}
+\newcommand{\gasConst}{\ensuremath{R}}
+\newcommand{\gasConstSpec}{\ensuremath{\gasConst_{\specIdx}}}
+\newcommand{\gasConstUniv}{\ensuremath{\gasConst_u}}
+\newcommand{\mixFrac}{Z}
+\newcommand{\progVar}{C}
+
 % transport quantities
 \newcommand{\diffVelVar}{\ensuremath{V}}
 \newcommand{\diffVelDir}{\ensuremath{\diffVelVar_{\spatialIdx, \specIdx}}}
 \newcommand{\massDiffVar}{\ensuremath{D}}
 \newcommand{\massDiffSpec}{\ensuremath{\massDiffVar_{\specIdx M}}}
 \newcommand{\massDiffSpecTwo}{\ensuremath{\massDiffVar_{\specIdx, \specIdxTwo}}}
+\newcommand{\massDiffMixFrac}{\ensuremath{\massDiffVar_{\mixFrac}}}
+\newcommand{\massDiffProgVar}{\ensuremath{\massDiffVar_{\progVar}}}
 \newcommand{\dynVisc}{\ensuremath{\mu}}
 \newcommand{\dynViscSpec}{\ensuremath{\dynVisc_{\specIdx}}}
 \newcommand{\dynViscSpecTwo}{\ensuremath{\dynVisc_{\specIdxTwo}}}
@@ -216,23 +235,6 @@
 \newcommand{\collisionDiam}{\ensuremath{\sigma}}
 \newcommand{\collisionDiamSpec}{\ensuremath{\sigma_{\specIdx}}}
 \newcommand{\collisionDiamSpecTwo}{\ensuremath{\sigma_{\specIdxTwo}}}
-
-% chemical quantities
-\newcommand{\mf}{\ensuremath{Y}}
-\newcommand{\mfSpec}{\ensuremath{\mf_{\specIdx}}}
-\newcommand{\mfSpecTwo}{\ensuremath{\mf_{\specIdxTwo}}}
-\newcommand{\mole}{\ensuremath{X}}
-\newcommand{\moleSpec}{\ensuremath{\mole_{\specIdx}}}
-\newcommand{\moleSpecTwo}{\ensuremath{\mole_{\specIdxTwo}}}
-\newcommand{\moleConcSpec}{\ensuremath{[\moleSpec]}}
-\newcommand{\mw}{\ensuremath{M}}
-\newcommand{\mwSpec}{\ensuremath{\mw_{\specIdx}}}
-\newcommand{\mwSpecTwo}{\ensuremath{\mw_{\specIdxTwo}}}
-\newcommand{\gasConst}{\ensuremath{R}}
-\newcommand{\gasConstSpec}{\ensuremath{\gasConst_{\specIdx}}}
-\newcommand{\gasConstUniv}{\ensuremath{\gasConst_u}}
-\newcommand{\mixFrac}{Z}
-\newcommand{\progVar}{C}
 
 % chemicals
 \newcommand{\methane}{\ensuremath{\text{CH}_4}}
@@ -263,6 +265,7 @@
 \newcommand{\reverseRate}{\ensuremath{\reacRate_{R}}}
 \newcommand{\reverseRateReac}{\ensuremath{\reacRate_{R,\reacIdx}}}
 \newcommand{\equilConstReac}{\ensuremath{\reacRate_{C,\reacIdx}}}
+\newcommand{\scalarDiss}{\ensuremath{\chi}}
 
 % summations
 \newcommand{\specSumAll}{\ensuremath{\sum_{\specIdx = 1}^{\numSpec}}}

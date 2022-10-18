@@ -1,5 +1,9 @@
 \section{Numerics}\label{sec:numerics}
 
+We now describe the means by which the Navier--Stokes equations (Eq.~\ref{eq:gemsGovPDE}) are discretized in space and time, and the resulting linear system solved. We restrict discussion to methods implemented in GEMS; although similar methods are used in PERFORM, we will note some differences in Chapter~\ref{chap:TransientFlame}.
+
+The spatial domain is discretized by an unstructured, cell-centered, second-order accurate finite-volume scheme. Inviscid fluxes are computed by Roe's method~\cite{Roe1981}. Gradients are computed using the formulation of Mitchell~\cite{Mitchell1994}, whereby nodal quantities are computed as the average of surrounding cell-centered values weighted by the method of Rausch \textit{et al.}~\cite{Rausch1991}.
+
 \begin{itemize}
 	\item All simulations second-order in space and time
 	\item BDF2 for time discretization

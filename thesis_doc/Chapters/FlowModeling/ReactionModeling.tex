@@ -84,27 +84,47 @@ While no reaction is truly irreversible, in some cases the reverse reaction is s
 
 We also briefly note that the reaction mechanism used in simulations of the nine-element combustor studied in Chapter~\ref{chap:NineElement} includes reactions involving third-body effects in the low-pressure limit. These corrections are either of the Lindemann--Hinshelwood form~\cite{Hinshelwood1926} or Troe form~\cite{Gilbert1983}.
 
-\subsection{Steady Flamelet/Progress Variable Modeling}\label{sec:fpv}
+\subsection{Flamelet/Progress Variable Modeling}\label{sec:fpv}
 
-{\color{red}
-\begin{itemize}
-	\item Unity Lewis number for all implies that all species have a common diffusivity
-\end{itemize}
-}
-In order to capture complex phenomena in turbulent combustion (such as local extinction and ignition), particularly for complex hydrocarbon fuels, chemical mechanisms for finite rate reaction models often account for dozens of species and hundreds of reactions. For high-fidelity simulations of reacting flows, the cost of accurately evaluating these processes during CFD calculations can be extremely computationally expensive.
+In order to capture complex phenomena in turbulent combustion (such as local extinction and ignition), particularly for complex hydrocarbon fuels, chemical mechanisms for finite rate reaction models often account for dozens of species and hundreds of reactions. Further, as mentioned previously, the characteristic spatio-temporal scales of turbulent flames are extremely small. The cost of accurately modeling these processes during CFD calculations can be extremely computationally expensive.
 
-\begin{equation}
-	-\density \chi \ode{^2 \mfSpec}{\mixFrac^2} = \omega_{\specIdx}
-\end{equation}
-
-\begin{equation}
-	\chi = 2 D_{\mixFrac} \left(\nabla \mixFrac\right)^2
-\end{equation}
-
+Laminar flamelet modeling, originally introduced by Peters~\cite{Peters1984}, attempts to simplify chemical transport and reaction modeling for turbulent non-premixed flames by treating the flame as an ensemble of localized flamelets. This operates by introducing the fuel mixture fraction,
+%
 \begin{equation}\label{eq:mixFracDef}
-    \mixFrac \defEq \frac{ \nu_{\text{st}} \mf_{\text{f}} - \mf_{\text{ox}} + \mf^0_{\text{ox}} }{ \nu_{\text{st}} \mf^0_{\text{f}} + \mf^0_{\text{ox}} }
+    \mixFrac \defEq \frac{ \nu \mf_{\text{f}} - \mf_{\text{ox}} + \mf^0_{\text{ox}} }{ \nu \mf^0_{\text{f}} + \mf^0_{\text{ox}} }
 \end{equation}
+%
+where $\mf_{\text{f}}$ and $\mf_{\text{ox}}$ are the local fuel and oxidizer mass fractions, respectively, $\mf^0_{\text{f}}$ is the mass fraction of fuel in the fuel stream, and $\mf^0_{\text{ox}}$ is the mass fraction of oxidizer in the oxidizer stream. The stoichiometric mass ratio is defined as
+%
+\begin{equation}
+	\stoichCoef \defEq \frac{\stoichCoef'_{\text{ox}} \mw_{\text{ox}}}{\stoichCoef'_{\text{f}} \mw_{\text{f}}}
+\end{equation}
+%
+The mixture fraction acts as an independent coordinate that varies from 0 (in the pure oxidizer stream) to 1 (in the pure fuel stream) normal to the flame surface defined by $\mixFrac = \mixFrac_{\text{st}}$, the stoichiometric mixture fraction (i.e. where $\nu \mf_{\text{f}} = \mf_{\text{ox}}$). The transport equation for the fuel mass fraction is given as the seventh equation in Eq.~\ref{eq:gemsGovVecs}. The species mass fraction fields are related to the fuel mixture fraction field by the steady flamelet equations
+%
+\begin{equation}\label{eq:steadyFlamelet}
+	-\density \scalarDiss \ode{^2 \mfSpec}{\mixFrac^2} = \prodRateSpec
+\end{equation}
+%
+where the scalar dissipation rate, in s$^{-1}$, is given by
+\begin{equation}
+	\scalarDiss = 2 \massDiffMixFrac \left(\nabla \mixFrac \cdot \nabla \mixFrac\right)
+\end{equation}
+%
+In the original flamelet model formulation, a library of solutions to Eq.~\ref{eq:steadyFlamelet} is precomputed from one-dimensional counterflow diffusion flame simulations (e.g., via FlameMaster~\cite{flamemaster}). This provides a unique mapping from the local fuel mixture fraction and dissipation rate to individual mass fractions, i.e. $\mfSpec = \mfSpec(\mixFrac, \; \scalarDiss)$. As a result, the mixture fraction transport equation need only be accounted for, replacing the species transport equations.
 
+The original flamelet model, however, does not explicitly model any chemical reactions. In order to account for this, an additional tracking variable, the \textit{progress variable} $\progVar$ was introduced by Charles Pierce. This takes the form
+%
 \begin{equation}\label{eq:progVarDef}
 	\progVar \defEq \sum_{\specIdxTwo = 1}^{\numProg} \mf_{\specIdx_{\specIdxTwo}}
 \end{equation}
+%
+where $\numProg$ is the total number of species mass fractions which make up the progress variable. In general, the constituent mass fractions are chosen to be those of reaction products or late-stage intermediates, as they are an indicator of reaction progress and provide a unique mapping to all chemical states (in combination with the mixture fraction). For example, the simulations of the truncated single-element combustor presented in Section~\ref{sec:cvrc} use carbon dioxide, carbon monoxide, and diatomic hydrogen. The precomputed flamelet library thus provides unique mappings,
+%
+\begin{equation}
+	\mfSpec = \mfSpec(\mixFrac, \; \progVar), \quad \prodRateFPV = \prodRateFPV(\mixFrac, \; \progVar)
+\end{equation}
+%
+The transport equation for the progress variable is given as the eighth equation in Eq.~\ref{eq:gemsGovVecs}. In summary, the FPV model introduces two scalar transport equations, and precomputes a library of steady flamelet solutions which provide a unique mapping from these two scalars to the species mass fraction fields and progress variable rate of production. Especially when large, complex reaction mechanisms are used, this greatly reduces the computational cost of simulating non-premixed combusting flow systems.
+
+Note that, traditionally, the FPV model also provides unique mappings for the temperature, density, transport, and thermodynamic quantities as part of the flamelet tabulation. GEMS does not include these mappings, and instead solves the energy equation directly. While this approach ensures conservation of energy, it also incurs significant computational costs due to the additional transport equation and the direct calculation of transport and thermodynamic properties. We further note that when a filter is applied for LES, an additional transport equation must be solved for the mean mixture fraction variance ($\widetilde{\mixFrac''^2}$). The mean mixture fraction variance is also used in the flamelet library mapping (i.e. $\mfSpec = \mfSpec(\widetilde{\mixFrac}, \; \widetilde{\mixFrac''^2}, \; \widetilde{\progVar})$). Recall that all results in this thesis use implicit LES and no explicit filtering occurs, hence we do not account for the mean mixture fraction variance.
