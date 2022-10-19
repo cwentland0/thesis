@@ -1,11 +1,27 @@
-\section{Numerics}\label{sec:numerics}
+\section{Numerical Discretization}\label{sec:numerics}
 
 We now describe the means by which the Navier--Stokes equations (Eq.~\ref{eq:gemsGovPDE}) are discretized in space and time, and the resulting linear system solved. We restrict discussion to methods implemented in GEMS; although similar methods are used in PERFORM, we will note some differences in Chapter~\ref{chap:TransientFlame}.
 
-The spatial domain is discretized by an unstructured, cell-centered, second-order accurate finite-volume scheme. Inviscid fluxes are computed by Roe's method~\cite{Roe1981}. Gradients are computed using the formulation of Mitchell~\cite{Mitchell1994}, whereby nodal quantities are computed as the average of surrounding cell-centered values weighted by the method of Rausch \textit{et al.}~\cite{Rausch1991}.
+The spatial domain is discretized by an unstructured, cell-centered, second-order accurate finite-volume scheme. Inviscid fluxes are computed by Roe's method~\cite{Roe1981}. Gradients are computed using the formulation of Mitchell~\cite{Mitchell1994}, whereby nodal quantities are computed as the average of surrounding cell-centered values weighted by the method of Rausch \textit{et al.}~\cite{Rausch1991}. The gradient limiter of Barth and Jespersen~\cite{Barth1989}, modified to compute the limiter based on the initial, unconstrained face-reconstructed states.
 
-\begin{itemize}
-	\item All simulations second-order in space and time
-	\item BDF2 for time discretization
-	\item Pretty sure all cases use Barth-Jespersen limiter
-\end{itemize}
+All full-order model results are discretized in time using backward differentiation formulae with dual time-stepping. Grouping the discretized fluxes and source term into the general non-linear function $\rhsFunc{\cdot}$, this begins from the form
+%
+\begin{equation}
+	\gm \pde{\primVec}{\tau} + \pde{\consVec}{\timeVar} = \rhsFunc{\consVec, \; \timeVar}
+\end{equation}
+%
+where $\gm \defEq \partial \consVec / \partial \primVec$, and $\tau$ is a fictitious \textit{dual time}. Discretizing the physical time derivative with the second-order backwards differentiation formula, and the pseudo-time derivative by first-order finite-difference, this arrives at
+%
+\begin{equation}
+	\gm \frac{\primVec^{\newtonIdx} - \primVec^{\newtonIdx - 1}}{\dtau} + \frac{3 \consVec^{\newtonIdx} - 4 \consVec^{\timeIdx - 1} + \consVec^{\timeIdx - 2}}{2\dt} = \rhsFunc{\consVec^{\newtonIdx}, \; \timeVar}
+\end{equation}
+%
+The superscript $\timeIdx$ indicates the $\timeIdx$th physical time step of the simulation, and $\newtonIdx$ indicates the $\newtonIdx$th subiteration of the iterative solver at the currect time step. The physical time step is given by $\dt$, and the pseudo-time step is given by $\dtau$. The initial guess for the iterative state is given as $\consVec^1 = \consVec^{\timeIdx - 1}$. Treating the conservative state as a function of the primitive state (i.e. $\consVec = \consVec(\primVec)$), linearizing the equations about $\primVec^{\newtonIdx - 1}$, and rearranging terms arrives at the linear system
+%
+\begin{equation}\label{eq:pseudoTimeLinSys}
+\left(\left(\frac{\dt}{\dtau} + \frac{3}{2}\right)\gm - \dt \pde{\rhsFunc{\consVec^{\newtonIdx - 1}}}{\primVec}\right) \left(\primVec^{\newtonIdx} - \primVec^{\newtonIdx - 1}\right) = - \frac{1}{2}\left(3 \consVec^{\newtonIdx-1} - 4 \consVec^{\timeIdx - 1} + \consVec^{\timeIdx - 2}\right) + \dt \rhsFunc{\consVec^{\newtonIdx - 1}}
+\end{equation}
+%
+The resulting linear system is solved using the line Gauss--Sidel approach detailed by MacCormack~\cite{MacCormack1985}, with one forward and one backward sweep for each subiteration. Upon convergence, the iterative solution is assigned to the solution at the next physical time step, i.e. $\primVec^{\timeIdx} \leftarrow \primVec^{\newtonIdx}$. Note that with sufficient convergence, the pseudo-time derivative vanishes, recovering the physical residual.
+
+As can be seen from the $\dt/\dtau$ term in Eq.~\ref{eq:pseudoTimeLinSys}, this dual-time formulation has the effect of weighting the block diagonal of the left-hand side matrix. Smaller values of $\dtau$ increase this effect, and larger $\dtau$ diminishes it. Further, using $\primVec = \consVec$ in the limit $\dtau \rightarrow \infty$ recovers the standard Newton's method. Using a pseudo-time step size close to or smaller than $\dt$ thus has the effect of increasing the block diagonal dominance of the system. This has the effect of improving the conditioning of the system, thereby increasing the robustness of the unsteady solution and improving the convergence of the line Gauss--Sidel solver.
