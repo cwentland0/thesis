@@ -40,7 +40,7 @@ where $\consVec$ is the conservative state, $\invFluxDir \defEq [\invFlux_x, \; 
 	\shearStress_{\spatialIdx y} \\
 	\shearStress_{\spatialIdx z} \\
 	- \heatFlux_{\spatialIdx} + \sum_{\spatialIdxTwo} \vel_{\spatialIdxTwo} \shearStress_{\spatialIdx \spatialIdxTwo}\\ \hdashline[2pt/2pt]
-	\density \massDiffSpec \pde{\mfSpec}{x_{\spatialIdx}} \\ \hdashline[2pt/2pt]
+	\density \diffusionVelSpecDir \mfSpec \\ \hdashline[2pt/2pt]
 	\density \massDiffMixFrac \pde{\mixFrac}{x_{\spatialIdx}} \\
 	\density \massDiffProgVar \pde{\progVar}{x_{\spatialIdx}}
     \end{array}
@@ -64,18 +64,26 @@ Horizontal dashed lines separate additional equations which are included for dif
 	\stagEnth \defEq \frac{1}{2} \sum_{\spatialIdx}^{\{x,y,z\}} \vel_{\spatialIdx}^2 + \specSumAll \enthSpec \mfSpec,
 \end{equation}
 %
-the viscous shear stress is given by
+and the viscous shear stress is given by
 %
 \begin{equation}\label{eq:shearStress}
-	\shearStress_{\spatialIdx \spatialIdxTwo} \defEq \dynVisc \left( \pde{\vel_{\spatialIdx}}{x_{\spatialIdxTwo}} + \pde{\vel_{\spatialIdxTwo}}{x_{\spatialIdx}} - \delta_{\spatialIdx \spatialIdxTwo} \frac{2}{3} \sum_{\spatialIdxThree=1}^3 \pde{\vel_{\spatialIdxThree}}{x_{\spatialIdxThree}} \right),
+	\shearStress_{\spatialIdx \spatialIdxTwo} \defEq \dynVisc \left( \pde{\vel_{\spatialIdx}}{x_{\spatialIdxTwo}} + \pde{\vel_{\spatialIdxTwo}}{x_{\spatialIdx}} - \delta_{\spatialIdx \spatialIdxTwo} \frac{2}{3} \sum_{\spatialIdxThree=1}^3 \pde{\vel_{\spatialIdxThree}}{x_{\spatialIdxThree}} \right).
 \end{equation}
 %
-and the heat flux is given by
+Neglecting radiation and Dufour effects, the heat flux is given by
 %
 \begin{equation}\label{eq:heatFlux}
-	\heatFlux_{\spatialIdx} \defEq -\thermCond \pde{\temperature}{x_{\spatialIdx}} - \density \specSumAll \massDiffSpec \pde{\mfSpec}{x_{\spatialIdx}} \enthSpec.
+	\heatFlux_{\spatialIdx} \defEq -\thermCond \pde{\temperature}{x_{\spatialIdx}} - \density \specSumAll \diffusionVelSpecDir \mfSpec \enthSpec.
 \end{equation}
 %
+In Eqs.~\ref{eq:gemsGovVecs} and \ref{eq:heatFlux}, the diffusion velocity product of the $\specIdx$th species in the $\spatialIdx$th spatial direction, $\diffusionVelSpecDir \mfSpec$, is approximated as
+%
+\begin{equation}
+	\diffusionVelSpecDir \mfSpec \defEq \massDiffSpec \pde{\mfSpec}{x_{\spatialIdx}},
+\end{equation}
+%
+where mass diffusion by pressure gradients, body forces, and temperature gradients have been neglected.
+
 Calculation of thermodynamic properties (the species enthalpy $\enthSpec$) and transport properties (the dynamic viscosity $\dynVisc$, thermal conductivity $\thermCond$, and species mass diffusivity $\massDiffSpec$) depend on the gas and transport models used in the simulation. These are described in greater detail in Section~\ref{subsec:gasModels}.
 
 The sixth line of terms in Eq.~\ref{eq:gemsGovVecs} describes the scalar transport equation of the $\specIdx$th chemical species, for $\specIdx \in \{1, \hdots, \numSpec - 1\}$, where $\numSpec$ is the number of chemical species to be modeled. Here, $\mfSpec$ is the mass fraction of the $\specIdx$th species in the mixture, and $\massDiffSpec$ is the mass diffusivity of the $\specIdx$th species into the mixture. The reaction source term, also described as the production rate, for the $\specIdx$th species is given by the specified reaction model; the laminar finite-rate reaction model used in this thesis is described in Section~\ref{sec:finiterate}. Note that only $\numSpec - 1$ chemical transport equations are solved. The mass fraction of the $\numSpec$th species can, by definition of the mass fraction, be computed from
@@ -84,9 +92,9 @@ The sixth line of terms in Eq.~\ref{eq:gemsGovVecs} describes the scalar transpo
 	\mf_{\numSpec} = 1 - \specSumMOne \mfSpec.
 \end{equation}
 
-The seventh and eighth line of terms in Eq.~\ref{eq:gemsGovVecs} describe the scalar transport of the fuel mixture fraction $\mixFrac$ and progress variable $\progVar$. These equations arise from the flamelet/progress variable (FPV) model for reacting flows~\cite{Pierce2001}, which is described in greater detail in Section~\ref{sec:fpv}. In a broad sense, the classic FPV model replaces the energy and species transport equations with these two equations, and uses a pre-computed lookup table which maps the fuel mixture fraction and progress variable to the temperature and species mass fractions. As will be described later, the FPV model implemented in GEMS does not eliminate the energy equation, and hence conserves energy while incurring additional computational cost.
+The seventh and eighth line of terms in Eq.~\ref{eq:gemsGovVecs} describe the scalar transport of the fuel mixture fraction $\mixFrac$ and progress variable $\progVar$. These equations arise from the flamelet/progress variable (FPV) model for reacting flows~\cite{Pierce2001}, which is described in greater detail in Section~\ref{sec:fpv}. The classic FPV model replaces the energy and species transport equations with these two equations, and uses a pre-computed lookup table which maps the fuel mixture fraction and progress variable to the temperature and species mass fractions. As will be described later, the FPV model implemented in GEMS does not eliminate the energy equation, and hence conserves energy while incurring additional computational cost.
 
-As Eq.~\ref{eq:gemsGovPDE} is not closed (there are more unknowns than equations), we provide an equation of state the relate several quantities explicitly. For all results shown here, the system is treated as a mixture of ideal gases, and the ideal gas law is given by.
+As Eq.~\ref{eq:gemsGovPDE} is not closed (there are more unknowns than equations), we provide an equation of state which relates several quantities explicitly. For all results shown here, the system is treated as a mixture of ideal gases, and the ideal gas law is given by.
 %
 \begin{equation}\label{eq:idealGas}
 	\pressure = \density \gasConst \temperature,
@@ -104,7 +112,7 @@ Throughout this thesis, we will frequently refer to the set of ``primitive varia
     \right]^\top.
 \end{equation}
 %
-These quantities have special use in that they can be easily interpreted in practical terms, are used to tabulate empirical fit models, and are easily used to compute secondary quantities such as total pressure and heat transfer rates. Additionally, these variables have several numerical qualities that benefit the construction of robust and accurate reduced-order models, which will be detailed later. The conservative variables, while important in that they have the useful property of conservation, are less immediately useful in an engineering context.
+These quantities have special use in that they can be easily interpreted in engineering practice, are used to tabulate empirical fit models, and are easily used to compute secondary quantities such as total pressure and heat transfer rates. Additionally, these variables have several numerical qualities that benefit the construction of robust and accurate reduced-order models, which will be detailed later. The conservative variables, while important in that they have the useful property of conservation, are less immediately useful in an engineering context.
 
 \subsection{Gas Models}\label{subsec:gasModels}
 
@@ -117,7 +125,7 @@ GEMS is equipped with several models to compute thermodynamic and transport prop
 The mixture dynamic viscosity is given by Wilke's mixing law~\cite{Wilke1950},
 %
 \begin{equation}\label{eq:viscMix}
-	\dynVisc = 2 \sqrt{2} \specSumAll \frac{\moleSpec \dynViscSpec}{\phi_{\specIdx}}
+	\dynVisc = 2 \sqrt{2} \specSumAll \frac{\moleSpec \dynViscSpec}{\phi_{\specIdx}},
 \end{equation}
 %
 where $\moleSpec$ is the mole fraction of the $\specIdx$th species. The denominator term is given by
@@ -126,7 +134,7 @@ where $\moleSpec$ is the mole fraction of the $\specIdx$th species. The denomina
 	\phi_{\specIdx} = \specSumAllTwo \moleSpecTwo \left( 1 + \left( \frac{\dynViscSpec}{\dynViscSpecTwo} \right)^{1/2} \left( \frac{\mwSpecTwo}{\mwSpec} \right)^{1/4} \right)^2 \left( 1 + \frac{\mwSpec}{\mwSpecTwo} \right)^{-1/2},
 \end{equation}
 %
-where $\mwSpec$ is the molecular weight of the $\specIdx$th species. Finally, the mixture thermal conductivity is given by Mathur \textit{et al.}~\cite{Mathur1967} (attributed to Burgoyne and Weinberg),
+where $\mwSpec$ is the molecular mass of the $\specIdx$th species. Finally, the mixture thermal conductivity is given by Mathur \textit{et al.}~\cite{Mathur1967} (attributed to Burgoyne and Weinberg~\cite{Burgoyne1952}),
 %
 \begin{equation}\label{eq:thermCondMix}
     \thermCond = \frac{1}{2} \left( \specSumAll \moleSpec \thermCondSpec + \left(\specSumAll \frac{\moleSpec}{\thermCondSpec} \right)^{-1} \right).
@@ -138,55 +146,55 @@ where $\mwSpec$ is the molecular weight of the $\specIdx$th species. Finally, th
 The one-dimensional transient flame case (Section~\ref{sec:oneDFlame}) and the 2D transonic cavity flow (Section~\ref{sec:cavity}) utilize the calorically-perfect gas (CPG) model with approximate, analytical models for transport properties. The CPG model makes the assumption that the heat capacity at constant pressure of the $\specIdx$th species, $\cpSpec$, is constant, i.e. $\cpSpec(\temperature) = \cpSpec$. The species enthalpy is thus computed simply as
 %
 \begin{equation}\label{eq:cpgEnthSpec}
-	\enthSpec = \refEnthSpec + \cpSpec \temperature
+	\enthSpec = \refEnthSpec + \cpSpec \temperature,
 \end{equation}
 %
 where $\refEnthSpec$ is the standard enthalpy of formation for the $\specIdx$th species. Similarly, entropy of the $\specIdx$th species is computed from the analytical relationship
 %
 \begin{equation}\label{eq:cpgEntropySpec}
-	\entropySpec = \cpSpec \text{ln}\left(\frac{\temperature}{278.0 \; \text{K}}\right) - \gasConstSpec \text{ln}\left(\frac{\pressure}{101,325 \; \text{Pa}}\right)
+	\entropySpec = \cpSpec \text{ln}\left(\frac{\temperature}{278.0 \; \text{K}}\right) - \gasConstSpec \text{ln}\left(\frac{\pressure}{101,325 \; \text{Pa}}\right),
 \end{equation}
 %
 where $\gasConstSpec$ is the specific gas constant of the $\specIdx$th species. The dynamic viscosity of the $\specIdx$th species, on the other hand, is computed from the empirical Sutherland's law~\cite{Sutherland1893}, given by
 %
 \begin{equation}\label{eq:viscSuthSpec}
-	\dynViscSpec = \dynViscRefSpec \left( \frac{\temperature}{\tempRefSpec} \right)^{3/2} \left( \frac{\tempRefSpec + \suthTempSpec}{\temperature + \suthTempSpec} \right)
+	\dynViscSpec = \dynViscRefSpec \left( \frac{\temperature}{\tempRefSpec} \right)^{3/2} \left( \frac{\tempRefSpec + \suthTempSpec}{\temperature + \suthTempSpec} \right).
 \end{equation}
 %
 Here, $\dynViscRefSpec$ is the experimentally-measured dynamic viscosity at temperature $\tempRefSpec$, and $\suthTempSpec$ is an independent empirical parameter for the $\specIdx$th species. With the dynamic viscosity in hand, the thermal conductivity of the $\specIdx$th species may be computed from the definition of the Prandtl number, rearranged as
 %
 \begin{equation}\label{eq:cpgThermCondSpec}
-	\thermCondSpec = \frac{\dynViscSpec \cpSpec}{\prandtlSpec}
+	\thermCondSpec = \frac{\dynViscSpec \cpSpec}{\prandtlSpec}.
 \end{equation}
 %
 The Prandtl number of the $\specIdx$th species is tabulated experimentally. Similarly, the mass diffusivity of the $\specIdx$th species into the mixture can be computed from the definition of the Schmidt number, rearranged as
 %
 \begin{equation}\label{eq:cpgMassDiffSpec}
-	\massDiffSpec = \frac{\dynViscSpec}{\density \schmidtSpec}
+	\massDiffSpec = \frac{\dynViscSpec}{\density \schmidtSpec}.
 \end{equation}
 %
 Again, the Schmidt number of the $\specIdx$th species is tabulated experimentally.
 
 \paragraph*{Thermally-perfect Gas with Empirical Fit Transport Properties}\mbox{}\\
 
-At high temperatures, especially temperature ranges of 1,000 - 3,000 K normally experienced in rocket combustors, the assumption that the specific heat capacity of a fluid is constant with temperature is not valid. The general formulation for the species enthalpy is thus given by
+At high temperatures, especially in the temperature ranges of 1,000 - 3,000 K normally experienced in rocket combustors, the assumption that the specific heat capacity of a fluid is constant with temperature is not accurate. The general formulation for the species enthalpy is thus given by
 %
 \begin{eqnarray}
-	\enthSpec = \refEnthSpec + \int_{\temperature^{\standardstate}}^{\temperature} \cpSpec(\temperature) \text{d}\temperature
+	\enthSpec = \refEnthSpec + \int_{\temperature^{\standardstate}}^{\temperature} \cpSpec(\temperature) \text{d}\temperature.
 \end{eqnarray}
 %
 In this work, we use the empirical fits of McBride, Gordon, and Reno~\cite{McBride1993} to compute thermodynamic quantities which incorporate this temperature dependence. The species specific heat capacity at constant pressure, species enthalpy, and species entropy are given by the model forms
 %
 \begin{equation}
-	\frac{\cpSpec}{\gasConstSpec} = \fitScalOneSpec{1} + \fitScalOneSpec{2} \temperature + \fitScalOneSpec{3} \temperature^2 + \fitScalOneSpec{4} \temperature^3 + \fitScalOneSpec{5} \temperature^4
+	\frac{\cpSpec}{\gasConstSpec} = \fitScalOneSpec{1} + \fitScalOneSpec{2} \temperature + \fitScalOneSpec{3} \temperature^2 + \fitScalOneSpec{4} \temperature^3 + \fitScalOneSpec{5} \temperature^4,
 \end{equation}
 %
 \begin{equation}
-	\frac{\enthSpec}{\gasConstSpec \temperature} = \fitScalOneSpec{1} + \fitScalOneSpec{2} \frac{\temperature}{2} + \fitScalOneSpec{3} \frac{\temperature^2}{3} + \fitScalOneSpec{4} \frac{\temperature^3}{4} + \fitScalOneSpec{5} \frac{\temperature^4}{5} + \frac{\fitScalOneSpec{6}}{\temperature}
+	\frac{\enthSpec}{\gasConstSpec \temperature} = \fitScalOneSpec{1} + \fitScalOneSpec{2} \frac{\temperature}{2} + \fitScalOneSpec{3} \frac{\temperature^2}{3} + \fitScalOneSpec{4} \frac{\temperature^3}{4} + \fitScalOneSpec{5} \frac{\temperature^4}{5} + \frac{\fitScalOneSpec{6}}{\temperature},
 \end{equation}
 %
 \begin{equation}
-	\frac{\entropySpec}{\gasConstSpec} = \fitScalOneSpec{1} \text{ln}\temperature + \fitScalOneSpec{2} \temperature + \fitScalOneSpec{3} \frac{\temperature^2}{2} + \fitScalOneSpec{4} \frac{\temperature^3}{3} + \fitScalOneSpec{5} \frac{\temperature^4}{4} + \fitScalOneSpec{7}
+	\frac{\entropySpec}{\gasConstSpec} = \fitScalOneSpec{1} \text{ln}\temperature + \fitScalOneSpec{2} \temperature + \fitScalOneSpec{3} \frac{\temperature^2}{2} + \fitScalOneSpec{4} \frac{\temperature^3}{3} + \fitScalOneSpec{5} \frac{\temperature^4}{4} + \fitScalOneSpec{7},
 \end{equation}
 %
 where $\fitScalOneSpec{\dummyIdx}$, $\dummyIdx \in \{1 \hdots 7\}$ are tabulated for the $\specIdx$th species.
@@ -194,11 +202,11 @@ where $\fitScalOneSpec{\dummyIdx}$, $\dummyIdx \in \{1 \hdots 7\}$ are tabulated
 Two different empirical models for transport properties are available in GEMS. The first, which is used in the single-element combustor simulations presented in Section~\ref{sec:cvrc}, computes the species dynamic viscosities and thermal conductivities from the NASA Lewis Research Center model~\cite{Svehla1995}, given by,
 %
 \begin{equation}
-	\dynViscSpec = \text{exp} \left(\fitScalTwoSpec{1} \text{ln} \temperature + \frac{\fitScalTwoSpec{2}}{\temperature} + \frac{\fitScalTwoSpec{3}}{\temperature^2} + \fitScalTwoSpec{4} \right) \times 10^{-7}
+	\dynViscSpec = \text{exp} \left(\fitScalTwoSpec{1} \text{ln} \temperature + \frac{\fitScalTwoSpec{2}}{\temperature} + \frac{\fitScalTwoSpec{3}}{\temperature^2} + \fitScalTwoSpec{4} \right) \times 10^{-7},
 \end{equation}
 %
 \begin{equation}
-	\thermCondSpec = \text{exp} \left(\fitScalThreeSpec{1} \text{ln} \temperature + \frac{\fitScalThreeSpec{2}}{\temperature} + \frac{\fitScalThreeSpec{3}}{\temperature^2} + \fitScalThreeSpec{4} \right) \times 10^{-4}
+	\thermCondSpec = \text{exp} \left(\fitScalThreeSpec{1} \text{ln} \temperature + \frac{\fitScalThreeSpec{2}}{\temperature} + \frac{\fitScalThreeSpec{3}}{\temperature^2} + \fitScalThreeSpec{4} \right) \times 10^{-4}.
 \end{equation}
 %
 The scalar terms $\fitScalTwoSpec{\dummyIdx}, \; \fitScalThreeSpec{\dummyIdx}$, $\dummyIdx \in \{1 \hdots 4\}$ are tabulated for the $\specIdx$th species. The scaling factors convert dynamic viscosity from micropoise to kg/m-s, and thermal conductivity from $\mu$W/cm-K to W/m-K.
@@ -206,24 +214,24 @@ The scalar terms $\fitScalTwoSpec{\dummyIdx}, \; \fitScalThreeSpec{\dummyIdx}$, 
 The mass diffusivity of the $\specIdx$th species into the mixture is given by Curtiss and Hirschfelder~\cite{Curtiss1949} as
 %
 \begin{equation}\label{eq:curtissAvgDiff}
-	\massDiffSpec = \frac{1 - \moleSpec}{\sum_{\specIdxTwo \neq \specIdx} \frac{\moleSpecTwo}{\massDiffSpecTwo}}
+	\massDiffSpec = \frac{1 - \moleSpec}{\sum_{\specIdxTwo \neq \specIdx} \frac{\moleSpecTwo}{\massDiffSpecTwo}}.
 \end{equation}
 %
 The binary diffusion coefficient between the $\specIdx$th and $\specIdxTwo$th species is modeled via Chapman--Enskog theory (from~\cite{propGasLiquid})
 %
 \begin{equation}
-	\massDiffSpecTwo = \frac{0.0266}{\pressure \left(\frac{\collisionDiamSpec + \collisionDiamSpecTwo}{2}\right)^2 \ljPotential} \sqrt{\temperature^3 \left(\frac{1}{\mwSpec} + \frac{1}{\mwSpecTwo}\right)}
+	\massDiffSpecTwo = \frac{0.0266}{\pressure \left(\frac{\collisionDiamSpec + \collisionDiamSpecTwo}{2}\right)^2 \ljPotential} \sqrt{\temperature^3 \left(\frac{1}{\mwSpec} + \frac{1}{\mwSpecTwo}\right)},
 \end{equation}
 %
 where $\collisionDiamSpec$ is the collision diameter of the $\specIdx$th species in Angstroms. Self diffusion is ignored ($\massDiffSpecTwo = 0 \; \forall \; \specIdx = \specIdxTwo$). Note that the factor 0.0266 differs from that given in~\cite{propGasLiquid}, as we compute the diffusion coefficient in m$^2$/s (instead of cm$^2$/s) and pressure in pascals (instead of atmospheres). The diffusion collision integral, $\ljPotential$, is computed from the relations of Neufeld \textit{et al.}~\cite{Neufeld1972}
 %
 \begin{equation}
-	\ljPotential = \frac{\fitScalFour{1}}{\text{exp} \left(\fitScalFour{2} \tempReduced\right)} + \frac{\fitScalFour{3}}{\text{exp} \left(\fitScalFour{4} \tempReduced\right)} + \frac{\fitScalFour{5}}{\text{exp} \left(\fitScalFour{6} \tempReduced\right)} + \frac{\fitScalFour{7}}{\text{exp} \left(\fitScalFour{8} \tempReduced\right)}
+	\ljPotential \defEq \frac{\fitScalFour{1}}{\text{exp} \left(\fitScalFour{2} \tempReduced\right)} + \frac{\fitScalFour{3}}{\text{exp} \left(\fitScalFour{4} \tempReduced\right)} + \frac{\fitScalFour{5}}{\text{exp} \left(\fitScalFour{6} \tempReduced\right)} + \frac{\fitScalFour{7}}{\text{exp} \left(\fitScalFour{8} \tempReduced\right)},
 \end{equation}
 %
 where the scalar terms $\fitScalFour{\dummyIdx}$, $\dummyIdx \in \{1 \hdots 8\}$ are empirically determined, and universal for every species pairing. The reduced temperature $\tempReduced$ is computed as
 \begin{equation}
-	\tempReduced = \temperature \left( \frac{k_B}{\sqrt{\ljEnergySpec \ljEnergySpecTwo}} \right)
+	\tempReduced \defEq \temperature \left( \frac{k_B}{\sqrt{\ljEnergySpec \ljEnergySpecTwo}} \right),
 \end{equation}
 where $k_B$ is the Boltzmann constant, and $\ljEnergySpec$ is the tabulated Lennard--Jones energy of the $\specIdx$th species.
 
@@ -247,9 +255,9 @@ Again, the scalar terms $\fitScalTwoSpec{\dummyIdx}$, $\fitScalThreeSpec{\dummyI
 
 In general, simulations of practical combustion systems will always be under-resolved due to the extremely small characteristic spatio-temporal scales of reacting flows. To reduce the high cost of resolving these scales, large eddy simulations filter the governing equations into resolved (large-scale) and unresolved (small-scale) motions. The resulting set of equations can be solved for the resolved scales, with the exception of the subgrid stresses. As the subgrid stresses cannot be directly computed (they are a function of unresolved motions), they must be modeled. A broader discussion of turbulence and subgrid scale modeling can be found in~\cite{Pope2000}; we discuss only topics relevant to results presented in this thesis.
 
-For all GEMS simulations presented here, with the exception of the nine-element combustor discussed in Chapter~\ref{chap:NineElement}, no explicit filter and subgrid scale model are used. This is not to imply that these are well-resolved DNS simulations, but can rather be viewed as \textit{implicit LES} simulations. In implicit LES, it is assumed that the numerical dissipation generated by the spatial discretization scheme accounts for the dissipative effects of the unresolved small-scale turbulence. As a result, no subgrid scale model is required. This idea dates back to early observations on monotone convection algorithms~\cite{Boris1989}, and has since been successfully applied to a variety of turbulent flows~\cite{Porter1994,Grinstein2005,Bensow2010}. A comprehensive overview of implicit LES can be found in~\cite{ilesBook}. In GEMS, we apply implicit LES by using a second-order accurate finite volume scheme, guaranteeing monotonicity with a flux limiter (detailed in Sec.~\ref{sec:numerics}). In unpublished studies, GEMS has been shown to produce excellent predictions of experimental flow statistics in a turbulent ship airwake.
+For all GEMS simulations presented here, with the exception of the nine-element combustor discussed in Chapter~\ref{chap:NineElement}, no explicit filter or subgrid scale model are used. This is not to imply that these are well-resolved DNS simulations, but can rather be viewed as \textit{implicit LES} (ILES) simulations. In ILES, it is assumed that the numerical dissipation generated by the spatial discretization scheme accounts for the dissipative effects of the unresolved small-scale turbulence. As a result, no subgrid scale model is required. This idea dates back to early observations on monotone convection algorithms~\cite{Boris1989}, and has since been successfully applied to a variety of turbulent flows~\cite{Porter1994,Grinstein2005,Bensow2010}. A comprehensive overview of ILES can be found in~\cite{ilesBook}. In GEMS, we apply ILES by using a second-order accurate finite volume scheme, guaranteeing monotonicity with a flux limiter (detailed in Sec.~\ref{sec:numerics}). In unpublished studies, GEMS has been shown to produce excellent predictions of experimental flow statistics in a turbulent ship airwake.
 
-In simulations of the nine-element combustor in Chapter~\ref{chap:NineElement}, GEMS employs the eddy viscosity $\sigma$-model of Nicoud \textit{et al.}~\cite{Nicoud2011}. Eddy viscosity models account for the dissipative effects of unresolved turbulence by adding an eddy viscosity term, computing the viscous stress tensor as
+In simulations of the nine-element combustor in Chapter~\ref{chap:NineElement}, GEMS employs the eddy viscosity $\sigma$-model of Nicoud \textit{et al.}~\cite{Nicoud2011}. Eddy viscosity models account for the dissipative effects of unresolved turbulence by effectively adding an eddy viscosity term, computing the viscous stress tensor as
 %
 \begin{equation}
 	\shearStress_{\spatialIdx \spatialIdxTwo} \defEq \left(\dynVisc + \dynVisc_{t}\right) \left( \pde{\vel_{\spatialIdx}}{x_{\spatialIdxTwo}} + \pde{\vel_{\spatialIdxTwo}}{x_{\spatialIdx}} - \delta_{\spatialIdx \spatialIdxTwo} \frac{2}{3} \sum_{\spatialIdxThree=1}^3 \pde{\vel_{\spatialIdxThree}}{x_{\spatialIdxThree}} \right).
@@ -258,13 +266,13 @@ In simulations of the nine-element combustor in Chapter~\ref{chap:NineElement}, 
 The $\sigma$-model computes the eddy viscosity $\dynVisc_{t}$ as
 %
 \begin{equation}
-	\dynVisc_{t} = \density (C_{\sigma} \Delta)^2 D_{\sigma}
+	\dynVisc_{t} \defEq \density (C_{\sigma} \Delta)^2 D_{\sigma},
 \end{equation}
 %
 where $C_{\sigma}$ is an empirically-determined constant (in this work, $C_{\sigma} = 1.4$), and $\Delta$ is the subgrid characteristic length scale (here, one-third the cell volume). The differential operator $D_{\sigma}$ is computed as
 %
 \begin{equation}
-	D_{\sigma} = \frac{\sigma_3\left(\sigma_1 - \sigma_2\right)\left(\sigma_2 - \sigma_3\right)}{\sigma_1^2}
+	D_{\sigma} \defEq \frac{\sigma_3\left(\sigma_1 - \sigma_2\right)\left(\sigma_2 - \sigma_3\right)}{\sigma_1^2},
 \end{equation}
 %
 where $\sigma_1$, $\sigma_2$, and $\sigma_3$ are the singular values of the velocity gradient tensor. This eddy viscosity has the benefits of being a locally-defined positive quantity, decays with the cube of distance from a wall, and vanishes in two-dimensional flow. Futher, unlike turbulence models such as the Spalart--Allmaras or $k$--$\omega$ turbulence models, the $\sigma$-model involves no additional transport equations.

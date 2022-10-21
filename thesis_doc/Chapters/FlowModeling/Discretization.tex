@@ -1,8 +1,8 @@
 \section{Numerical Discretization}\label{sec:numerics}
 
-We now describe the means by which the Navier--Stokes equations (Eq.~\ref{eq:gemsGovPDE}) are discretized in space and time, and the resulting linear system solved. We restrict discussion to methods implemented in GEMS; although similar methods are used in PERFORM, we will note some differences in Chapter~\ref{chap:TransientFlame}.
+We now describe the means by which the Navier--Stokes equations (Eq.~\ref{eq:gemsGovPDE}) are discretized in space and time, and the resulting linear system is solved. We restrict discussion to methods implemented in GEMS; although similar methods are used in PERFORM, we will note some differences in Chapter~\ref{chap:TransientFlame}.
 
-The spatial domain is discretized by an unstructured, cell-centered, second-order accurate finite-volume scheme. Inviscid fluxes are computed by Roe's method~\cite{Roe1981}. Gradients are computed using the formulation of Mitchell~\cite{Mitchell1994}, whereby nodal quantities are computed as the average of surrounding cell-centered values weighted by the method of Rausch \textit{et al.}~\cite{Rausch1991}. The gradient limiter of Barth and Jespersen~\cite{Barth1989}, modified to compute the limiter based on the initial, unconstrained face-reconstructed states.
+The spatial domain is discretized by an unstructured, cell-centered, second-order accurate finite-volume scheme. Inviscid fluxes are computed by Roe's method~\cite{Roe1981}. Gradients are computed using the formulation of Mitchell~\cite{Mitchell1994}, whereby nodal quantities are computed as the average of surrounding cell-centered values weighted by the method of Rausch \textit{et al.}~\cite{Rausch1991}. Monotonicity is preserved by the gradient limiter of Barth and Jespersen~\cite{Barth1989}, modified to compute the gradient limiting factor based on the initial, unconstrained face-reconstructed states. A ghost cell scheme is used to enforce boundary conditions.
 
 All full-order model results are discretized in time using backward differentiation formulae with dual time-stepping. Grouping the discretized fluxes and source term into the general non-linear function $\rhsFunc{\cdot}$, this begins from the form
 %
@@ -25,3 +25,26 @@ The superscript $\timeIdx$ indicates the $\timeIdx$th physical time step of the 
 The resulting linear system is solved using the line Gauss--Sidel approach detailed by MacCormack~\cite{MacCormack1985}, with one forward and one backward sweep for each subiteration. Upon convergence, the iterative solution is assigned to the solution at the next physical time step, i.e. $\primVec^{\timeIdx} \leftarrow \primVec^{\newtonIdx}$. Note that with sufficient convergence, the pseudo-time derivative vanishes, recovering the physical residual.
 
 As can be seen from the $\dt/\dtau$ term in Eq.~\ref{eq:pseudoTimeLinSys}, this dual-time formulation has the effect of weighting the block diagonal of the left-hand side matrix. Smaller values of $\dtau$ increase this effect, and larger $\dtau$ diminishes it. Further, using $\primVec = \consVec$ in the limit $\dtau \rightarrow \infty$ recovers the standard Newton's method. Using a pseudo-time step size close to or smaller than $\dt$ thus has the effect of increasing the block diagonal dominance of the system. This has the effect of improving the conditioning of the system, thereby increasing the robustness of the unsteady solution and improving the convergence of the line Gauss--Sidel solver.
+
+Some reduced-order model results are discretized in time using an explicit Runge-Kutta
+
+\begin{equation}\label{eq:expRK}
+    \consVec^{\timeIdx} - \consVec^{\timeIdx-1} = \dt \sum_{\newtonIdx = 1}^{4} b_\newtonIdx \rkVec_\newtonIdx,
+\end{equation}
+
+\begin{align}
+    \rkVec_1 &= \rhsFunc{\consVec^{\timeIdx - 1}, \timeVar^{\timeIdx-1}} \\
+    \rkVec_\newtonIdx &= \rhsFunc{\consVec^{\timeIdx-1} + \dt \sum_{\dummyIdxTwo = 1}^{\newtonIdx-1} a_{\newtonIdx \dummyIdxTwo} \rkVec_\dummyIdxTwo, \timeVar^{\timeIdx-1} + c_\newtonIdx \dt} \quad \text{for} \; 1 < \newtonIdx \le 4,
+\end{align}
+
+\[
+    \begin{array}
+		{c|cccc}
+		0 & 0 & 0 & 0 & 0 \\
+		1/2 & 1/2 & 0 & 0 & 0 \\
+		1/2 & 0 & 1/2 & 0 & 0 \\
+		1 & 0 & 0 & 1 & 0 \\
+		\hline
+		& 1/6 & 1/3 & 1/3 & 1/6
+    \end{array}
+\]
