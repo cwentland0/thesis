@@ -1,11 +1,29 @@
 \section{Trial Space Selection}
 
-\begin{equation}\label{eq:solApprox}
+Before constructing a ROM, we must first construct a low-dimensional representation of the system state. The simplest method of doing so is constructing the state as a linear combination of a small number of basis vectors, represented by
+%
+\begin{equation}\label{eq:consSolApprox}
     \begin{aligned}
-        \consFunc{\timeVar} \approx \consFuncRom{\timeVar} &= \consVecCent + \sum_{\dummyIdx=1}^{\numConsModes} \consScaleVar_\dummyIdx \consTrialVecIdx \consVarCoef (\timeVar) \\
-        &= \consAffineMap(\timeVar),
+        \consFunc{\timeVar} \approx \consFuncRom{\timeVar} &\defEq \consVecCent + \sum_{\dummyIdx=1}^{\numConsModes} \consScaleVar_\dummyIdx \consTrialVecIdx \consVarCoefIdx (\timeVar), \\
+        &\defEq \consAffineMap(\timeVar),
     \end{aligned}
 \end{equation}
+%
+where $\consVecCent \inROne{\numDOF}$ is a constant translation vector, $\consTrial \defEq \left[\consTrialVec{1},\hdots,\consTrialVec{\numConsModes}\right] \inRTwo{\numDOF}{\numConsModes}$ is the \textit{trial basis}, and $\funcMap{\consVecCoef \defEq \left[\consVarCoef{1}(\timeVar),\hdots,\consVarCoef{\numConsModes}(\timeVar)\right]}{\nonnegReals}{\ROne{\numConsModes}}$ is the \textit{modal coefficient} (or more generally, \textit{latent variable}) vector. The constant matrix $\consScale \defEq \text{diag}\left(\consScaleVar_1, \hdots , \consScaleVar_{\numDOF}\right) \inRTwo{\numDOF}{\numDOF}$ scales the conservative state variables. Methods of computing $\consVecCent$ and $\consScale$ are discussed in Section~\ref{subsec:centerScale}.
+
+The trial basis spans the affine \textit{trial space}, i.e.,
+%
+\begin{equation}
+    \consTrialSpace \defEq \consVecCent + \textit{Range}\left(\consTrial\right)
+\end{equation}
+%
+It is in this subspace that our approximate solution exists, i.e. $\funcMap{\consVecRom}{\nonnegReals}{\consTrialSpace}$. In reduced-order modeling, we choose $\numConsModes \ll \numDOF$ to generate an extremely compact representation of the state and achieving significant order reduction. The accuracy of this linear approximation to the true solution space is summarized by the concept of the Kolmogorov $n$-width, defined as
+%
+\begin{equation}\label{eq:nwidth}
+    d_n(\MC{A}, \MC{V}) = \underset{\MC{V}_n}{\vphantom{sup}\text{inf}} \enspace \underset{x \in \MC{A}}{\text{sup}} \enspace \underset{y \in \MC{V}_n}{\vphantom{sup}\text{inf}} || x - y ||
+\end{equation}
+%
+Although we restrict ourselves here to the discussion of linear trial subspaces, we discuss the concept on non-linear \textit{trial manifolds} in Section~\ref{subsec:nonlinManifold}.
 
 \subsection{Proper Orthogonal Decomposition}
 
@@ -21,4 +39,6 @@
     \consDataMatUns = \basisMat \singVecMat \rightSingVecMat^\top
 \end{equation}
 
-\subsection{Non-linear Autoencoders}
+\subsection{Non-linear Autoencoders}\label{subsec:nonlinManifold}
+
+\subsection{Centering and Scaling}\label{subsec:centerScale}

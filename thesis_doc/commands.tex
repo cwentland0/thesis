@@ -14,6 +14,7 @@
 \newcommand{\dt}{\ensuremath{\Delta \timeVar}}
 \newcommand{\dtau}{\ensuremath{\Delta \tau}}
 \newcommand{\finalTime}{\ensuremath{\text{T}}}
+\newcommand{\dott}[1]{\accentset{\mbox{\large\bfseries .}}{#1}}
 
 % indices
 \newcommand{\spatialIdx}{\ensuremath{i}}
@@ -54,6 +55,7 @@
 \newcommand{\primVecCent}{\ensuremath{\mathbf{\overline{\stateVar}}_p}}
 \newcommand{\consDataMatUns}{\ensuremath{\mathbf{\MakeUppercase{\stateVar}}_c'}}
 \newcommand{\rkVec}{\ensuremath{\mathbf{h}}}
+\newcommand{\consVecDt}{\ensuremath{\dott{\mathbf{\stateVar}}_c}}
 
 % dummies
 \newcommand{\dummyVec}{\ensuremath{\mathbf{y}}}
@@ -75,10 +77,11 @@
 \newcommand{\consFuncRom}[1]{\ensuremath{\mathbf{\widetilde{\stateVar}}_c \left(#1\right)}}
 \newcommand{\primVecRom}{\ensuremath{\mathbf{\widetilde{\stateVar}}_p}}
 \newcommand{\stateVecCoef}{\ensuremath{\mathbf{\widehat{\stateVar}}}}
-\newcommand{\consVecCoef}{\ensuremath{\mathbf{\widehat{\stateVar}}_c}}
-\newcommand{\consVarCoef}{\ensuremath{\widehat{\stateVar}_{c,\dummyIdx}}}
-\newcommand{\primVecCoef}{\ensuremath{\mathbf{\widehat{\stateVar}}_p}}
-\newcommand{\primVarCoef}{\ensuremath{\widehat{\stateVar}}_{p,\dummyIdx}}
+\newcommand{\consVecCoef}{\ensuremath{\mathbf{\widehat{\stateVar}}_{c}}}
+\newcommand{\consVarCoef}[1]{\ensuremath{\widehat{\stateVar}_{c,#1}}}
+\newcommand{\consVarCoefIdx}{\ensuremath{\widehat{\stateVar}_{c,\dummyIdx}}}
+\newcommand{\primVecCoef}[1]{\ensuremath{\mathbf{\widehat{\stateVar}}_{p,#1}}}
+\newcommand{\primVarCoefIdx}{\ensuremath{\widehat{\stateVar}}_{p,\dummyIdx}}
 
 % flux/source/RHS/residual functions
 \newcommand{\fluxVar}{\ensuremath{f}}
@@ -116,6 +119,7 @@
 \newcommand{\basisMat}{\ensuremath{\mathbf{\MakeUppercase{\basisVar}}}}
 \newcommand{\consTrial}{\ensuremath{\basisMat}_c}
 \newcommand{\consTrialVecIdx}{\ensuremath{\mathbf{\basisVar}}_{c,\dummyIdx}}
+\newcommand{\consTrialVec}[1]{\ensuremath{\mathbf{\basisVar}}_{c,#1}}
 \newcommand{\primTrial}{\ensuremath{\basisMat_p}}
 \newcommand{\primTrialVecIdx}{\ensuremath{\mathbf{\basisVar}}_{p,\dummyIdx}}
 \newcommand{\rightSingVecVar}{v}
@@ -144,6 +148,10 @@
 \newcommand{\deimRegressorResSmall}{\ensuremath{(\sampMat \deimBasisRes)^+ \sampMat}}
 \newcommand{\deimRegressorJac}{\ensuremath{\deimBasisJac (\sampMat \deimBasisJac)^+ \sampMat}}
 \newcommand{\deimRegressorJacSmall}{\ensuremath{(\sampMat \deimBasisJac)^+ \sampMat}}
+
+% vector spaces
+\newcommand{\trialSpace}{\ensuremath{\widetilde{\MC{\MakeUppercase{\basisVar}}}}}
+\newcommand{\consTrialSpace}{\ensuremath{\trialSpace_c}}
 
 % non-linear functions
 \newcommand{\encoderFunc}[1]{\ensuremath{\mathbf{h}\left(#1\right)}}
@@ -295,3 +303,4 @@
 \newcommand{\nonnegReals}{\ensuremath{\mathbb{R}_{\ge 0}}}
 \newcommand{\inNonNegReals}{\in \nonnegReals}
 \newcommand{\funcMap}[3]{\ensuremath{#1: #2 \rightarrow #3}}
+\newcommand{\bigO}[1]{\ensuremath{\MC{O}\left(#1\right)}}

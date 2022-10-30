@@ -4,7 +4,7 @@ We now describe the means by which the Navier--Stokes equations (Eq.~\ref{eq:gem
 
 The spatial domain is discretized by an unstructured, cell-centered, second-order accurate finite-volume scheme. Inviscid fluxes are computed by Roe's method~\cite{Roe1981}. Gradients are computed using the formulation of Mitchell~\cite{Mitchell1994}, whereby nodal quantities are computed as the average of surrounding cell-centered values weighted by the method of Rausch \textit{et al.}~\cite{Rausch1991}. Monotonicity is preserved by the gradient limiter of Barth and Jespersen~\cite{Barth1989}, modified to compute the gradient limiting factor based on the initial, unconstrained face-reconstructed states. A ghost cell scheme is used to enforce boundary conditions.
 
-All full-order model results are discretized in time using backward differentiation formulae with dual time-stepping. Grouping the discretized fluxes and source term into the general non-linear function $\rhsFunc{\cdot}$, this begins from the form
+All full-order model results are discretized in time using backward differentiation formulae with dual time-stepping~\cite{Pandya2003}. Grouping the discretized fluxes and source term into the general non-linear function $\rhsFunc{\cdot}$, this begins from the form
 %
 \begin{equation}
 	\gm \pde{\primVec}{\tau} + \pde{\consVec}{\timeVar} = \rhsFunc{\consVec, \; \timeVar}
@@ -16,27 +16,31 @@ where $\gm \defEq \partial \consVec / \partial \primVec$, and $\tau$ is a fictit
 	\gm \frac{\primVec^{\newtonIdx} - \primVec^{\newtonIdx - 1}}{\dtau} + \frac{3 \consVec^{\newtonIdx} - 4 \consVec^{\timeIdx - 1} + \consVec^{\timeIdx - 2}}{2\dt} = \rhsFunc{\consVec^{\newtonIdx}, \; \timeVar}
 \end{equation}
 %
-The superscript $\timeIdx$ indicates the $\timeIdx$th physical time step of the simulation, and $\newtonIdx$ indicates the $\newtonIdx$th subiteration of the iterative solver at the currect time step. The physical time step is given by $\dt$, and the pseudo-time step is given by $\dtau$. The initial guess for the iterative state is given as $\consVec^1 = \consVec^{\timeIdx - 1}$. Treating the conservative state as a function of the primitive state (i.e. $\consVec = \consVec(\primVec)$), linearizing the equations about $\primVec^{\newtonIdx - 1}$, and rearranging terms arrives at the linear system
+The superscript $\timeIdx$ indicates the $\timeIdx$th physical time step of the simulation, and $\newtonIdx$ indicates the $\newtonIdx$th subiteration of the iterative solver at the currect time step. The physical time step is given by $\dt$, and the pseudo-time step is given by $\dtau$. The initial guess for the iterative state is given as $\consVec^{\newtonIdx=1} = \consVec^{\timeIdx - 1}$. Treating the conservative state as a function of the primitive state (i.e. $\consVec = \consVec(\primVec)$), linearizing the equations about $\primVec^{\newtonIdx - 1}$, and rearranging terms arrives at the linear system
 %
 \begin{equation}\label{eq:pseudoTimeLinSys}
 \left(\left(\frac{\dt}{\dtau} + \frac{3}{2}\right)\gm - \dt \pde{\rhsFunc{\consVec^{\newtonIdx - 1}}}{\primVec}\right) \left(\primVec^{\newtonIdx} - \primVec^{\newtonIdx - 1}\right) = - \frac{1}{2}\left(3 \consVec^{\newtonIdx-1} - 4 \consVec^{\timeIdx - 1} + \consVec^{\timeIdx - 2}\right) + \dt \rhsFunc{\consVec^{\newtonIdx - 1}}
 \end{equation}
 %
-The resulting linear system is solved using the line Gauss--Sidel approach detailed by MacCormack~\cite{MacCormack1985}, with one forward and one backward sweep for each subiteration. Upon convergence, the iterative solution is assigned to the solution at the next physical time step, i.e. $\primVec^{\timeIdx} \leftarrow \primVec^{\newtonIdx}$. Note that with sufficient convergence, the pseudo-time derivative vanishes, recovering the physical residual.
+Equation~\ref{eq:pseudoTimeLinSys} is then solved using the line Gauss--Sidel approach detailed by MacCormack~\cite{MacCormack1985}, with one forward and one backward sweep for each subiteration. Upon convergence of dual time-stepping, the iterative solution is assigned to the solution at the next physical time step, i.e. $\primVec^{\timeIdx} \leftarrow \primVec^{\newtonIdx}$. Note that with sufficient convergence, the pseudo-time derivative vanishes, recovering the physical residual.
 
 As can be seen from the $\dt/\dtau$ term in Eq.~\ref{eq:pseudoTimeLinSys}, this dual-time formulation has the effect of weighting the block diagonal of the left-hand side matrix. Smaller values of $\dtau$ increase this effect, and larger $\dtau$ diminishes it. Further, using $\primVec = \consVec$ in the limit $\dtau \rightarrow \infty$ recovers the standard Newton's method. Using a pseudo-time step size close to or smaller than $\dt$ thus has the effect of increasing the block diagonal dominance of the system. This has the effect of improving the conditioning of the system, thereby increasing the robustness of the unsteady solution and improving the convergence of the line Gauss--Sidel solver.
 
-Some reduced-order model results are discretized in time using an explicit Runge-Kutta
-
+Some reduced-order model results are discretized in time using a fourth-order accurate explicit Runge--Kutta scheme, of the form
+%
 \begin{equation}\label{eq:expRK}
-    \consVec^{\timeIdx} - \consVec^{\timeIdx-1} = \dt \sum_{\newtonIdx = 1}^{4} b_\newtonIdx \rkVec_\newtonIdx,
+    \consVec^{\timeIdx} - \consVec^{\timeIdx-1} = \dt \sum_{\newtonIdx = 1}^{4} b_\newtonIdx \rkVec_\newtonIdx.
 \end{equation}
-
+%
+The Runge-Kutta iteration solutions are given by
+%
 \begin{align}
-    \rkVec_1 &= \rhsFunc{\consVec^{\timeIdx - 1}, \timeVar^{\timeIdx-1}} \\
-    \rkVec_\newtonIdx &= \rhsFunc{\consVec^{\timeIdx-1} + \dt \sum_{\dummyIdxTwo = 1}^{\newtonIdx-1} a_{\newtonIdx \dummyIdxTwo} \rkVec_\dummyIdxTwo, \timeVar^{\timeIdx-1} + c_\newtonIdx \dt} \quad \text{for} \; 1 < \newtonIdx \le 4,
+    \rkVec_1 &= \rhsFunc{\consVec^{\timeIdx - 1}, \timeVar^{\timeIdx-1}}, \\
+    \rkVec_\newtonIdx &= \rhsFunc{\consVec^{\timeIdx-1} + \dt \sum_{\dummyIdxTwo = 1}^{\newtonIdx-1} a_{\newtonIdx \dummyIdxTwo} \rkVec_\dummyIdxTwo, \timeVar^{\timeIdx-1} + c_\newtonIdx \dt} \quad \text{for} \; \newtonIdx \in \{2, \; 3, \; 4\}.
 \end{align}
-
+%
+The constants $a_{\newtonIdx \dummyIdxTwo}$, $b_{\newtonIdx}$, and $c_{\newtonIdx}$, for $\newtonIdx, \; \dummyIdxTwo \in \{1 \hdots 4\}$ are given by the Butcher tableau
+%
 \[
     \begin{array}
 		{c|cccc}
@@ -48,3 +52,4 @@ Some reduced-order model results are discretized in time using an explicit Runge
 		& 1/6 & 1/3 & 1/3 & 1/6
     \end{array}
 \]
+%
