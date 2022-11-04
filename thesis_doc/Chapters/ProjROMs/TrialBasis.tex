@@ -9,7 +9,7 @@ Before constructing a ROM, we must first construct a low-dimensional representat
     \end{aligned}
 \end{equation}
 %
-where $\consVecCent \inROne{\numDOF}$ is a constant translation vector, $\consTrial \defEq \left[\consTrialVec{1},\hdots,\consTrialVec{\numConsModes}\right] \inRTwo{\numDOF}{\numConsModes}$ is the \textit{trial basis}, and $\funcMap{\consVecCoef \defEq \left[\consVarCoef{1}(\timeVar),\hdots,\consVarCoef{\numConsModes}(\timeVar)\right]}{\nonnegReals}{\ROne{\numConsModes}}$ is the \textit{modal coefficient} (or more generally, \textit{latent variable}) vector. The constant matrix $\consScale \defEq \text{diag}\left(\consScaleVar_1, \hdots , \consScaleVar_{\numDOF}\right) \inRTwo{\numDOF}{\numDOF}$ scales the conservative state variables. Methods of computing $\consVecCent$ and $\consScale$ are discussed in Section~\ref{subsec:centerScale}.
+where $\consVecCent \inROne{\numDOF}$ is a constant translation vector, $\consTrial \defEq \left[\consTrialVec{1},\hdots,\consTrialVec{\numConsModes}\right] \inRTwo{\numDOF}{\numConsModes}$ is the \textit{trial basis}, and $\funcMap{\consVecCoef \defEq \left[\consVarCoef{1}(\timeVar),\hdots,\consVarCoef{\numConsModes}(\timeVar)\right]}{\nonnegReals}{\ROne{\numConsModes}}$ is the \textit{latent variable} (alternatively, \textit{modal coefficient} or \textit{generalized coordinates}) vector. The constant matrix $\consScale \defEq \text{diag}\left(\consScaleVar_1, \hdots , \consScaleVar_{\numDOF}\right) \inRTwo{\numDOF}{\numDOF}$ scales the conservative state variables.
 
 The trial basis spans the affine \textit{trial space}, i.e.,
 %
@@ -17,28 +17,84 @@ The trial basis spans the affine \textit{trial space}, i.e.,
     \consTrialSpace \defEq \consVecCent + \textit{Range}\left(\consTrial\right)
 \end{equation}
 %
-It is in this subspace that our approximate solution exists, i.e. $\funcMap{\consVecRom}{\nonnegReals}{\consTrialSpace}$. In reduced-order modeling, we choose $\numConsModes \ll \numDOF$ to generate an extremely compact representation of the state and achieving significant order reduction. The accuracy of this linear approximation to the true solution space is summarized by the concept of the Kolmogorov $n$-width, defined as
-%
-\begin{equation}\label{eq:nwidth}
-    d_n(\MC{A}, \MC{V}) = \underset{\MC{V}_n}{\vphantom{sup}\text{inf}} \enspace \underset{x \in \MC{A}}{\text{sup}} \enspace \underset{y \in \MC{V}_n}{\vphantom{sup}\text{inf}} || x - y ||
-\end{equation}
-%
-Although we restrict ourselves here to the discussion of linear trial subspaces, we discuss the concept on non-linear \textit{trial manifolds} in Section~\ref{subsec:nonlinManifold}.
+It is in this subspace that our approximate solution exists, i.e. $\funcMap{\consVecRom}{\nonnegReals}{\consTrialSpace}$. In reduced-order modeling, we choose $\numConsModes \ll \numDOF$ to generate an extremely compact representation of the state and achieving significant order reduction. The question now becomes \textit{how} we select an appropriate trial space that generates a reasonable approximation of the true state with the lowest dimension $\numConsModes$ as possible. The proper orthogonal decomposition is a natural choice.
 
 \subsection{Proper Orthogonal Decomposition}
 
-\begin{equation}
-	\consDataMatUns = \left[ \consFuncUns{\initTime}, \; \consFuncUns{\timeVar^1}, \; \hdots \; , \; \consFuncUns{\finalTime} \right]
-\end{equation}
-
-\begin{equation}\label{eq:podL2Min}
+The proper orthogonal decomposition (POD) has a long history in a variety of fields under numerous names, such as the Karhunen--Loève transform in statistics, principal component analysis in data analysis and machine learning, or the Eckart--Young--Mirsky theorem in mathematics. These methods ultimately amount to computing the $\ell^2$-optimal projector of a dataset onto an arbitrary $n$-dimensional space. This is formalized by the least-squares problem
+%
+\begin{equation}\label{eq:podLS}
     \consTrial = \argmin{\dummyMatOne \inRTwo{\numDOF}{\numConsModes}} \norm{ \consDataMatUns - \dummyMatOne \dummyMatOne^\top \consDataMatUns }_\text{F}
 \end{equation}
-
-\begin{equation}\label{eq:svd}
-    \consDataMatUns = \basisMat \singVecMat \rightSingVecMat^\top
+%
+where the \textit{data snapshot matrix} is defined as
+%
+\begin{equation}\label{eq:consSnapMat}
+	\consDataMatUns = \left[ \consFuncUns{\initTime}, \; \consFuncUns{\timeVar^1}, \; \hdots \; , \; \consFuncUns{\finalTime} \right]
 \end{equation}
+%
+and the purely-unsteady component of the solution by defining the unsteady state
+%
+\begin{equation}
+	\consFuncUns{\timeVar} = \consFunc{\timeVar} - \consVecCent
+\end{equation}
+%
+The collection of data snapshots defines the \textit{data-driven} nature of this process: a small number of high-fidelity simulations are computed, during which snapshots $\consFunc{\timeVar^{\dummyIdx}}$ of the conservative fields are saved to disk. These snapshots are aggregated into the snapshot matrix (Eq.~\ref{eq:consSnapMat}), and the optimal linear projection of this dataset onto an $\numConsModes$-dimensional space is computed. Measurements of the quality of this projection, and their use as a diagnostic tool for ROMs of multi-scale, multi-physics systems, are discussed in Section~\ref{subsec:projError}.
+
+The solution of the least-squares problem in Eq.~\ref{eq:podLS} has a convenient analytical solution via the singular value decomposition (SVD). Operating under the assumption that the number of snapshots $\numSnaps$ is greater than the number of degrees of freedom $\numDOF$ (true for almost all practical applications), the SVD of the data snapshot matrix is given by the form
+\begin{equation}\label{eq:svd}
+    \consDataMatUns = \leftEvecMat \singVecMat \rightEvecMat^\top
+\end{equation}
+where $\leftEvecMat \inRTwo{\numDOF}{\numSnaps}$ contains the left singular vectors, and $\rightEvecMat \inRTwo{\numSnaps}{\numSnaps}$ are the right singular vectors. The diagonal matrix of singular values $\singValMat = \text{diag}(\singVal_1, \; \singVal_2, \; \hdots, \; \singVal_{\numSnaps}) \inRTwo{\numSnaps}{\numSnaps}$ are ordered such that $\singVal_1 \geq \singVal_2 \geq \hdots \geq \singVal_{\numSnaps} \geq 0 $. The left and right singular vectors are orthonormal, i.e., $\leftEvecMat^T \leftEvecMat = \identMat$ and $\rightEvecMat^T \rightEvecMat = \identMat$. The solution to Eq.~\ref{eq:podLS}, and hence the trial basis $\consTrial$, is computed by extracting the first $\numConsModes$ columns of $\leftEvecMat$.
+
+Algorithms for computing the SVD for extremely large datasets are intensely researched due to the general importance of the SVD in a variety of linear algebra problems. We take particular note of two methods: the method of snapshots, and randomized SVD. All POD bases used to compute ROMs in this thesis utilize the former method, which we detail here briefly. The method of snapshot begins by recognizing that the right singular vectors of $\consDataMatUns$ are the same as the right eigenvectors of $\consDataMatUns^\top \consDataMatUns \inRTwo{\numSnaps}{\numSnaps}$, whose eigenvalues are also the square of the singular values of $\consDataMatUns$. This can be written as
+%
+\begin{equation}
+	\consDataMatUns^\top \consDataMatUns \rightEvecMat = \singVecMat^2 \rightEvecMat
+\end{equation}
+%
+As generally $\numSnaps\sim\bigO{100\text{--}1,000}$, this eigenvalue problem can be trivially solved using standard serial routines, such as those supplied by MATLAB, NumPy (Python), LAPACK (Fortran), or Eigen (\CC). Leveraging the fact that the right singular vectors are orthonormal, the SVD (Eq.~\ref{eq:svd}) can be rearranged to compute the left singular vectors as
+%
+\begin{equation}
+	\leftEvecMat = \consDataMatUns \rightEvecMat \singVecMat^{-1}
+\end{equation}
+%
+This approach is notably less memory-intensive than standard SVD routines, and is fairly trivial to implement in a parallel, distributed-memory environment (requiring only a parallel inner product, a serial eigensolve, and repeated parallel matrix-vector products).
+
+However, even the method of snapshots can be prohibitively memory- and compute-intensive. \textit{Randomized} linear algebra attempts to alleviate much of the computational burden by approximating the SVD by decomposing the action of the data matrix on a small random matrix~\cite{Halko2011}. The number of random samples (columns of the random matrix) increases the accuracy and cost of this approximate solution. Although the randomized SVD is not used for any results in this paper, it would be negligent to not mention its utility for ROMs of large-scale problems. For example, the work by McQuarrie \textit{et al.}~\cite{McQuarrie2021} uses the randomized SVD for decompositions of 2D single-element rocket injector simulation data.
+
 
 \subsection{Non-linear Autoencoders}\label{subsec:nonlinManifold}
 
+Up until this point we have only discussed linear representations of the solution, of the form given by Eq.~\ref{eq:consSolApprox}. The accuracy of this linear approximation to the subset of solution snapshots is often discussed in terms of the Kolmogorov $n$-width~\cite{Pinkus1985}, defined as
+%
+\begin{equation}\label{eq:nwidth}
+    d_n(\MC{A}) = \underset{\MC{V}_n}{\vphantom{sup}\text{inf}} \enspace \underset{x \in \MC{A}}{\text{sup}} \enspace \underset{y \in \MC{V}_n}{\vphantom{sup}\text{inf}} || x - y ||.
+\end{equation}
+%
+This measures a distance between an \textit{optimal} $n$-dimensional subspace and a subset $\MC{A}$. Those solution subsets $\MC{A}$ for which increasing $n$ leads to rapidly-improving approximations and quick convergence to machine accuracy are said to have a \textit{quickly-decaying} $n$-width. Conversely, those solution subsets which require extremely large $n$ to achieve sufficiently-accurate approximations are said to have a \textit{slowly-decaying} $n$-width. Although computing bounds for $n$-widths is restricted to very specific solution sets, it has been empirically observed that fluid flow fields characterized by convection phenomena and sharp gradients (e.g., shocks or flames) exhibit poor convergence of approximation error via linear representations.
+
+To overcome this inherent challenge, a class of techniques referred to as \textit{non-linear manifold} methods seeks more general and expressive representations of the solution subset. As discussed briefly in Section~\ref{sec:dataDrivenModeling}, kernel principal component analysis~\cite{kernelPCA} and generative topographic mappings~\cite{Bishop1997} are just two traditional methods. In the past two decades, however, with increased access to HPC resources and large datasets, neural networks have become extremely relevant to the dimension-reduction research community. We provide a very brief primer on neural networks.
+
+\paragraph*{Feedforward Neural Networks}\mbox{}\\
+%
+From a mathematical point of view, a feedforward neural network can be considered as the successive composition of arbitrary non-linear functions which ingest a vector of input data $\nnInput \inROne{\numNNInput}$ and maps it to a target vector $\nnOutput \inROne{\numNNOutput}$. This process thus takes the form
+%
+\begin{equation}
+	\nnOutput = \nnLayerFuncIdx{\cdot, \; \nnParams^{\numLayers}}{\numLayers} \circ \nnLayerFuncIdx{\cdot, \; \nnParams^{\numLayers-1}}{\numLayers-1} \circ \hdots \circ \nnLayerFuncIdx{\cdot, \; \nnParams^{2}}{2} \circ \nnLayerFuncIdx{\nnInput, \; \nnParams^{1}}{1}
+\end{equation}
+%
+Each successive function $\funcMap{\nnLayerIdx{\dummyIdx}}{\ROne{N_{\dummyIdx}}}{\ROne{N_{\dummyIdx+1}}}$ is referred to as the $\dummyIdx$th \textit{layer} of the neural network, and $\nnParams^{\dummyIdx}$ are the parameters which define the layer. The input of the first layer $\nnLayer^1$ is of dimension $\ROne{\numNNInput}$, and the output of the last layer $\nnLayer^{\numLayers}$ is of dimension $\ROne{\numNNOutput}$. All inner input/output dimensions are arbitrary.
+
+As a demonstrative example, one of the simplest form of $\nnLayer$ is the fully-connected layer, which is given by
+%
+\begin{equation}
+	\nnLayer_{\text{FC}}(\nnInput, \nnParams) \defEq \actFunc{\nnWeights \nnInput + \nnBias}
+\end{equation}
+%
+The layer parameters are given as
+
 \subsection{Centering and Scaling}\label{subsec:centerScale}
+
+
+\subsection{Projection Error}\label{subsec:projError}

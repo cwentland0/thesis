@@ -7,6 +7,7 @@
 \newcommand{\norm}[1]{\ensuremath{\left\lVert#1\right\rVert}}
 \newcommand{\defEq}{\ensuremath{:=}}
 \newcommand{\standardstate}{\circ\kern-0.47em-}
+\newcommand{\CC}{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\relsize{-3}{\textbf{++}}}}
 
 % time
 \newcommand{\timeVar}{\ensuremath{\text{t}}}
@@ -39,6 +40,9 @@
 \newcommand{\numReacs}{\ensuremath{N_r}}
 \newcommand{\numSnaps}{\ensuremath{N_{\finalTime}}}
 \newcommand{\numProg}{\ensuremath{N_{\text{prog}}}}
+\newcommand{\numLayers}{\ensuremath{N_{L}}}
+\newcommand{\numNNInput}{\ensuremath{N_{I}}}
+\newcommand{\numNNOutput}{\ensuremath{N_{O}}}
 
 % spatial coordinates
 \newcommand{\spatialVar}{\ensuremath{x}}
@@ -149,6 +153,15 @@
 \newcommand{\deimRegressorJac}{\ensuremath{\deimBasisJac (\sampMat \deimBasisJac)^+ \sampMat}}
 \newcommand{\deimRegressorJacSmall}{\ensuremath{(\sampMat \deimBasisJac)^+ \sampMat}}
 
+% SVD
+\newcommand{\lEvecVar}{x}
+\newcommand{\rEvecVar}{y}
+\newcommand{\singVal}{\ensuremath{\sigma}}
+\newcommand{\leftEvecMat}{\ensuremath{\ensuremath{\mathbf{\MakeUppercase{\lEvecVar}}}}}
+\newcommand{\singValMat}{\ensuremath{\boldsymbol{\Sigma}}}
+\newcommand{\rightEvecMat}{\ensuremath{\ensuremath{\mathbf{\MakeUppercase{\rEvecVar}}}}}
+\newcommand{\eigenVal}{\ensuremath{\lambda}}
+
 % vector spaces
 \newcommand{\trialSpace}{\ensuremath{\widetilde{\MC{\MakeUppercase{\basisVar}}}}}
 \newcommand{\consTrialSpace}{\ensuremath{\trialSpace_c}}
@@ -156,6 +169,16 @@
 % non-linear functions
 \newcommand{\encoderFunc}[1]{\ensuremath{\mathbf{h}\left(#1\right)}}
 \newcommand{\decoderFunc}[1]{\ensuremath{\mathbf{g}\left(#1\right)}}
+\newcommand{\nnInput}{\ensuremath{\mathbf{x}}}
+\newcommand{\nnOutput}{\ensuremath{\mathbf{y}}}
+\newcommand{\nnLayer}{\ensuremath{f}}
+\newcommand{\nnLayerIdx}[1]{\ensuremath{\nnLayer^{#1}}}
+\newcommand{\nnLayerFunc}[1]{\ensuremath{\nnLayer\left({#1}\right)}}
+\newcommand{\nnLayerFuncIdx}[2]{\ensuremath{\nnLayer^{#2}\left({#1}\right)}}
+\newcommand{\actFunc}[1]{\ensuremath{\sigma\left(#1\right)}}
+\newcommand{\nnParams}{\ensuremath{\boldsymbol{\Theta}}}
+\newcommand{\nnWeights}{\ensuremath{\mathbf{W}}}
+\newcommand{\nnBias}{\ensuremath{\mathbf{b}}}
 
 % scaling matrices
 \newcommand{\consScaleVar}{p}
