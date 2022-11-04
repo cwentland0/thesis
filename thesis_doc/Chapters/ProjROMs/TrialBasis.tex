@@ -9,54 +9,54 @@ Before constructing a ROM, we must first construct a low-dimensional representat
     \end{aligned}
 \end{equation}
 %
-where $\consVecCent \inROne{\numDOF}$ is a constant translation vector, $\consTrial \defEq \left[\consTrialVec{1},\hdots,\consTrialVec{\numConsModes}\right] \inRTwo{\numDOF}{\numConsModes}$ is the \textit{trial basis}, and $\funcMap{\consVecCoef \defEq \left[\consVarCoef{1}(\timeVar),\hdots,\consVarCoef{\numConsModes}(\timeVar)\right]}{\nonnegReals}{\ROne{\numConsModes}}$ is the \textit{latent variable} (alternatively, \textit{modal coefficient} or \textit{generalized coordinates}) vector. The constant matrix $\consScale \defEq \text{diag}\left(\consScaleVar_1, \hdots , \consScaleVar_{\numDOF}\right) \inRTwo{\numDOF}{\numDOF}$ scales the conservative state variables.
+where $\consVecCent \inROne{\numDOF}$ is a constant translation vector, $\consTrial \defEq \left[\consTrialVec{1},\hdots,\consTrialVec{\numConsModes}\right] \inRTwo{\numDOF}{\numConsModes}$ is the \textit{trial basis}, and $\funcMap{\consVecCoef \defEq \left[\consVarCoef{1}(\timeVar),\hdots,\consVarCoef{\numConsModes}(\timeVar)\right]}{\nonnegReals}{\ROne{\numConsModes}}$ is the \textit{latent state} (alternatively, \textit{modal coefficients} or \textit{generalized coordinates}) vector. The constant matrix $\consScale \defEq \text{diag}\left(\consScaleVar_1, \hdots , \consScaleVar_{\numDOF}\right) \inRTwo{\numDOF}{\numDOF}$ scales the conservative state variables.
 
 The trial basis spans the affine \textit{trial space}, i.e.,
 %
 \begin{equation}
-    \consTrialSpace \defEq \consVecCent + \textit{Range}\left(\consTrial\right)
+    \consTrialSpace \defEq \consVecCent + \textit{Range}\left(\consTrial\right).
 \end{equation}
 %
 It is in this subspace that our approximate solution exists, i.e. $\funcMap{\consVecRom}{\nonnegReals}{\consTrialSpace}$. In reduced-order modeling, we choose $\numConsModes \ll \numDOF$ to generate an extremely compact representation of the state and achieving significant order reduction. The question now becomes \textit{how} we select an appropriate trial space that generates a reasonable approximation of the true state with the lowest dimension $\numConsModes$ as possible. The proper orthogonal decomposition is a natural choice.
 
-\subsection{Proper Orthogonal Decomposition}
+\subsection{Proper Orthogonal Decomposition}~\label{subsec:POD}
 
 The proper orthogonal decomposition (POD) has a long history in a variety of fields under numerous names, such as the Karhunen--Loève transform in statistics, principal component analysis in data analysis and machine learning, or the Eckart--Young--Mirsky theorem in mathematics. These methods ultimately amount to computing the $\ell^2$-optimal projector of a dataset onto an arbitrary $n$-dimensional space. This is formalized by the least-squares problem
 %
 \begin{equation}\label{eq:podLS}
-    \consTrial = \argmin{\dummyMatOne \inRTwo{\numDOF}{\numConsModes}} \norm{ \consDataMatUns - \dummyMatOne \dummyMatOne^\top \consDataMatUns }_\text{F}
+    \consTrial = \argmin{\dummyMatOne \inRTwo{\numDOF}{\numConsModes}} \norm{ \consDataMatUns - \dummyMatOne \dummyMatOne^\top \consDataMatUns }_\text{F},
 \end{equation}
 %
 where the \textit{data snapshot matrix} is defined as
 %
 \begin{equation}\label{eq:consSnapMat}
-	\consDataMatUns = \left[ \consFuncUns{\initTime}, \; \consFuncUns{\timeVar^1}, \; \hdots \; , \; \consFuncUns{\finalTime} \right]
+	\consDataMatUns = \left[ \consFuncUns{\initTime}, \; \consFuncUns{\timeVar^1}, \; \hdots \; , \; \consFuncUns{\finalTime} \right] \in \RTwo{\numDOF}{\numSnaps},
 \end{equation}
 %
 and the purely-unsteady component of the solution by defining the unsteady state
 %
-\begin{equation}
-	\consFuncUns{\timeVar} = \consFunc{\timeVar} - \consVecCent
+\begin{equation}\label{eq:consUns}
+	\consFuncUns{\timeVar} = \consScaleInv \left(\consFunc{\timeVar} - \consVecCent\right).
 \end{equation}
 %
-The collection of data snapshots defines the \textit{data-driven} nature of this process: a small number of high-fidelity simulations are computed, during which snapshots $\consFunc{\timeVar^{\dummyIdx}}$ of the conservative fields are saved to disk. These snapshots are aggregated into the snapshot matrix (Eq.~\ref{eq:consSnapMat}), and the optimal linear projection of this dataset onto an $\numConsModes$-dimensional space is computed. Measurements of the quality of this projection, and their use as a diagnostic tool for ROMs of multi-scale, multi-physics systems, are discussed in Section~\ref{subsec:projError}.
+The collection of data snapshots defines the \textit{data-driven} nature of this process: a small number of high-fidelity simulations are computed, during which $\numSnaps$ snapshots $\consFunc{\timeVar^{\dummyIdx}}$ of the conservative fields are saved to disk. These snapshots are centered about $\consVecCent$, scaled by $\consScaleInv$, aggregated into the snapshot matrix (Eq.~\ref{eq:consSnapMat}), and the optimal linear projection of this dataset onto an $\numConsModes$-dimensional space is computed. Measurements of the quality of this projection, and their use as a diagnostic tool for ROMs of multi-scale, multi-physics systems, are discussed in Section~\ref{subsec:projError}.
 
 The solution of the least-squares problem in Eq.~\ref{eq:podLS} has a convenient analytical solution via the singular value decomposition (SVD). Operating under the assumption that the number of snapshots $\numSnaps$ is greater than the number of degrees of freedom $\numDOF$ (true for almost all practical applications), the SVD of the data snapshot matrix is given by the form
 \begin{equation}\label{eq:svd}
-    \consDataMatUns = \leftEvecMat \singVecMat \rightEvecMat^\top
+    \consDataMatUns = \leftEvecMat \singVecMat \rightEvecMat^\top,
 \end{equation}
 where $\leftEvecMat \inRTwo{\numDOF}{\numSnaps}$ contains the left singular vectors, and $\rightEvecMat \inRTwo{\numSnaps}{\numSnaps}$ are the right singular vectors. The diagonal matrix of singular values $\singValMat = \text{diag}(\singVal_1, \; \singVal_2, \; \hdots, \; \singVal_{\numSnaps}) \inRTwo{\numSnaps}{\numSnaps}$ are ordered such that $\singVal_1 \geq \singVal_2 \geq \hdots \geq \singVal_{\numSnaps} \geq 0 $. The left and right singular vectors are orthonormal, i.e., $\leftEvecMat^T \leftEvecMat = \identMat$ and $\rightEvecMat^T \rightEvecMat = \identMat$. The solution to Eq.~\ref{eq:podLS}, and hence the trial basis $\consTrial$, is computed by extracting the first $\numConsModes$ columns of $\leftEvecMat$.
 
-Algorithms for computing the SVD for extremely large datasets are intensely researched due to the general importance of the SVD in a variety of linear algebra problems. We take particular note of two methods: the method of snapshots, and randomized SVD. All POD bases used to compute ROMs in this thesis utilize the former method, which we detail here briefly. The method of snapshot begins by recognizing that the right singular vectors of $\consDataMatUns$ are the same as the right eigenvectors of $\consDataMatUns^\top \consDataMatUns \inRTwo{\numSnaps}{\numSnaps}$, whose eigenvalues are also the square of the singular values of $\consDataMatUns$. This can be written as
+Algorithms for computing the SVD for extremely large datasets are intensely researched due to the general importance of the SVD in a variety of linear algebra problems. We take particular note of two methods: the method of snapshots, and randomized SVD. All POD bases used to compute ROMs in this thesis utilize the former method, which we detail here briefly. The method of snapshot, pioneered by Sirovich~\cite{Sirovich1987}, begins by recognizing that the right singular vectors of $\consDataMatUns$ are the same as the right eigenvectors of $\consDataMatUns^\top \consDataMatUns \inRTwo{\numSnaps}{\numSnaps}$, whose eigenvalues are also the square of the singular values of $\consDataMatUns$. This can be written as
 %
 \begin{equation}
-	\consDataMatUns^\top \consDataMatUns \rightEvecMat = \singVecMat^2 \rightEvecMat
+	\consDataMatUns^\top \consDataMatUns \rightEvecMat = \singVecMat^2 \rightEvecMat.
 \end{equation}
 %
-As generally $\numSnaps\sim\bigO{100\text{--}1,000}$, this eigenvalue problem can be trivially solved using standard serial routines, such as those supplied by MATLAB, NumPy (Python), LAPACK (Fortran), or Eigen (\CC). Leveraging the fact that the right singular vectors are orthonormal, the SVD (Eq.~\ref{eq:svd}) can be rearranged to compute the left singular vectors as
+As generally $\numSnaps\sim\bigO{100\text{--}1,000}$, and $\consDataMatUns^\top \consDataMatUns$ is symmetric positive definite, this eigenvalue problem can be trivially solved using standard serial routines, such as those supplied by MATLAB, NumPy/SciPy (Python), LAPACK (Fortran), or Eigen (\CC). Leveraging the fact that the right singular vectors are orthonormal, the SVD (Eq.~\ref{eq:svd}) can be rearranged to compute the left singular vectors as
 %
 \begin{equation}
-	\leftEvecMat = \consDataMatUns \rightEvecMat \singVecMat^{-1}
+	\leftEvecMat = \consDataMatUns \rightEvecMat \singVecMat^{-1}.
 \end{equation}
 %
 This approach is notably less memory-intensive than standard SVD routines, and is fairly trivial to implement in a parallel, distributed-memory environment (requiring only a parallel inner product, a serial eigensolve, and repeated parallel matrix-vector products).
@@ -74,14 +74,16 @@ Up until this point we have only discussed linear representations of the solutio
 %
 This measures a distance between an \textit{optimal} $n$-dimensional subspace and a subset $\MC{A}$. Those solution subsets $\MC{A}$ for which increasing $n$ leads to rapidly-improving approximations and quick convergence to machine accuracy are said to have a \textit{quickly-decaying} $n$-width. Conversely, those solution subsets which require extremely large $n$ to achieve sufficiently-accurate approximations are said to have a \textit{slowly-decaying} $n$-width. Although computing bounds for $n$-widths is restricted to very specific solution sets, it has been empirically observed that fluid flow fields characterized by convection phenomena and sharp gradients (e.g., shocks or flames) exhibit poor convergence of approximation error via linear representations.
 
-To overcome this inherent challenge, a class of techniques referred to as \textit{non-linear manifold} methods seeks more general and expressive representations of the solution subset. As discussed briefly in Section~\ref{sec:dataDrivenModeling}, kernel principal component analysis~\cite{kernelPCA} and generative topographic mappings~\cite{Bishop1997} are just two traditional methods. In the past two decades, however, with increased access to HPC resources and large datasets, neural networks have become extremely relevant to the dimension-reduction research community. We provide a very brief primer on neural networks.
+To overcome this inherent challenge, a class of techniques referred to as \textit{non-linear manifold} methods seeks more general and expressive representations of the solution subset. As discussed briefly in Section~\ref{sec:dataDrivenModeling}, kernel principal component analysis~\cite{kernelPCA} and generative topographic mappings~\cite{Bishop1997} are just two traditional methods. In the past two decades, however, with increased access to HPC resources and large datasets, neural networks have become extremely relevant to the dimension-reduction research community. 
+
+We take care to note that the following discussion of non-linear autoencoders derives directly from the work by Lee and Carlberg on non-linear manifold projection-based reduced-order models~\cite{Lee2020}. This seminal paper built a strong theoretical foundation for the application of neural network autoencoders in projection-based ROMs, and we find its terminology and notation extremely intuitive. As such, although the results in Chapter~\ref{chap:TransientFlame} expands greatly on their work and provides an honesty evaluation of the cost/benefits tradeoff in neural network PROMs, the credit for developing the method lies solely with Lee and Carlberg. With that said, we begin by providing a very brief primer on neural networks and their relation to dimension-reduction.
 
 \paragraph*{Feedforward Neural Networks}\mbox{}\\
 %
 From a mathematical point of view, a feedforward neural network can be considered as the successive composition of arbitrary non-linear functions which ingest a vector of input data $\nnInput \inROne{\numNNInput}$ and maps it to a target vector $\nnOutput \inROne{\numNNOutput}$. This process thus takes the form
 %
 \begin{equation}
-	\nnOutput = \nnLayerFuncIdx{\cdot, \; \nnParams^{\numLayers}}{\numLayers} \circ \nnLayerFuncIdx{\cdot, \; \nnParams^{\numLayers-1}}{\numLayers-1} \circ \hdots \circ \nnLayerFuncIdx{\cdot, \; \nnParams^{2}}{2} \circ \nnLayerFuncIdx{\nnInput, \; \nnParams^{1}}{1}
+	\nnOutput = \nnLayerFuncIdx{\cdot, \; \nnParams^{\numLayers}}{\numLayers} \circ \nnLayerFuncIdx{\cdot, \; \nnParams^{\numLayers-1}}{\numLayers-1} \circ \hdots \circ \nnLayerFuncIdx{\cdot, \; \nnParams^{2}}{2} \circ \nnLayerFuncIdx{\nnInput, \; \nnParams^{1}}{1}.
 \end{equation}
 %
 Each successive function $\funcMap{\nnLayerIdx{\dummyIdx}}{\ROne{N_{\dummyIdx}}}{\ROne{N_{\dummyIdx+1}}}$ is referred to as the $\dummyIdx$th \textit{layer} of the neural network, and $\nnParams^{\dummyIdx}$ are the parameters which define the layer. The input of the first layer $\nnLayer^1$ is of dimension $\ROne{\numNNInput}$, and the output of the last layer $\nnLayer^{\numLayers}$ is of dimension $\ROne{\numNNOutput}$. All inner input/output dimensions are arbitrary.
@@ -89,12 +91,102 @@ Each successive function $\funcMap{\nnLayerIdx{\dummyIdx}}{\ROne{N_{\dummyIdx}}}
 As a demonstrative example, one of the simplest form of $\nnLayer$ is the fully-connected layer, which is given by
 %
 \begin{equation}
-	\nnLayer_{\text{FC}}(\nnInput, \nnParams) \defEq \actFunc{\nnWeights \nnInput + \nnBias}
+	\nnLayer_{\text{FC}}(\nnInput, \nnParams) \defEq \actFunc{\nnWeights \nnInput + \nnBias}.
 \end{equation}
 %
 The layer parameters are given as
+
+\paragraph{Autoencoder Trial Manifolds}\mbox{}\\
+%
+Autoencoders describe a specific class of neural networks which are composed of an input network (the \textit{encoder}) which maps the input data to a low-dimensional vector (the \textit{latent state}), followed by an output network (the \textit{decoder}) which attempts to map the latent state back to the input data. That is, the input data and the target output are the same, and the autoencoder learns to compress the data and retrieve it from the low-dimensional representation. In this sense, an autoencoder is trained to learn the identity operation, mapping input data to itself through a low-dimensional bottleneck. A visual representation of a simple autoencoder is shown in Fig.~\ref{fig:aeSample}. 
+%
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\linewidth]{example-image-a}
+    \caption{\label{fig:aeSample}Simplified autoencoder composed of encoder network $\encoderFunc{\cdot}$, latent state $\nnInputCoef$, and decoder network $\decoderFunc{\cdot}$, given input $\nnInput$.}
+\end{figure}
+%
+The bottleneck defines the dimension-reduction aspect of autoencoders: the full state may be represented by a low-dimensional state and extracted by the decoder network. However, unlike linear dimension-reduction as provided by POD in Section~\ref{subsec:POD}, neural networks enable arbitrarily non-linear representations of functions with the potential to efficiently approximate solution subsets with slowly-decaying Kolmogorov $n$-widths, such as those observed in convection-dominated fluid flows. For dimension-reduction of fluid flow fields the training data are the snapshots of the conservative or primitive states. An autoencoder for this data can thus formalized by the representation
+%
+\begin{equation}
+    \consVecRom = \decoderFunc{\cdot, \nnParams^{\decoderVar}} \circ \encoderFunc{\consVec, \nnParams^{\encoderVar}}
+\end{equation}
+%
+where $\funcMap{\encoder}{\ROne{\numDOF}}{\ROne{\numConsModes}}$ is the encoder network, and $\funcMap{\decoder}{\ROne{\numConsModes}}{\ROne{\numDOF}}$ is the decoder network. We take care to note that the encoder function $\encoder$ is implied to be preceded by a centering and scaling operation, similar to that given in Eq.~\ref{eq:consUns}, and the decoder $\decoder$ is implied to be proceeded by the reverse operation, i.e. 
+%
+\begin{align}
+    \encoderFunc{\consVec} &\defEq \nnLayer_{\encoderVar} \left(\consScaleInv\left(\consVec - \consVecCent\right), \nnParams^{\encoderVar}\right), \\
+    \decoderFunc{\consVecCoef} &\defEq \consVecCent + \consScale \nnLayer_{\decoderVar} \left(\consVecCoef, \nnParams^{\decoderVar}\right). \label{eq:decoderFunc}
+\end{align}
+%
+Here, $\funcMap{\nnLayer_{\encoderVar}}{\ROne{\numDOF}}{\ROne{\numConsModes}}$ and $\funcMap{\nnLayer_{\decoderVar}}{\ROne{\numConsModes}}{\ROne{\numDOF}}$ are solely the neural network components of the encoder and decoder, respectively. This ensures that the network is trained on standardized data, as was the case for computing the POD basis in Section~\ref{subsec:POD}.
+
+After the autoencoder network is trained via back-propagation as previously detailed, the decoder alone may be extracted, and the physical state may then be approximated as
+%
+\begin{equation}\label{eq:consSolApproxGen}
+    \consVec\left(\timeVar\right) \approx \consVecRom(\timeVar) \defEq \decoderFunc{\consVecCoef\left(\timeVar\right)}.
+\end{equation}
+%
+Note the similarity of Eqs.~\ref{eq:decoderFunc} and~\ref{eq:consSolApproxGen} to the linear representation in Eq.~\ref{eq:consSolApprox}. Indeed, the above form is a more general form of such a low-dimensional representation, and devolves to the linear case when the neural network is replaced by a linear operator, i.e. $\nnLayer_{\decoderVar}\left(\nnInput\right) \defEq \consScale \consTrial \nnInput$. Of course, neural networks benefit from supplying arbitrary non-linear representations, and the approximate solution is thus defined on a \textit{non-linear manifold} $\consTrialSpace \defEq \consVecCent + \{\decoderFunc{\nnInputCoef} \vert \; \nnInputCoef \inROne{\numConsModes} \}$. In theory, this non-linear manifold has the potential to much more accurately model the true solution subset than a linear subspace for a fixed latent dimension $\numConsModes$. In Chapter~\ref{chap:TransientFlame}, we will show that this is indeed the case given a sufficiently expressive neural network architecture, particularly for solution subsets characterized by propagating waves and sharp gradients.
+
+Moving forward, we will retain the general representation of the approximate state given by Eq.~\ref{eq:consSolApproxGen} in deriving ROMs in Sections~\ref{sec:classicROMs}--\ref{sec:adaptation}. Where appropriate, we will substitute the linear representation $\decoderFunc{\nnInput} \defEq \consVecCent + \consScale \consTrial \nnInput$ to simplify the formulation.
 
 \subsection{Centering and Scaling}\label{subsec:centerScale}
 
 
 \subsection{Projection Error}\label{subsec:projError}
+
+For results presented in Chapters~\ref{chap:CavityAndCVRC}-\ref{chap:TransientFlame}, we will make frequent use of the \textit{projection error} as a diagnostic tool for understanding the quality of a computed trial space $\consTrialSpace$ in modeling the FOM solution data. This error measure, for the $\timeIdx$th time instance of the $\varIdx$th state variable (density, $x$-momentum, etc.), is given by the formulation
+%
+\begin{equation}
+    \errVecVar^\timeIdx = \frac{|| \consVecVar^\timeIdx - \consTrial \consTrial^\top \consVecVar^\timeIdx ||_2}{|| \consVecVar^\timeIdx ||_2}.
+\end{equation}
+%
+Scaling the error for each variable by the norm of the unprojected state ensures reasonable comparisons of error between state variables of drastically different magnitudes (e.g., $\bigO{1\text{e}6}$ for pressure and $\bigO{1}$ for species mass fractions). Note that for the non-linear manifold representations discussed in Section~\ref{subsec:nonlinManifold}, an equivalent projection operation akin to $\consTrial \consTrial^\top$ does not exist. Instead, the projection error is defined as
+%
+\begin{equation}
+    \errVecVar^\timeIdx = \frac{\left\Vert \consVecVar^\timeIdx - \argmin{\dummyVec \in \consTrialSpace} ||\consVecVar^\timeIdx - \dummyVec||_2 \right\Vert_2}{|| \consVecVar^\timeIdx ||_2}.
+\end{equation}
+%
+As $\consTrialSpace$ is a non-linear manifold defined by the range of the decoder $\decoderFunc{\cdot}$, the solution of the $argmin$ is a non-linear least squares problem. In practice, we use the \verb|optimize.least_squares()| function provided by the SciPy Python package (with default tolerances) to compute this solution. An initial guess for the input to the decoder is given by the encoding of the state, $\encoderFunc{\consVec^{\timeIdx}}$. This process effectively finds the point on the non-linear trial manifold which is closest to the data $\consVec^{\timeIdx}$.
+
+Often the time average over the simulation period $[\initTime, \finalTime]$ will be provided, and is computed as
+%
+\begin{equation}
+    \errVecVar = \frac{1}{\numSnaps} \sum_{\timeIdx = 1}^{\numSnaps} \errVecVar^\timeIdx.
+\end{equation}
+%
+Further, the total average projection error across all state variables provides a very broad measure of the trial space quality, and is given by
+%
+\begin{equation}
+    \errVec = \frac{1}{\numVars} \sum_{\varIdx = 1}^{\numVars} \errVecVar.
+\end{equation}
+%
+Examples of these error measures are provided for a one-dimensional transient flame simulation, similar to those detailed in Chapter~\ref{chap:TransientFlame}, though without acoustic forcing at the outlet.
+%
+\begin{figure}
+    \begin{minipage}{0.45\linewidth}
+        \includegraphics[width=0.99\linewidth]{example-image-a}
+        \caption{\label{fig:projErrTempField}Instantaneous temperature fields and projections.}
+    \end{minipage}
+    \hspace{1em}
+    \begin{minipage}{0.45\linewidth}
+        \includegraphics[width=0.99\linewidth]{example-image-a}
+        \caption{\label{fig:projErrMFField}Instantaneous mass fraction fields and projections.}
+    \end{minipage}
+\end{figure}
+%
+\begin{figure}
+    \begin{minipage}{0.45\linewidth}
+        \includegraphics[width=0.99\linewidth]{example-image-a}
+        \caption{\label{fig:projErrTime}Unsteady temperature and mass fraction projection error.}
+    \end{minipage}
+    \hspace{1em}
+    \begin{minipage}{0.45\linewidth}
+        \includegraphics[width=0.99\linewidth]{example-image-a}
+        \caption{\label{fig:projErrAvg}Time-average temperature and mass fraction projection error.}
+    \end{minipage}
+\end{figure}
+%
+
+No analytical \textit{a priori} error measure exists for predicting the error of PROMs of general non-linear systems. Unsteady errors will invariable accumulate and compound over the course of a PROM simulation. However, projection error is useful in providing an upper bound on the accuracy of the PROM. The unsteady PROM cannot produce a solution more accurate that the projected solution, as the trial space is not an exact representation of the true solution space unless all modes are included in the trial basis. Further, computing the projection of unseen data (in parametric or future state prediction) provides a measure of how generalizable the trial space or manifold is. This can help determine whether a PROM will be appropriate for such predictions and perhaps preclude expensive online ROMs which are bound to fail purely due to the unfitness of the trial manifold.

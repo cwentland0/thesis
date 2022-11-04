@@ -1,7 +1,70 @@
-\section{Classical Projection-based ROMs}
+\section{Classical Projection-based ROMs}\label{sec:classicROMs}
+
+Inserting the approximation $\consVec \approx \consVecRom$ into the governing ODE (Eq.~\ref{eq:FOM}) results in the system
+%
+\begin{equation}\label{eq:romFullODE}
+    \ode{\consVecRom}{\timeVar} - \rhsFunc{\consVecRom, \; \timeVar} = \zeroVec, \quad \consVecRom^0 = \consFuncRom{\initTime}.
+\end{equation}
+%
+Employing the chain rule, and scaling the ODE via the diagonal matrix $\resScaleInv$ to standardize the semi-discrete residual, this system can be modified into
+%
+\begin{equation}\label{eq:romFullODEMod}
+    \resScaleInv \left( \jacobDecodeFunc{\consVecCoef} \ode{\consVecCoef}{\timeVar} - \rhsFunc{\consVecRom, \; \timeVar} \right) = \zeroVec
+\end{equation}
+%
+where the Jacobian $\jacobDecodeFunc{\consVecCoef} \defEq \funcMap{\text{d} \decoderFunc{\consVecCoef} / \text{d}\consVecCoef}{\ROne{\numConsModes}}{\RTwo{\numDOF}{\numConsModes}}$. For a linear representation, the Jacobian is simply $\jacobDecode = \consScale \consTrial$. The purpose of the residual scaling will be made apparent later.
+
+This has obviously resulted in no practical dimension reduction, as Eqs~\ref{eq:romFullODE} and~\ref{eq:romFullODEMod} are still $\numDOF$-dimensional systems. To accomplish dimension reduction, we require a \textit{projection} operation, the namesake of projection-based reduced-order models. This entails choosing a \textit{test basis} $\testBasis \inRTwo{\numDOF}{\numConsModes}$ by which the approximate ODE is projected as
+%
+\begin{equation}
+    \testBasis^\top \resScaleInv \left(\jacobDecodeFunc{\consVecCoef} \ode{\consVecCoef}{\timeVar} - \rhsFunc{\consVecRom, \; \timeVar} \right) = \zeroVec
+\end{equation}
+%
+Assuming $\testBasis^\top \resScaleInv \jacobDecodeFunc{\consVecCoef} \inRTwo{\numConsModes}{\numConsModes}$ is invertible, rearranging terms arrives at
+%
+\begin{equation}\label{eq:projRomGen}
+    \ode{\consVecCoef}{\timeVar} = \left[\testBasis^\top \resScaleInv \jacobDecodeFunc{\consVecCoef}\right]^{-1} \testBasis^\top \resScaleInv \rhsFunc{\consVecRom, \; \timeVar}
+\end{equation}
+%
+Finally, Eq.~\ref{eq:projRomGen} is a $\numConsModes$-dimensional ODE which can be marched forward in time with respect to the latent state $\consVecCoef$. As we naturally choose $\numConsModes \ll \numDOF$, this time integration process is theoretically cheaper than that of the FOM. This may not always be the case above a certain value of $\numConsModes$, as the inversion (and reduction across processes for parallel applications) of the dense matrix $\testBasis^\top \resScaleInv \jacobDecodeFunc{\consVecCoef}$ may be more computationally expensive than the solution of the FOM's sparse linear system arising from Eq.~\ref{eq:pseudoTimeLinSys}. Further, the evaluation of the non-linear terms $\rhsFunc{\cdot}$ still depends on the full-order state $\consVecRom$. These and other computational barriers will be addressed in more detail in Section~\ref{sec:hyperreduction}.
+
+The question now becomes how the projecting test basis is chosen. In the following sections, we detail the classical projection methods, namely Galerkin projection and least-squares Petrov--Galerkin projection. In Section~\ref{sec:mplsvt} we will derive the recent model-form preserving least-squares with variable transformation method and discuss its potential advantages over classical projection methods.
 
 \subsection{Galerkin Projection}
 
+Galerkin projection is defined by equating test space to the tangent space of the trial manifold, i.e.
+%
+\begin{equation}
+    \testBasis\left(\consVecCoef\right) \defEq \jacobDecodeFunc{\consVecCoef}
+\end{equation}
+%
+Substituting this into Eq.~\ref{eq:projRomGen} arrives at
+%
+\begin{equation}
+    \ode{\consVecCoef}{\timeVar} = \left[\jacobDecodeFunc{\consVecCoef}^\top \resScaleInv \jacobDecodeFunc{\consVecCoef}\right]^{-1} \jacobDecodeFunc{\consVecCoef}^\top \resScaleInv \rhsFunc{\consVecRom, \; \timeVar}
+\end{equation}
+%
+For a linear representation, the test basis is given simply by $\testBasis = \consScale \consTrial$. In the specific case of $\consScale = \resScale = \identMat$, recalling that the POD basis is orthonormal, this simplifies the ODE greatly to
+%
+\begin{equation}
+    \ode{\consVecCoef}{\timeVar} = \consTrial^\top \rhsFunc{\consVecRom, \; \timeVar}
+\end{equation} 
+
+As discussed in Section~\ref{sec:dataDrivenModeling}, Galerkin projection ROMs have a long history of applications to simulations of fluid flows (e.g.,~\cite{Aubry1988,Cazemier1998,BuiThanh2007}). However, they have been observed to exhibit unacceptable stability and accuracy issues for more complex systems. Although the Galerkin PROM can be shown to be continuous-optimal in the sense that it minimizes the $\ell^2$ norm of the semi-discrete ROM residual~\cite{Carlberg2017}, in reality the fully-discrete ROM residual is of more practical concern. This in turn motivated the least-squares Petrov--Galerkin projection method.
+
 \subsection{Least-squares Petrov--Galerkin}
 
-\subsection{Closure, Filtering, and Artificial Damping}
+The least-squares Petrov--Galerkin (LSPG) projection method, formulated and refined over time by Carlberg and coworkers~\cite{Carlberg2010,Carlberg2013,Carlberg2017}, is motivated by minimizing the fully-discrete ROM residual. The fully-discrete ROM residual can be written as
+%
+\begin{equation}
+    \resFunc{\consVecCoef^\timeIdx} \defEq \jacobDecodeFunc{\consVecCoef^\timeIdx} \consVecCoefDt^\timeIdx - \rhsFunc{\consVecRom^\timeIdx, \; \timeVar} = \zeroVec
+\end{equation}
+%
+where $\consVecCoefDt$ is the temporal discretization operator (e.g. forward Euler, BDF) of the latent state at the $\timeIdx$th time step. Minimizing the scaled fully-discrete residual takes the form,
+%
+\begin{equation}
+    \consVecCoef^{\timeIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \resFunc{\dummyVec} \right\Vert_2
+\end{equation}
+%
+
+% \subsection{Closure, Filtering, and Artificial Damping}

@@ -27,6 +27,7 @@
 \newcommand{\timeIdx}{\ensuremath{n}}
 \newcommand{\newtonIdx}{\ensuremath{k}}
 \newcommand{\reacIdx}{\ensuremath{r}}
+\newcommand{\varIdx}{\ensuremath{v}}
 
 % dimensions
 \newcommand{\numDOF}{\ensuremath{N}}
@@ -43,16 +44,19 @@
 \newcommand{\numLayers}{\ensuremath{N_{L}}}
 \newcommand{\numNNInput}{\ensuremath{N_{I}}}
 \newcommand{\numNNOutput}{\ensuremath{N_{O}}}
+\newcommand{\numVars}{\ensuremath{N_{v}}}
 
 % spatial coordinates
 \newcommand{\spatialVar}{\ensuremath{x}}
 \newcommand{\spatialVarDir}{\ensuremath{\spatialVar_{\spatialIdx}}}
 
 % state variables
-\newcommand{\stateVar}{\ensuremath{q}}
-\newcommand{\stateVec}{\ensuremath{\mathbf{q}}}
+\newcommand{\stateVar}{q}
+\newcommand{\stateVec}{\ensuremath{\mathbf{\stateVar}}}
 \newcommand{\consVec}{\ensuremath{\mathbf{\stateVar}_c}}
+\newcommand{\consVecVar}{\ensuremath{\mathbf{\stateVar}_{c,\varIdx}}}
 \newcommand{\primVec}{\ensuremath{\mathbf{\stateVar}_p}}
+\newcommand{\primVecVar}{\ensuremath{\mathbf{\stateVar}_{p,\varIdx}}}
 \newcommand{\consFunc}[1]{\ensuremath{\consVec \left(#1\right)}}
 \newcommand{\consFuncUns}[1]{\ensuremath{\consVec' \left(#1\right)}}
 \newcommand{\consVecCent}{\ensuremath{\mathbf{\overline{\stateVar}}_c}}
@@ -60,6 +64,7 @@
 \newcommand{\consDataMatUns}{\ensuremath{\mathbf{\MakeUppercase{\stateVar}}_c'}}
 \newcommand{\rkVec}{\ensuremath{\mathbf{h}}}
 \newcommand{\consVecDt}{\ensuremath{\dott{\mathbf{\stateVar}}_c}}
+\newcommand{\consVecCoefDt}{\ensuremath{\dott{\mathbf{\widehat{\stateVar}}}_c}}
 
 % dummies
 \newcommand{\dummyVec}{\ensuremath{\mathbf{y}}}
@@ -78,8 +83,10 @@
 
 % ROM variables
 \newcommand{\consVecRom}{\ensuremath{\mathbf{\widetilde{\stateVar}}_c}}
+\newcommand{\consVecRomVar}{\ensuremath{\mathbf{\widetilde{\stateVar}}_{c,\varIdx}}}
 \newcommand{\consFuncRom}[1]{\ensuremath{\mathbf{\widetilde{\stateVar}}_c \left(#1\right)}}
 \newcommand{\primVecRom}{\ensuremath{\mathbf{\widetilde{\stateVar}}_p}}
+\newcommand{\primVecRomVar}{\ensuremath{\mathbf{\widetilde{\stateVar}}_{p,\varIdx}}}
 \newcommand{\stateVecCoef}{\ensuremath{\mathbf{\widehat{\stateVar}}}}
 \newcommand{\consVecCoef}{\ensuremath{\mathbf{\widehat{\stateVar}}_{c}}}
 \newcommand{\consVarCoef}[1]{\ensuremath{\widehat{\stateVar}_{c,#1}}}
@@ -112,6 +119,8 @@
 
 % Jacobians
 \newcommand{\jacobMat}{\ensuremath{\mathbf{J}}}
+\newcommand{\jacobDecode}{\ensuremath{\jacobMat_{\decoderVar}}}
+\newcommand{\jacobDecodeFunc}[1]{\ensuremath{\jacobMat_{\decoderVar} \left(#1\right)}}
 \newcommand{\jacobFunc}[1]{\ensuremath{\mathbf{J}\left(#1\right)}}
 \newcommand{\jacobApproxFunc}[1]{\ensuremath{\widetilde{\jacobMat}}\left(#1\right)}
 \newcommand{\gm}{\ensuremath{\boldsymbol{\Gamma}}}
@@ -162,14 +171,20 @@
 \newcommand{\rightEvecMat}{\ensuremath{\ensuremath{\mathbf{\MakeUppercase{\rEvecVar}}}}}
 \newcommand{\eigenVal}{\ensuremath{\lambda}}
 
-% vector spaces
+% spaces/manifolds
 \newcommand{\trialSpace}{\ensuremath{\widetilde{\MC{\MakeUppercase{\basisVar}}}}}
 \newcommand{\consTrialSpace}{\ensuremath{\trialSpace_c}}
 
 % non-linear functions
-\newcommand{\encoderFunc}[1]{\ensuremath{\mathbf{h}\left(#1\right)}}
-\newcommand{\decoderFunc}[1]{\ensuremath{\mathbf{g}\left(#1\right)}}
+\newcommand{\encoderVar}{\ensuremath{h}}
+\newcommand{\encoder}{\ensuremath{\mathbf{\encoderVar}}}
+\newcommand{\encoderFunc}[1]{\ensuremath{\encoder \left(#1\right)}}
+\newcommand{\decoderVar}{\ensuremath{g}}
+\newcommand{\decoder}{\ensuremath{\mathbf{\decoderVar}}}
+\newcommand{\decoderFunc}[1]{\ensuremath{\decoder \left(#1\right)}}
 \newcommand{\nnInput}{\ensuremath{\mathbf{x}}}
+\newcommand{\nnInputApprox}{\ensuremath{\mathbf{\widetilde{x}}}}
+\newcommand{\nnInputCoef}{\ensuremath{\mathbf{\widehat{x}}}}
 \newcommand{\nnOutput}{\ensuremath{\mathbf{y}}}
 \newcommand{\nnLayer}{\ensuremath{f}}
 \newcommand{\nnLayerIdx}[1]{\ensuremath{\nnLayer^{#1}}}
@@ -183,13 +198,20 @@
 % scaling matrices
 \newcommand{\consScaleVar}{p}
 \newcommand{\consScale}{\ensuremath{\mathbf{\MakeUppercase{\consScaleVar}}}}
-\newcommand{\consScaleInv}{\ensuremath{\mathbf{\MakeUppercase{\consScaleVar}}^{-1}}}
+\newcommand{\consScaleInv}{\ensuremath{\consScale^{-1}}}
 \newcommand{\primScaleVar}{h}
 \newcommand{\primScale}{\ensuremath{\mathbf{\MakeUppercase{\primScaleVar}}}}
-\newcommand{\primScaleInv}{\ensuremath{\mathbf{\MakeUppercase{\primScaleVar}}^{-1}}}
+\newcommand{\primScaleInv}{\ensuremath{\primScale^{-1}}}
 \newcommand{\rhsScaleVar}{g}
 \newcommand{\rhsScale}{\ensuremath{\mathbf{\MakeUppercase{\rhsScaleVar}}}}
-\newcommand{\rhsScaleInv}{\ensuremath{\mathbf{\MakeUppercase{\rhsScaleVar}}^{-1}}}
+\newcommand{\rhsScaleInv}{\ensuremath{\rhsScale^{-1}}}
+\newcommand{\resScaleVar}{r}
+\newcommand{\resScale}{\ensuremath{\mathbf{\MakeUppercase{\resScaleVar}}}}
+\newcommand{\resScaleInv}{\ensuremath{\resScale^{-1}}}
+
+% error
+\newcommand{\errVec}{\ensuremath{\epsilon}}
+\newcommand{\errVecVar}{\ensuremath{\errVec_{\varIdx}}}
 
 % thermodynamic quantities
 \newcommand{\density}{\ensuremath{\rho}}
