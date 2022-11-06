@@ -53,18 +53,19 @@
 % state variables
 \newcommand{\stateVar}{q}
 \newcommand{\stateVec}{\ensuremath{\mathbf{\stateVar}}}
-\newcommand{\consVec}{\ensuremath{\mathbf{\stateVar}_c}}
-\newcommand{\consVecVar}{\ensuremath{\mathbf{\stateVar}_{c,\varIdx}}}
+\newcommand{\consVar}{c}
+\newcommand{\consVec}{\ensuremath{\mathbf{\stateVar}_{\consVar}}}
+\newcommand{\consVecVar}{\ensuremath{\mathbf{\stateVar}_{\consVar,\varIdx}}}
 \newcommand{\primVec}{\ensuremath{\mathbf{\stateVar}_p}}
 \newcommand{\primVecVar}{\ensuremath{\mathbf{\stateVar}_{p,\varIdx}}}
 \newcommand{\consFunc}[1]{\ensuremath{\consVec \left(#1\right)}}
 \newcommand{\consFuncUns}[1]{\ensuremath{\consVec' \left(#1\right)}}
-\newcommand{\consVecCent}{\ensuremath{\mathbf{\overline{\stateVar}}_c}}
+\newcommand{\consVecCent}{\ensuremath{\mathbf{\overline{\stateVar}}_{\consVar}}}
 \newcommand{\primVecCent}{\ensuremath{\mathbf{\overline{\stateVar}}_p}}
-\newcommand{\consDataMatUns}{\ensuremath{\mathbf{\MakeUppercase{\stateVar}}_c'}}
+\newcommand{\consDataMatUns}{\ensuremath{\mathbf{\MakeUppercase{\stateVar}}_{\consVar}'}}
 \newcommand{\rkVec}{\ensuremath{\mathbf{h}}}
-\newcommand{\consVecDt}{\ensuremath{\dott{\mathbf{\stateVar}}_c}}
-\newcommand{\consVecCoefDt}{\ensuremath{\dott{\mathbf{\widehat{\stateVar}}}_c}}
+\newcommand{\consVecDt}{\ensuremath{\dott{\mathbf{\stateVar}}_{\consVar}}}
+\newcommand{\consVecCoefDt}{\ensuremath{\dott{\mathbf{\widehat{\stateVar}}}_{\consVar}}}
 
 % dummies
 \newcommand{\dummyVec}{\ensuremath{\mathbf{y}}}
@@ -82,15 +83,15 @@
 \newcommand{\dummyMatEight}{\ensuremath{\mathbf{K}}}
 
 % ROM variables
-\newcommand{\consVecRom}{\ensuremath{\mathbf{\widetilde{\stateVar}}_c}}
-\newcommand{\consVecRomVar}{\ensuremath{\mathbf{\widetilde{\stateVar}}_{c,\varIdx}}}
-\newcommand{\consFuncRom}[1]{\ensuremath{\mathbf{\widetilde{\stateVar}}_c \left(#1\right)}}
+\newcommand{\consVecRom}{\ensuremath{\mathbf{\widetilde{\stateVar}}_{\consVar}}}
+\newcommand{\consVecRomVar}{\ensuremath{\mathbf{\widetilde{\stateVar}}_{{\consVar},\varIdx}}}
+\newcommand{\consFuncRom}[1]{\ensuremath{\mathbf{\widetilde{\stateVar}}_{\consVar} \left(#1\right)}}
 \newcommand{\primVecRom}{\ensuremath{\mathbf{\widetilde{\stateVar}}_p}}
 \newcommand{\primVecRomVar}{\ensuremath{\mathbf{\widetilde{\stateVar}}_{p,\varIdx}}}
 \newcommand{\stateVecCoef}{\ensuremath{\mathbf{\widehat{\stateVar}}}}
-\newcommand{\consVecCoef}{\ensuremath{\mathbf{\widehat{\stateVar}}_{c}}}
-\newcommand{\consVarCoef}[1]{\ensuremath{\widehat{\stateVar}_{c,#1}}}
-\newcommand{\consVarCoefIdx}{\ensuremath{\widehat{\stateVar}_{c,\dummyIdx}}}
+\newcommand{\consVecCoef}{\ensuremath{\mathbf{\widehat{\stateVar}}_{\consVar}}}
+\newcommand{\consVarCoef}[1]{\ensuremath{\widehat{\stateVar}_{\consVar,#1}}}
+\newcommand{\consVarCoefIdx}{\ensuremath{\widehat{\stateVar}_{\consVar,\dummyIdx}}}
 \newcommand{\primVecCoef}[1]{\ensuremath{\mathbf{\widehat{\stateVar}}_{p,#1}}}
 \newcommand{\primVarCoefIdx}{\ensuremath{\widehat{\stateVar}}_{p,\dummyIdx}}
 
@@ -106,8 +107,8 @@
 \newcommand{\rhsVar}{\ensuremath{f}}
 \newcommand{\rhsVec}{\ensuremath{\mathbf{\rhsVar}}}
 \newcommand{\rhsFunc}[1]{\ensuremath{\rhsVec \left(#1\right)}}
-\newcommand{\rhsApproxVec}{\ensuremath{\mathbf{\widetilde{\rhsVec}}}}
-\newcommand{\rhsApproxFunc}[1]{\ensuremath{\mathbf{\widetilde{\rhsVec}}\left(#1\right)}}
+\newcommand{\rhsApproxVec}{\ensuremath{\mathbf{\widetilde{\rhsVar}}}}
+\newcommand{\rhsApproxFunc}[1]{\ensuremath{\mathbf{\widetilde{\rhsVar}}\left(#1\right)}}
 \newcommand{\resVar}{\ensuremath{r}}
 \newcommand{\resVec}{\ensuremath{\mathbf{\resVar}}}
 \newcommand{\resFunc}[1]{\ensuremath{\resVec\left(#1\right)}}
@@ -120,6 +121,8 @@
 % Jacobians
 \newcommand{\jacobMat}{\ensuremath{\mathbf{J}}}
 \newcommand{\jacobDecode}{\ensuremath{\jacobMat_{\decoderVar}}}
+\newcommand{\jacobRes}{\ensuremath{\jacobMat_{\resVar}}}
+\newcommand{\jacobCons}{\ensuremath{\jacobMat_{\consVar}}}
 \newcommand{\jacobDecodeFunc}[1]{\ensuremath{\jacobMat_{\decoderVar} \left(#1\right)}}
 \newcommand{\jacobFunc}[1]{\ensuremath{\mathbf{J}\left(#1\right)}}
 \newcommand{\jacobApproxFunc}[1]{\ensuremath{\widetilde{\jacobMat}}\left(#1\right)}
@@ -130,9 +133,9 @@
 % linear bases
 \newcommand{\basisVar}{u}
 \newcommand{\basisMat}{\ensuremath{\mathbf{\MakeUppercase{\basisVar}}}}
-\newcommand{\consTrial}{\ensuremath{\basisMat}_c}
-\newcommand{\consTrialVecIdx}{\ensuremath{\mathbf{\basisVar}}_{c,\dummyIdx}}
-\newcommand{\consTrialVec}[1]{\ensuremath{\mathbf{\basisVar}}_{c,#1}}
+\newcommand{\consTrial}{\ensuremath{\basisMat}_{\consVar}}
+\newcommand{\consTrialVecIdx}{\ensuremath{\mathbf{\basisVar}}_{\consVar,\dummyIdx}}
+\newcommand{\consTrialVec}[1]{\ensuremath{\mathbf{\basisVar}}_{\consVar,#1}}
 \newcommand{\primTrial}{\ensuremath{\basisMat_p}}
 \newcommand{\primTrialVecIdx}{\ensuremath{\mathbf{\basisVar}}_{p,\dummyIdx}}
 \newcommand{\rightSingVecVar}{v}
@@ -147,9 +150,10 @@
 \newcommand{\deimBasisMat}{\ensuremath{\mathbf{\MakeUppercase{\deimBasisVar}}}}
 \newcommand{\deimBasisRes}{\ensuremath{\deimBasisMat_{\resVar}}}
 \newcommand{\deimBasisJac}{\ensuremath{\deimBasisMat_{J}}}
-\newcommand{\deimBasisCons}{\ensuremath{\deimBasisMat_{c}}}
+\newcommand{\deimBasisCons}{\ensuremath{\deimBasisMat_{\consVar}}}
 \newcommand{\deimBasisRhs}{\ensuremath{\deimBasisMat_{\rhsVar}}}
 \newcommand{\deimBasis}{\ensuremath{\deimBasisMat}}
+\newcommand{\sampVec}{\ensuremath{\mathbf{s}}}
 \newcommand{\sampMat}{\ensuremath{\mathbf{S}}}
 \newcommand{\deimRegressorCons}{\ensuremath{\deimBasisCons (\sampMat \deimBasisCons)^+ \sampMat}}
 \newcommand{\deimRegressorConsSmall}{\ensuremath{(\sampMat \deimBasisCons)^+ \sampMat}}
