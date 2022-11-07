@@ -1,1 +1,100 @@
-\section{Model-form Preserving Least Squares with Variable Transformation}\label{sec:mplsvt}
+\section{Model-form Preserving Least-squares with Variable Transformation}\label{sec:mplsvt}
+
+The recent model-form preserving least-squares with variable transformation (MP-LSVT), developed by Huang \textit{et al.}~\cite{Huang2022}, seeks to resolve the difficulties of constructing robust and accurate ROMs for multi-scale, multi-physics problems for which Galerkin and LSPG ROMs fail. This method is founded on a very simple modification of LSPG: solve the ROM residual least-squares problem with respect to the latent representation of an alternative (but physically-complete) \textit{target state} $\funcMap{\primVec}{\nonnegReals}{\ROne{\numDOF}}$. That is, treat the conservative state as a function of this target state,
+%
+\begin{equation}\label{eq:consFuncTarget}
+    \consVec \defEq \consFunc{\primVec},
+\end{equation}
+%
+and construct a low-dimensional representation of the target state. For a linear representation, this is written as
+%
+\begin{equation}\label{eq:primSolApprox}
+    \begin{aligned}
+        \primFunc{\timeVar} \approx \primFuncRom{\timeVar} &\defEq \primVecCent + \sum_{\dummyIdx=1}^{\numPrimModes} \primScaleVar_\dummyIdx \primTrialVecIdx \primVarCoefIdx (\timeVar), \\
+        &\defEq \primAffineMap(\timeVar),
+    \end{aligned}
+\end{equation}
+%
+where, similar to the conservative variable formulation, $\primVecCent \inROne{\numDOF}$ is a constant translation vector, $\primTrial \defEq \left[\primTrialVec{1},\hdots,\primTrialVec{\numPrimModes}\right] \inRTwo{\numDOF}{\numPrimModes}$ is the target state trial basis, and $\funcMap{\primVecCoef \defEq \left[\primVarCoef{1}(\timeVar),\hdots,\primVarCoef{\numPrimModes}(\timeVar)\right]}{\nonnegReals}{\ROne{\numPrimModes}}$ is the target latent state vector. The constant matrix $\primScale \defEq \text{diag}\left(\primScaleVar_1, \hdots , \primScaleVar_{\numDOF}\right) \inRTwo{\numDOF}{\numDOF}$ scales the target state variables. For an autoencoder non-linear manifold representation, the encoder/decoder form is given by 
+%
+\begin{align}
+    \encoderFunc{\primVec} &\defEq \nnLayer_{\encoderVar} \left(\primScaleInv\left(\primVec - \primVecCent\right), \nnParams^{\encoderVar}\right), \\
+    \decoderFunc{\primVecCoef} &\defEq \primVecCent + \primScale \nnLayer_{\decoderVar} \left(\primVecCoef, \nnParams^{\decoderVar}\right). \label{eq:decoderFuncPrim}
+\end{align}
+%
+In either case, the trial basis or autoencoder are computed from snapshots of the target state collected from a small number of high-fidelity simulations. These are aggregated as
+%
+\begin{equation}\label{eq:primSnapMat}
+	\primDataMatUns = \left[ \primFuncUns{\initTime}, \; \primFuncUns{\timeVar^1}, \; \hdots \; , \; \primFuncUns{\finalTime} \right] \inRTwo{\numDOF}{\numSnaps},
+\end{equation}
+%
+where the purely-unsteady component of the solution is defined as
+%
+\begin{equation}\label{eq:primUns}
+	\primFuncUns{\timeVar} = \primScaleInv \left(\primFunc{\timeVar} - \primVecCent\right).
+\end{equation}
+%
+The trial space and non-linear trial manifold are defined, respectively, by
+%
+\begin{alignat}{2}
+    \primTrialSpace &\defEq \primVecCent + \textit{Range}\left(\primTrial\right) \qquad &&\text{(linear)}\\
+    \primTrialSpace &\defEq \{\decoderFunc{\nnInputCoef} \vert \; \nnInputCoef \inROne{\numPrimModes} \} \qquad &&\text{(non-linear)}
+\end{alignat}
+%
+
+With this low-dimensional representation in hand, and the idea that the conservative state is a function of the target state (Eq.~\ref{eq:consFuncTarget}), the fully-discrete ROM residual can be reframed as
+%
+\begin{equation}
+    \resFunc{\primVecCoef^\timeIdx} \defEq \consVecRomDt(\primVecCoef^\timeIdx) - \rhsFunc{\primVecRom^\timeIdx, \; \timeVar} = \zeroVec
+\end{equation}
+%
+where, similarly, $\consVecRomDt(\primVecCoef^\timeIdx)$ is the temporal discretization operator for the full-order conservative state, treated as a function of the target latent state. Similarly, the non-linear functions associated with the spatial discretization $ \rhsFunc{\cdot, \; \timeVar}$ is treated as a function of the target state. The least-squares minimization of the ROM residual thus takes the form
+%
+\begin{equation}\label{eq:mplsvtLS}
+    \primVecCoef^{\timeIdx} = \argmin{\dummyVec \inROne{\numPrimModes}} \left\Vert \resScaleInv \resFunc{\dummyVec} \right\Vert_2
+\end{equation}
+%
+The scaling of the ROM residual by $\resScaleInv$ remains the same, as the full-order model equations have not changed. The primary difference is that the solution if computed as a minimization with respect to the target latent state, rather than the conservative latent state. Solution via Gauss--Newton is thus given by
+%
+\begin{equation}\label{eq:mplsvtLSLin}
+    \delta \primVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numPrimModes}} \left\Vert \resScaleInv \left(\jacobRes^{\newtonIdx} \dummyVec - \resFunc{\primVecCoef^{\newtonIdx}}\right) \right\Vert_2
+\end{equation}
+\begin{equation}
+    \primVecCoef^{\newtonIdx + 1} = \primVecCoef^{\newtonIdx} + \alpha \delta \primVecCoef^{\newtonIdx}
+\end{equation}
+%
+where the ROM residual Jacobian is now defined as $\jacobRes^\timeIdx \defEq \funcMap{\partial \resFunc{\primVecCoef^\newtonIdx} / \partial \primVecCoef}{\ROne{\numPrimModes}}{\RTwo{\numDOF}{\numPrimModes}}$. The residual Jacobian with respect to the latent target state can similarly be decomposed as
+%
+\begin{align}
+    \jacobRes^{\newtonIdx} &\defEq \pde{\resFunc{\primVecCoef^{\newtonIdx}}}{\primVecRom} \pde{\primVecRom^{\newtonIdx}}{\primVecCoef} \\
+    &= \jacobPrim^{\newtonIdx} \jacobDecode^{\newtonIdx}
+\end{align}
+%
+where $\jacobPrim^\newtonIdx \defEq \funcMap{\partial \resFunc{\primVecCoef^\newtonIdx} / \partial \primVecRom}{\ROne{\numPrimModes}}{\RTwo{\numDOF}{\numDOF}}$ and $\jacobDecode^\newtonIdx \defEq \funcMap{\partial \decoderFunc{\primVecCoef} / \partial \primVecCoef}{\ROne{\numPrimModes}}{\RTwo{\numDOF}{\numPrimModes}}$.
+
+The solution of Eq.~\ref{eq:mplsvtLSLin} via the normal equations again leads to a Petrov--Galerkin projection of the form,
+%
+\begin{equation}
+    \left(\testBasis^\newtonIdx\right)^\top \testBasis^{\newtonIdx} \delta \primVecCoef^{\newtonIdx} = - \left(\testBasis^{\newtonIdx}\right)^\top \resScaleInv \resFunc{\primVecCoef^{\newtonIdx}}
+\end{equation}
+%
+where the test basis is computed as
+%
+\begin{equation}
+    \testBasis^{\newtonIdx} = \resScaleInv \jacobPrim^{\newtonIdx} \jacobDecode^{\newtonIdx}
+\end{equation}
+%
+
+Note that throughout this section, we have used the subscript $\primVar$ to indicate quantities associated with the target state. As noted in Eq.~\ref{eq:gemsPrimVec}, this notation is generally used to refer to the primitive state, which we restate is given by the variables
+%
+\begin{equation}
+    \primVec \defEq \left[
+    \begin{array}{ccccc;{2pt/2pt}c;{2pt/2pt}cc}
+    \pressure & \velX & \velY & \velZ & \temperature & \mfSpec & \mixFrac & \progVar
+    \end{array}
+    \right]^\top.
+\end{equation}
+%
+Indeed, all work utilizing the MP-LSVT method~\cite{Huang2022,Wentland2021,Huang2022a} to date has used the primitive variables as the target state. This choice has empirically generated extremely accurate ROMs for complex reacting flow systems, including two- and three-dimensional single-element rocket combustors, and a two-dimensional multi-element rocket combustor. In direct comparisons to Galerkin and LSPG ROMs, MP-LSVT vastly improves the stability and convergence of these systems. Analysis of the conditioning of the linearized least-squares solve indicates that MP-LSVT using the primitive state produces systems with much lower condition numbers than those generated by Galerkin and LSPG. The exact reason for this improved conditioning is poorly understood beyond observed trends in numerical experimentation.
+
+The primitive variables are useful in that they are immediately useful to engineers in analyzing the performance of the system, and many secondary quantities can be easily computed from them. However, the generality of the MP-LSVT invites investigations of other sets of target variables. It remains to be seen whether other variable sets may generate further improvements in linear solve conditioning, or enable more accurate predictions of important physical quantities such as heat release.

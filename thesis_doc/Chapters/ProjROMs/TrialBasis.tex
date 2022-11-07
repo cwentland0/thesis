@@ -109,7 +109,7 @@ Autoencoders describe a specific class of neural networks which are composed of 
 The bottleneck defines the dimension-reduction aspect of autoencoders: the full state may be represented by a low-dimensional state and extracted by the decoder network. However, unlike linear dimension-reduction as provided by POD in Section~\ref{subsec:POD}, neural networks enable arbitrarily non-linear representations of functions with the potential to efficiently approximate solution subsets with slowly-decaying Kolmogorov $n$-widths, such as those observed in convection-dominated fluid flows. For dimension-reduction of fluid flow fields the training data are the snapshots of the conservative or primitive states. An autoencoder for this data can thus formalized by the representation
 %
 \begin{equation}
-    \consVecRom = \decoderFunc{\cdot, \nnParams^{\decoderVar}} \circ \encoderFunc{\consVec, \nnParams^{\encoderVar}}
+    \consVecRom = \decoderFunc{\cdot, \nnParams^{\decoderVar}} \circ \encoderFunc{\consVec, \nnParams^{\encoderVar}},
 \end{equation}
 %
 where $\funcMap{\encoder}{\ROne{\numDOF}}{\ROne{\numConsModes}}$ is the encoder network, and $\funcMap{\decoder}{\ROne{\numConsModes}}{\ROne{\numDOF}}$ is the decoder network. We take care to note that the encoder function $\encoder$ is implied to be preceded by a centering and scaling operation, similar to that given in Eq.~\ref{eq:consUns}, and the decoder $\decoder$ is implied to be proceeded by the reverse operation, i.e. 
