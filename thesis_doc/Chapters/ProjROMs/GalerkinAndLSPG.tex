@@ -6,10 +6,10 @@ Inserting the approximation $\consVec \approx \consVecRom = \decoderFunc{\consVe
     \ode{\decoderFunc{\consVecCoef}}{\timeVar} - \rhsFunc{\consVecRom, \; \timeVar} = \zeroVec, \quad \consVecRom^0 = \consFuncRom{\initTime}.
 \end{equation}
 %
-Employing the chain rule, and scaling the ODE via the diagonal matrix $\resScaleInv$ to standardize the semi-discrete residual, this system can be modified into
+Employing the chain rule, and scaling the ODE via the diagonal matrix $\resScaleInv \inRTwo{\numDOF}{\numDOF}$ to standardize the semi-discrete residual, this system can be modified into
 %
 \begin{equation}\label{eq:romFullODEMod}
-    \resScaleInv \left( \jacobDecode \ode{\consVecCoef}{\timeVar} - \rhsFunc{\consVecRom, \; \timeVar} \right) = \zeroVec,
+    \resScaleInv \left[ \jacobDecode \ode{\consVecCoef}{\timeVar} - \rhsFunc{\consVecRom, \; \timeVar} \right] = \zeroVec,
 \end{equation}
 %
 where the Jacobian $\jacobDecode \defEq \funcMap{\partial \decoderFunc{\consVecCoef} / \partial \consVecCoef}{\ROne{\numConsModes}}{\RTwo{\numDOF}{\numConsModes}}$. For a linear representation, the Jacobian is simply $\jacobDecode = \consScale \consTrial$. The purpose of the residual scaling will be made apparent later.
@@ -17,7 +17,7 @@ where the Jacobian $\jacobDecode \defEq \funcMap{\partial \decoderFunc{\consVecC
 This has obviously resulted in no practical dimension reduction, as Eqs~\ref{eq:romFullODE} and~\ref{eq:romFullODEMod} are still $\numDOF$-dimensional systems. To accomplish dimension reduction, we require a \textit{projection} operation, the namesake of projection-based reduced-order models. This entails choosing a \textit{test basis} $\testBasis \inRTwo{\numDOF}{\numConsModes}$ by which the approximate ODE is projected as
 %
 \begin{equation}\label{eq:contRomRes}
-    \testBasis^\top \resScaleInv \left(\jacobDecode \ode{\consVecCoef}{\timeVar} - \rhsFunc{\consVecRom, \; \timeVar} \right) = \zeroVec.
+    \testBasis^\top \resScaleInv \left[\jacobDecode \ode{\consVecCoef}{\timeVar} - \rhsFunc{\consVecRom, \; \timeVar} \right] = \zeroVec.
 \end{equation}
 %
 Assuming $\testBasis^\top \resScaleInv \jacobDecode \inRTwo{\numConsModes}{\numConsModes}$ is invertible, rearranging terms arrives at
@@ -32,7 +32,7 @@ The question now becomes how the projecting test basis is chosen. In the followi
 
 \subsection{Galerkin Projection}
 
-Galerkin projection is defined by projecting the full-order ROM ODE onto the tangent space of the trial manifold, i.e.
+Galerkin projection can be defined as the projection of the full-order ROM ODE onto the tangent space of the trial manifold, i.e.
 %
 \begin{equation}
     \testBasis\left(\consVecCoef\right) \defEq \jacobDecode.
@@ -48,9 +48,9 @@ For a linear representation, the test basis is given simply by $\testBasis = \co
 %
 \begin{equation}
     \ode{\consVecCoef}{\timeVar} = \consTrial^\top \rhsFunc{\consVecRom, \; \timeVar}.
-\end{equation} 
+\end{equation}
 
-As discussed in Section~\ref{sec:dataDrivenModeling}, Galerkin projection ROMs have a long history of applications to simulations of fluid flows (e.g.,~\cite{Aubry1988,Cazemier1998,BuiThanh2007}). However, they have been observed to exhibit unacceptable stability and accuracy issues for more complex systems. Although the Galerkin PROM can be shown to be continuous-optimal in the sense that it minimizes the $\ell^2$ norm of the semi-discrete ROM residual~\cite{Carlberg2017}, in reality the fully-discrete ROM residual is of more practical concern. This in turn motivated the least-squares Petrov--Galerkin projection method.
+As discussed in Section~\ref{sec:dataDrivenModeling}, Galerkin projection ROMs have a long history of applications to simulations of fluid flows (e.g.,~\cite{Aubry1988,Cazemier1998,BuiThanh2007}). However, they have been observed to exhibit unacceptable stability and accuracy issues for more complex systems. Although the Galerkin PROM can be shown to be continuous-optimal in the sense that it minimizes the $\ell^2$ norm of the semi-discrete ROM residual~\cite{Carlberg2017}, in reality the fully-discrete ROM residual is of more practical concern. This fact motivates the least-squares Petrov--Galerkin projection method.
 
 \subsection{Least-squares Petrov--Galerkin Projection}
 
@@ -66,7 +66,7 @@ where $\consVecCoefDt$ is the temporal discretization operator (e.g. forward Eul
     \consVecCoef^{\timeIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \resFunc{\dummyVec} \right\Vert_2,
 \end{equation}
 %
-where we now see the purpose of scaling the residual by $\resScaleInv$. This has the effect of ensuring that, with careful calculation of $\resScale$, the various elements of the residual contribute similarly to the solution of the non-linear least squares problem. This is particularly important for systems which exhibit extreme scale disparities (as is often the case in high-pressure reacting systems) and solvers which cannot readily be non-dimensionalized (such as compressible combustion solvers). This concept has been linked to ROM preconditioning by Lindsay \textit{et al.}~\cite{Lindsay2022}, who showed that even simple Jacobi preconditioners result in drastic improvements in ROM stability and accuracy relative to ROMs of the equivalent unscaled, dimensional system. We do not explore preconditioning here, instead opting for a constant residual scaling $\resScaleInv$.
+where we now see the purpose of scaling the residual by $\resScaleInv$. This has the effect of ensuring that, with careful calculation of $\resScale$, the various elements of the residual contribute similarly to the solution of the non-linear least squares problem. This is particularly important for systems which exhibit extreme scale disparities (as is often the case in high-pressure reacting systems) and solvers which cannot readily be non-dimensionalized (such as compressible combustion solvers). This concept has been linked to ROM preconditioning by Lindsay \textit{et al.}~\cite{Lindsay2022}, who showed that even simple Jacobi preconditioners result in drastic improvements in ROM stability and accuracy relative to ROMs of the equivalent unscaled, dimensional system. We discuss this residual weighting process in more detail in Section~\ref{subsec:resWeight}.
 
 The solution of Eq.~\ref{eq:lspgLS} is usually accomplished iteratively by linearizing the residual about the solution at the $\newtonIdx$th iteration, given by the process
 %
@@ -77,30 +77,30 @@ The solution of Eq.~\ref{eq:lspgLS} is usually accomplished iteratively by linea
     \consVecCoef^{\newtonIdx + 1} = \consVecCoef^{\newtonIdx} + \alpha \delta \consVecCoef^{\newtonIdx},
 \end{equation}
 %
-where the ROM residual Jacobian is defined as $\jacobRes^\newtonIdx \defEq \funcMap{\partial \resFunc{\consVecCoef^\newtonIdx} / \partial \consVecCoef}{\ROne{\numConsModes}}{\RTwo{\numDOF}{\numConsModes}}$. The constant factor $\alpha \in \mathbb{R}_+$ is the step size, which is unity for all ROMs in this thesis; alternative methods may adapt $\alpha \defEq \alpha^{\newtonIdx}$ to control iterative convergence. Further, the least-squares problem may be computed in terms of the full-order Jacobian $\jacobCons^{\newtonIdx} \defEq \funcMap{\partial \resFunc{\consVecCoef^\newtonIdx} / \partial \consVec}{\ROne{\numConsModes}}{\RTwo{\numDOF}{\numDOF}}$ via the chain rule,
+where the ROM residual Jacobian is defined as $\jacobRes^\newtonIdx \defEq \funcMap{\partial \resFunc{\consVecCoef^\newtonIdx} / \partial \consVecCoef}{\ROne{\numConsModes}}{\RTwo{\numDOF}{\numConsModes}}$. The constant factor $\alpha \in \mathbb{R}_+$ is the step size, which is unity for all ROMs in this thesis; alternative methods may adapt $\alpha \defEq \alpha^{\timeIdx,\newtonIdx}$ to control iterative convergence. Further, the least-squares problem may be computed in terms of the full-order Jacobian $\jacobCons^{\newtonIdx} \defEq \funcMap{\partial \resFunc{\consVecCoef^\newtonIdx} / \partial \consVec}{\ROne{\numConsModes}}{\RTwo{\numDOF}{\numDOF}}$ via the chain rule,
 %
 \begin{equation}
-    \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \left(\jacobCons^{\newtonIdx} \jacobDecode \dummyVec - \resFunc{\consVecCoef^{\newtonIdx}}\right) \right\Vert_2.
+    \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \left[\jacobCons^{\newtonIdx} \jacobDecode \dummyVec - \resFunc{\consVecCoef^{\newtonIdx}}\right] \right\Vert_2.
 \end{equation}
 %
 Recalling that for a linear trial space, $\jacobDecode = \consScale \consTrial$, this simplifies to
 %
 \begin{equation}
-    \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \left(\jacobCons^{\newtonIdx} \consScale \consTrial \dummyVec - \resFunc{\consVecCoef^{\newtonIdx}}\right) \right\Vert_2.
+    \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \left[\jacobCons^{\newtonIdx} \consScale \consTrial \dummyVec - \resFunc{\consVecCoef^{\newtonIdx}}\right] \right\Vert_2.
 \end{equation}
 %
-This particular form is useful inasmuch as the full-order residual Jacobian $\jacobCons$ is normally already available if a given FOM solver contains implicit time integration capabilities.  
+This particular form is useful inasmuch as the full-order residual Jacobian $\jacobCons$ is normally already available if a given FOM solver contains implicit time integration capabilities.
 
 The simplest means of computing the solution to Eq.~\ref{eq:lspgLSLin} is the formation of the normal equations, given by,
 %
 \begin{equation}\label{eq:lspgNormal}
-    \left(\resScaleInv \jacobRes^{\newtonIdx}\right)^\top \resScaleInv \jacobRes^{\newtonIdx} \delta \consVecCoef^{\newtonIdx} = -\left(\resScaleInv \jacobRes^{\newtonIdx}\right)^\top \resScaleInv \resFunc{\consVecCoef^{\newtonIdx}}.
+    \left[\resScaleInv \jacobRes^{\newtonIdx}\right]^\top \resScaleInv \jacobRes^{\newtonIdx} \delta \consVecCoef^{\newtonIdx} = -\left[\resScaleInv \jacobRes^{\newtonIdx}\right]^\top \resScaleInv \resFunc{\consVecCoef^{\newtonIdx}}.
 \end{equation}
 %
 This formulation reveals the meaning of ``Petrov--Galerkin'' in LSPG: a Petrov--Galerkin projection is any projection in which the test space is \textit{not} the same as the space tangent to the trial manifold (as is the case for Galerkin projection). In Eq.~\ref{eq:lspgNormal}, if we expand terms using the chain rule, we arrive at
 %
 \begin{equation}
-    \left(\resScaleInv \jacobCons^{\newtonIdx} \jacobDecode^{\newtonIdx}\right)^\top \resScaleInv \jacobCons^{\newtonIdx} \jacobDecode^{\newtonIdx} \delta \consVecCoef^{\newtonIdx} = -\left(\resScaleInv \jacobCons^{\newtonIdx} \jacobDecode^{\newtonIdx}\right)^\top \resScaleInv \resFunc{\consVecCoef^{\newtonIdx}}.
+    \left[\resScaleInv \jacobCons^{\newtonIdx} \jacobDecode^{\newtonIdx}\right]^\top \resScaleInv \jacobCons^{\newtonIdx} \jacobDecode^{\newtonIdx} \delta \consVecCoef^{\newtonIdx} = -\left[\resScaleInv \jacobCons^{\newtonIdx} \jacobDecode^{\newtonIdx}\right]^\top \resScaleInv \resFunc{\consVecCoef^{\newtonIdx}}.
 \end{equation}
 %
 This form can be interpreted as a Petrov--Galerkin projection of the Gauss--Newton solution of Eq.~\ref{eq:contRomRes} with a test basis
@@ -109,9 +109,9 @@ This form can be interpreted as a Petrov--Galerkin projection of the Gauss--Newt
     \testBasis^\newtonIdx = \resScaleInv \jacobCons^\newtonIdx \jacobDecode^{\newtonIdx}.
 \end{equation}
 %
-We see here that with a linear state representation ($\jacobDecode^{\newtonIdx} = \consScale \consTrial$), the test basis is time-variant, unlike Galerkin projection with a linear state representation. This poses a significant computational cost increase over Galerkin projection. For a non-linear state representation, the cost difference is less extreme, as the decoder Jacobian is dependent on the latent state, i.e. $\jacobDecode^{\newtonIdx} \defEq \jacobDecodeFunc{\consVecCoef^\newtonIdx}$.
+We see here that even with a linear state representation ($\jacobDecode^{\newtonIdx} = \consScale \consTrial$), the test basis is time-variant, unlike Galerkin projection with a linear state representation. This poses a significant computational cost increase over Galerkin projection. For a non-linear state representation, the cost difference is less extreme, as the decoder Jacobian is dependent on the latent state, i.e. $\jacobDecode^{\newtonIdx} \defEq \jacobDecodeFunc{\consVecCoef^\newtonIdx}$.
 
-Forming the complete normal equations is a computationally expensive process. A simple alternative involves the QR decomposition of the residual Jacobian, 
+Forming the complete normal equations is a computationally expensive process. A simple alternative involves the QR decomposition of the residual Jacobian,
 %
 \begin{equation}
     \jacobRes^{\newtonIdx} = \mathbf{QR},
@@ -120,11 +120,11 @@ Forming the complete normal equations is a computationally expensive process. A 
 where $\mathbf{Q} \defEq \left[\mathbf{Q}_{\numConsModes}, \; \mathbf{Q}_{\numDOF-\numConsModes}\right] \inRTwo{\numDOF}{\numDOF}$ has orthogonal columns, composed of $\mathbf{Q}_{\numConsModes} \inRTwo{\numDOF}{\numConsModes}$ and $\mathbf{Q}_{\numDOF - \numConsModes} \inRTwo{\numDOF}{\numDOF - \numConsModes}$. The matrix $\mathbf{R} = [\mathbf{R}_{\numConsModes}, \; \zeroVec]^\top \inRTwo{\numDOF}{\numConsModes}$ is composed of upper triangular $\mathbf{R}_{\numConsModes} \inRTwo{\numConsModes}{\numConsModes}$ and a zero matrix $\zeroVec \inRTwo{\numDOF - \numConsModes}{\numConsModes}$. The latent state update is solved from
 %
 \begin{equation}
-    \mathbf{R}_{\numConsModes} \delta \consVecCoef^{\newtonIdx} = \left(\mathbf{Q}_{\numConsModes}\right)^\top \resFunc{\consVecCoef^{\newtonIdx}}.
+    \mathbf{R}_{\numConsModes} \delta \consVecCoef^{\newtonIdx} = \left[\mathbf{Q}_{\numConsModes}\right]^\top \resFunc{\consVecCoef^{\newtonIdx}}.
 \end{equation}
 %
-The upper triangular solve is significantly less expensive than the dense solve in Eq.~\ref{eq:lspgNormal}, and does not require the dense matrix-matrix multiplication $\left(\resScaleInv \jacobRes^{\newtonIdx}\right)^\top \resScaleInv \jacobRes^{\newtonIdx}$.
+The upper triangular solve is significantly less expensive than the dense solve in Eq.~\ref{eq:lspgNormal}, and does not require the dense matrix-matrix multiplication $\left[\resScaleInv \jacobRes^{\newtonIdx}\right]^\top \resScaleInv \jacobRes^{\newtonIdx}$.
 
 Least-squares Petrov--Galerkin projection has been shown to generate vastly more accurate and stable ROMs compared to Galerkin ROMs. The first publications to outline LSPG computed a robust ROM simulation of a three-dimensional Ahmed body~\cite{Carlberg2010,Carlberg2013}, and later reported excellent results for transonic flow over a two-dimensional open cavity~\cite{Carlberg2017}. Continued work with LSPG has produced stable and accurate ROMs of three-dimensional separated flow over an airfoil at high angle-of-attack~\cite{Grimberg2020Hyper} and flow around a three-dimensional model of an F-16 aircraft~\cite{Grimberg2021}. The success of LSPG has been attributed to the fact that it minimizes the fully-discrete ROM residual~\cite{Grimberg2020} which is, in practice, the set of equations being solved by the ROM, whereas Galerkin projection minimizes the semi-discrete ROM residual.
 
-However, early applications of both Galerkin and LSPG ROMs to advection-dominated combustion problems indicated that both methods were insufficient in generating robust and accurate ROMs for such systems~\cite{Huang2018b,Huang2019}. Both methods frequently resulted in large deviations in the expected heat release, and often produced non-physical states such as negative temperature or pressure values. Limiter methods were proposed to prevent such non-physical phenomena~\cite{Huang2019,Huang2020}, but were generally considered \textit{ad hoc} solutions. Anecdotally, these issues were linked to persistently stiff ROMs which had difficulty converging due to the high degree of non-linearity induced by chemical source terms, which are extremely sensitive to small changes in chemical composition and temperature. 
+However, early applications of both Galerkin and LSPG ROMs to advection-dominated combustion problems indicated that both methods were insufficient in generating robust and accurate ROMs for such systems~\cite{Huang2018b,Huang2019}. Both methods frequently resulted in large deviations in the expected heat release, and often produced non-physical states such as negative temperature or pressure values. Limiter methods were proposed to prevent such non-physical phenomena~\cite{Huang2019,Huang2020}, but are generally considered \textit{ad hoc} solutions. Anecdotally, these issues were linked to persistently stiff ROMs which had difficulty converging due to the high degree of non-linearity induced by chemical source terms, which are extremely sensitive to small changes in chemical composition and temperature.

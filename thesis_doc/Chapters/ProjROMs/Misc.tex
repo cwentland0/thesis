@@ -1,0 +1,64 @@
+\section{Miscellanea}
+
+\subsection{Centering and Scaling}\label{subsec:centerScale}
+
+\subsection{Residual Weighting and Preconditioning}\label{subsec:resWeight}
+
+\subsection{POD Energy}
+
+\subsection{Projection Error}\label{subsec:projError}
+
+For results presented in Chapters~\ref{chap:CavityAndCVRC}-\ref{chap:TransientFlame}, we will make frequent use of the \textit{projection error} as a diagnostic tool for understanding the quality of a computed trial manifold $\consTrialSpace$ in modeling the FOM solution data. This error measure, with a linear trial space for the $\timeIdx$th time instance of the $\varIdx$th state variable (density, $x$-momentum, etc.), is given by the formulation
+%
+\begin{equation}
+    \errVecVar^\timeIdx = \frac{|| \consVecVar^\timeIdx - \consTrial \consTrial^\top \consVecVar^\timeIdx ||_2}{|| \consVecVar^\timeIdx ||_2}.
+\end{equation}
+%
+Scaling the error for each variable by the norm of the unprojected state ensures reasonable comparisons of error between state variables of drastically different magnitudes (e.g., $\bigO{1\text{e}6}$ for pressure and $\bigO{1}$ for species mass fractions). For a non-linear trial manifold $\consTrialSpace$, an equivalent projection operation akin to $\consTrial \consTrial^\top$ does not exist. Instead, the projection error is defined as
+%
+\begin{equation}
+    \errVecVar^\timeIdx = \frac{\left\Vert \consVecVar^\timeIdx - \argmin{\dummyVec \in \consTrialSpace} ||\consVecVar^\timeIdx - \dummyVec||_2 \right\Vert_2}{|| \consVecVar^\timeIdx ||_2}.
+\end{equation}
+%
+As $\consTrialSpace$ is a non-linear manifold defined by the range of the decoder $\decoderFunc{\cdot}$, the solution of the $argmin$ is a non-linear least squares problem. In practice, we use the \verb|optimize.least_squares()| function provided by the SciPy Python package (with default tolerances) to compute this solution. An initial guess for the input to the decoder is given by the encoding of the state, $\encoderFunc{\consVec^{\timeIdx}}$. This process effectively finds the point on the non-linear trial manifold which is closest to the data $\consVec^{\timeIdx}$.
+
+Often the time average over the simulation period $[\initTime, \finalTime]$ will be provided, and is computed as
+%
+\begin{equation}
+    \errVecVar = \frac{1}{\numSnaps} \sum_{\timeIdx = 1}^{\numSnaps} \errVecVar^\timeIdx.
+\end{equation}
+%
+Further, the total average projection error across all state variables provides a very broad measure of the trial space quality, and is given by
+%
+\begin{equation}
+    \errVec = \frac{1}{\numVars} \sum_{\varIdx = 1}^{\numVars} \errVecVar.
+\end{equation}
+%
+Examples of these error measures are provided for a one-dimensional transient flame simulation, similar to those detailed in Chapter~\ref{chap:TransientFlame}, though without acoustic forcing at the outlet.
+%
+\begin{figure}
+    \begin{minipage}{0.45\linewidth}
+        \includegraphics[width=0.99\linewidth]{example-image-a}
+        \caption{\label{fig:projErrTempField}Instantaneous temperature fields and projections.}
+    \end{minipage}
+    \hspace{1em}
+    \begin{minipage}{0.45\linewidth}
+        \includegraphics[width=0.99\linewidth]{example-image-a}
+        \caption{\label{fig:projErrMFField}Instantaneous mass fraction fields and projections.}
+    \end{minipage}
+\end{figure}
+%
+\begin{figure}
+    \begin{minipage}{0.45\linewidth}
+        \includegraphics[width=0.99\linewidth]{example-image-a}
+        \caption{\label{fig:projErrTime}Unsteady temperature and mass fraction projection error.}
+    \end{minipage}
+    \hspace{1em}
+    \begin{minipage}{0.45\linewidth}
+        \includegraphics[width=0.99\linewidth]{example-image-a}
+        \caption{\label{fig:projErrAvg}Time-average temperature and mass fraction projection error.}
+    \end{minipage}
+\end{figure}
+%
+
+No analytical \textit{a priori} error measure exists for predicting the error of PROMs of general non-linear systems. Unsteady errors will invariable accumulate and compound over the course of a PROM simulation. However, projection error is useful in providing an upper bound on the accuracy of the PROM. The unsteady PROM cannot produce a solution more accurate that the projected solution, as the trial space is never an exact representation of the true solution. Further, computing the projection of unseen data (in parametric or future state prediction) provides a measure of the generalizability of the trial manifold. This can help determine whether a PROM will be appropriate for such predictions and perhaps preclude expensive online ROMs which are bound to fail purely due to the unfitness of the trial manifold.

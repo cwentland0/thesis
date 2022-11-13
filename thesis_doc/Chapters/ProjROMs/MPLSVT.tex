@@ -15,10 +15,10 @@ and construct a low-dimensional representation of the target state. For a linear
     \end{aligned}
 \end{equation}
 %
-where, similar to the conservative variable formulation, $\primVecCent \inROne{\numDOF}$ is a constant translation vector, $\primTrial \defEq \left[\primTrialVec{1},\hdots,\primTrialVec{\numPrimModes}\right] \inRTwo{\numDOF}{\numPrimModes}$ is the target state trial basis, and $\funcMap{\primVecCoef \defEq \left[\primVarCoef{1}(\timeVar),\hdots,\primVarCoef{\numPrimModes}(\timeVar)\right]}{\nonnegReals}{\ROne{\numPrimModes}}$ is the target latent state vector. The constant matrix $\primScale \defEq \text{diag}\left(\primScaleVar_1, \hdots , \primScaleVar_{\numDOF}\right) \inRTwo{\numDOF}{\numDOF}$ scales the target state variables. For an autoencoder non-linear manifold representation, the encoder/decoder form is given by 
+where, similar to the conservative variable formulation, $\primVecCent \inROne{\numDOF}$ is a constant translation vector, $\primTrial \defEq \left[\primTrialVec{1},\hdots,\primTrialVec{\numPrimModes}\right] \inRTwo{\numDOF}{\numPrimModes}$ is the target state trial basis, and $\funcMap{\primVecCoef \defEq \left[\primVarCoef{1}(\timeVar),\hdots,\primVarCoef{\numPrimModes}(\timeVar)\right]}{\nonnegReals}{\ROne{\numPrimModes}}$ is the target latent state vector. The constant matrix $\primScale \defEq \text{diag}\left(\primScaleVar_1, \hdots , \primScaleVar_{\numDOF}\right) \inRTwo{\numDOF}{\numDOF}$ scales the target state variables. For an autoencoder non-linear manifold representation, the encoder/decoder form is given by
 %
 \begin{align}
-    \encoderFunc{\primVec} &\defEq \nnLayer_{\encoderVar} \left(\primScaleInv\left(\primVec - \primVecCent\right), \nnParams^{\encoderVar}\right), \\
+    \encoderFunc{\primVec} &\defEq \nnLayer_{\encoderVar} \left(\primScaleInv\left[\primVec - \primVecCent\right], \nnParams^{\encoderVar}\right), \\
     \decoderFunc{\primVecCoef} &\defEq \primVecCent + \primScale \nnLayer_{\decoderVar} \left(\primVecCoef, \nnParams^{\decoderVar}\right). \label{eq:decoderFuncPrim}
 \end{align}
 %
@@ -31,7 +31,7 @@ In either case, the trial basis or autoencoder are computed from snapshots of th
 where the purely-unsteady component of the solution is defined as
 %
 \begin{equation}\label{eq:primUns}
-	\primFuncUns{\timeVar} = \primScaleInv \left(\primFunc{\timeVar} - \primVecCent\right).
+	\primFuncUns{\timeVar} = \primScaleInv \left[\primFunc{\timeVar} - \primVecCent\right].
 \end{equation}
 %
 The trial space and non-linear trial manifold are defined, respectively, by
@@ -57,7 +57,7 @@ where, similarly, $\consVecRomDt(\primVecCoef^\timeIdx)$ is the temporal discret
 The scaling of the ROM residual by $\resScaleInv$ remains the same, as the full-order model equations have not changed. The primary difference is that the solution if computed as a minimization with respect to the target latent state, rather than the conservative latent state. Solution via Gauss--Newton is thus given by
 %
 \begin{equation}\label{eq:mplsvtLSLin}
-    \delta \primVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numPrimModes}} \left\Vert \resScaleInv \left(\jacobRes^{\newtonIdx} \dummyVec - \resFunc{\primVecCoef^{\newtonIdx}}\right) \right\Vert_2
+    \delta \primVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numPrimModes}} \left\Vert \resScaleInv \left[\jacobRes^{\newtonIdx} \dummyVec - \resFunc{\primVecCoef^{\newtonIdx}}\right] \right\Vert_2
 \end{equation}
 \begin{equation}
     \primVecCoef^{\newtonIdx + 1} = \primVecCoef^{\newtonIdx} + \alpha \delta \primVecCoef^{\newtonIdx}
@@ -75,7 +75,7 @@ where $\jacobPrim^\newtonIdx \defEq \funcMap{\partial \resFunc{\primVecCoef^\new
 The solution of Eq.~\ref{eq:mplsvtLSLin} via the normal equations again leads to a Petrov--Galerkin projection of the form,
 %
 \begin{equation}
-    \left(\testBasis^\newtonIdx\right)^\top \testBasis^{\newtonIdx} \delta \primVecCoef^{\newtonIdx} = - \left(\testBasis^{\newtonIdx}\right)^\top \resScaleInv \resFunc{\primVecCoef^{\newtonIdx}}
+    \left[\testBasis^\newtonIdx\right]^\top \testBasis^{\newtonIdx} \delta \primVecCoef^{\newtonIdx} = - \left[\testBasis^{\newtonIdx}\right]^\top \resScaleInv \resFunc{\primVecCoef^{\newtonIdx}}
 \end{equation}
 %
 where the test basis is computed as
