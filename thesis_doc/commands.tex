@@ -29,6 +29,7 @@
 \newcommand{\newtonIdx}{\ensuremath{k}}
 \newcommand{\reacIdx}{\ensuremath{r}}
 \newcommand{\varIdx}{\ensuremath{v}}
+\newcommand{\greedyIdx}{\ensuremath{m}}
 
 % dimensions
 \newcommand{\numDOF}{\ensuremath{N}}
@@ -157,10 +158,12 @@
 \newcommand{\testBasisVar}{w}
 \newcommand{\testBasisMat}{\ensuremath{\mathbf{\MakeUppercase{\testBasisVar}}}}
 \newcommand{\testBasis}{\ensuremath{\testBasisMat}}
+\newcommand{\testBasisCons}{\ensuremath{\mathbf{\MakeUppercase{\testBasisVar}}_{\consVar}}}
+\newcommand{\testBasisPrim}{\ensuremath{\mathbf{\MakeUppercase{\testBasisVar}}_{\primVar}}}
 \newcommand{\testBasisFunc}[1]{\ensuremath{\testBasisMat}\left(#1\right)}
 \newcommand{\testBasisApproxFunc}[1]{\ensuremath{\widetilde{\testBasisMat}}\left(#1\right)}
 \newcommand{\deimBasisVar}{\ensuremath{\Psi}}
-\newcommand{\deimBasisVec}{\ensuremath{\psi}}
+\newcommand{\deimBasisVec}{\ensuremath{\boldsymbol{\psi}}}
 \newcommand{\deimBasisMat}{\ensuremath{\mathbf{\MakeUppercase{\deimBasisVar}}}}
 \newcommand{\deimBasisRes}{\ensuremath{\deimBasisMat_{\resVar}}}
 \newcommand{\deimBasisJac}{\ensuremath{\deimBasisMat_{J}}}
@@ -179,6 +182,8 @@
 \newcommand{\deimRegressorResSmall}{\ensuremath{(\sampMat \deimBasisRes)^+ \sampMat}}
 \newcommand{\deimRegressorJac}{\ensuremath{\deimBasisJac (\sampMat \deimBasisJac)^+ \sampMat}}
 \newcommand{\deimRegressorJacSmall}{\ensuremath{(\sampMat \deimBasisJac)^+ \sampMat}}
+\newcommand{\deimBasisREvecRow}{\ensuremath{\deimBasisVec'_+}}
+\newcommand{\deimBasisRowUpdate}{\ensuremath{\deimBasisVec_+}}
 
 % SVD
 \newcommand{\lEvecVar}{x}

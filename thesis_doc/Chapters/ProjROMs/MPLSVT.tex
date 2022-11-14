@@ -54,13 +54,13 @@ where, similarly, $\consVecRomDt(\primVecCoef^\timeIdx)$ is the temporal discret
     \primVecCoef^{\timeIdx} = \argmin{\dummyVec \inROne{\numPrimModes}} \left\Vert \resScaleInv \resFunc{\dummyVec} \right\Vert_2
 \end{equation}
 %
-The scaling of the ROM residual by $\resScaleInv$ remains the same, as the full-order model equations have not changed. The primary difference is that the solution if computed as a minimization with respect to the target latent state, rather than the conservative latent state. Solution via Gauss--Newton is thus given by
+The scaling of the ROM residual by $\resScaleInv$ remains the same, as the full-order model equations have not changed. The primary difference is that the solution is computed as a minimization with respect to the target latent state, rather than the conservative latent state. Solution via Gauss--Newton is thus given by
 %
 \begin{equation}\label{eq:mplsvtLSLin}
     \delta \primVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numPrimModes}} \left\Vert \resScaleInv \left[\jacobRes^{\newtonIdx} \dummyVec - \resFunc{\primVecCoef^{\newtonIdx}}\right] \right\Vert_2
 \end{equation}
 \begin{equation}
-    \primVecCoef^{\newtonIdx + 1} = \primVecCoef^{\newtonIdx} + \alpha \delta \primVecCoef^{\newtonIdx}
+    \primVecCoef^{\newtonIdx + 1} = \primVecCoef^{\newtonIdx} + \alpha \left[ \delta \primVecCoef^{\newtonIdx} \right]
 \end{equation}
 %
 where the ROM residual Jacobian is now defined as $\jacobRes^\timeIdx \defEq \funcMap{\partial \resFunc{\primVecCoef^\newtonIdx} / \partial \primVecCoef}{\ROne{\numPrimModes}}{\RTwo{\numDOF}{\numPrimModes}}$. The residual Jacobian with respect to the latent target state can similarly be decomposed as
@@ -75,13 +75,13 @@ where $\jacobPrim^\newtonIdx \defEq \funcMap{\partial \resFunc{\primVecCoef^\new
 The solution of Eq.~\ref{eq:mplsvtLSLin} via the normal equations again leads to a Petrov--Galerkin projection of the form,
 %
 \begin{equation}
-    \left[\testBasis^\newtonIdx\right]^\top \testBasis^{\newtonIdx} \delta \primVecCoef^{\newtonIdx} = - \left[\testBasis^{\newtonIdx}\right]^\top \resScaleInv \resFunc{\primVecCoef^{\newtonIdx}}
+    \left[\testBasisPrim^\newtonIdx\right]^\top \testBasisPrim^{\newtonIdx} \delta \primVecCoef^{\newtonIdx} = - \left[\testBasisPrim^{\newtonIdx}\right]^\top \resScaleInv \resFunc{\primVecCoef^{\newtonIdx}}
 \end{equation}
 %
 where the test basis is computed as
 %
 \begin{equation}
-    \testBasis^{\newtonIdx} = \resScaleInv \jacobPrim^{\newtonIdx} \jacobDecode^{\newtonIdx}
+    \testBasisPrim^{\newtonIdx} \defEq \resScaleInv \jacobPrim^{\newtonIdx} \jacobDecode^{\newtonIdx}
 \end{equation}
 %
 
