@@ -10,6 +10,9 @@ USING THIS SPACE FOR NOTES
 	\item Need discussion on whether to put PERFORM first or after GEMS results. Start with simple 1D, or keep niche non-linear ROMs in the back?
 	\item Should solution be parameterized? Only really matters for 1D flame, but might not hurt to be general
 	\item Need to make decoder notation cleaner w/r/t the scaling matrix
+	\item Be consistent about time step indices (use $\timeIdx + 1$ and $\timeIdx$, or $\timeIdx$ and $\timeIdx - 1$). Same with Newton iteration.
+	\item Make sure notation of residual and RHS functions are consistent ($\rhsFunc{\cdot}$ vs. $\rhsFunc{\cdot, \timeVar}$, etc)
+	\item Specific symbols for residual Jacobians w/r/t primitive vs conservative coefficients
 \end{itemize}
 
 }

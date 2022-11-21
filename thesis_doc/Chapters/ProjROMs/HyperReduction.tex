@@ -1,6 +1,6 @@
 \section{Accelerating ROMs of Non-linear Systems}\label{sec:hyperreduction}
 
-So far, we have pointedly ignored the fact that the Galerkin (Eq.~\ref{eq:galerkinROMODE}), LSPG (Eq.~\ref{eq:lspgLSLin}), and MP-LSVT (Eq.~\ref{eq:mplsvtLSLin}) ROMs \textit{will not generate computational cost savings} for large-scale non-linear systems. This is largely due to the fact that evaluating the non-linear terms $\rhsFunc{\cdot}$ arising from fluxes, source terms, body forces, and boundary conditions still scales with the full-order dimension $\numDOF$. Linear time-invariant systems do not suffer from this issue; given a system of the form $\consVecDt - \dummyMat \consVec = \zeroVec$, $\dummyMat \inRTwo{\numDOF}{\numDOF}$, the resulting Galerkin ROM (assuming $\consScale = \resScale = \identMat$) takes the form
+So far, we have pointedly ignored the fact that the Galerkin (Eq.~\ref{eq:galerkinROMODE}), LSPG (Eq.~\ref{eq:lspgLSLin}), and MP-LSVT (Eq.~\ref{eq:mplsvtLSLin}) ROMs \textit{will not generate computational cost savings} for large-scale non-linear systems. This is largely due to the fact that evaluating the non-linear terms $\rhsFunc{\cdot}$ arising from fluxes, source terms, body forces, and boundary conditions still scales with the full-order dimension $\numDOF$. Linear time-invariant systems do not suffer from this issue; given a system of the form $\text{d}\consVec/\text{d}\timeVar - \dummyMat \consVec = \zeroVec$, $\dummyMat \inRTwo{\numDOF}{\numDOF}$, the resulting Galerkin ROM (assuming $\consScale = \resScale = \identMat$) takes the form
 %
 \begin{equation}
     \ode{\consVecCoef}{\timeVar} = \consTrial^\top \dummyMat \consTrial \consVecCoef.
@@ -8,45 +8,49 @@ So far, we have pointedly ignored the fact that the Galerkin (Eq.~\ref{eq:galerk
 %
 The matrix $\consTrial^\top \dummyMat \consTrial \consVecCoef \inRTwo{\numConsModes}{\numConsModes}$ can be precomputed in the \textit{offline} stage before evaluating the ROM in the \textit{online} stage. Such a precomputation is impossible for general non-linear systems. The low-dimensional state must first be \textit{lifted} to the full-dimensional state (via $\decoderFunc{\consVecCoef}$) to evaluate the non-linear terms $\rhsFunc{\cdot}$. In the case of Galerkin projection, this term must then be projected onto the tangent trial space before integrating the low-dimensional ODE in time. In the case of LSPG and MP-LSVT ROMs solved via the normal equations, the time-variant test basis must be computed from the residual Jacobian. Despite the fact that the resulting low-dimensional system may be less expensive to temporally integrate, these additional operations often outweigh any cost savings. Particularly for complex multi-physics systems, the evaluation of $\rhsFunc{\cdot}$ accounts for the vast majority of the solver cost, and failing to reduce this cost often fails to reduce the ROM cost below that of the FOM.
 
-To achieve the intended goal of significantly reducing the cost of evaluating the model, we must eliminate the ROM's dependence on the full-order dimension $\numDOF$. Techniques which seek this goal are generally referred to as \textit{hyper-reduction} methods. Most prevalent and mature are so-called \textit{sparse sampling} methods, which evaluate the non-linear terms at a small number of carefully selected degrees of freedom and reconstruct them approximately using data-driven modeling techniques. Work in this thesis focuses on linear sparse-sampling methods for linear subspace ROMs, namely the discrete empirical interpolation method and gappy proper orthogonal decomposition. Neural network approaches to hyper-reduction~\cite{nnHyperRed} and hyper-reduction for non-linear manifold ROMs~\cite{Kim2022} have been proposed, but are not discussed or analyzed here.
+To achieve the intended goal of significantly reducing the cost of evaluating the model, we must eliminate the ROM's dependence on the full-order dimension $\numDOF$. Techniques which seek this goal are generally referred to as \textit{hyper-reduction} methods. Most prevalent and mature are so-called \textit{sparse sampling} methods, which evaluate the non-linear terms at a small number of carefully selected degrees of freedom and reconstruct them approximately using data-driven modeling techniques. For this reason, throughout the remainder of this thesis we will refer to non-hyper-reduced ROMs as \textit{unsampled ROMs}.
 
-\subsection{DEIM and Gappy POD ROMs}
+Work in this thesis focuses exclusively on linear sparse-sampling methods for linear subspace ROMs of the \textit{approximate-then-project} approach, namely the discrete empirical interpolation method and gappy proper orthogonal decomposition. Work on \textit{project-then-approximate} approaches, such as cubature methods~\cite{An2008,Hernandez2017} and the energy-conserving sampling and weighting method~\cite{Farhat2014}, show promise in enhancing the accuracy of non-linear function approximations. However, these methods have been analyzed almost exclusively for structural dynamics problems. Their application to projection-based ROMs of hyperbolic systems is still in its early stages~\cite{Grimberg2020Hyper}, and is not analyzed here. Neural network approaches to hyper-reduction~\cite{nnHyperRed} and hyper-reduction for non-linear manifold ROMs~\cite{Kim2022} have been proposed, but are also not analyzed here.
+
+\subsection{DEIM and Gappy POD}
 %
-Two well-established hyper-reduction methods for projection-based ROMs of discrete dynamical systems are the discrete empirical interpolation method (DEIM) and gappy proper orthogonal decomposition (gappy POD). The two are closely related, but were originally developed for different applications. DEIM, introduced by Chaturantabut and Sorensen~\cite{Chaturantabut2010}, is a discrete formulation of the empirical interpolation method (EIM)~\cite{Barrault2004}. It introduces an approximation of non-linear functions of the form,
+Two well-established sparse sampling methods for the approximation of non-linear functions are the discrete empirical interpolation method (DEIM) and gappy proper orthogonal decomposition (gappy POD). The two are closely related, but were originally developed for different applications. DEIM, introduced by Chaturantabut and Sorensen~\cite{Chaturantabut2010}, is a discrete formulation of the empirical interpolation method (EIM)~\cite{Barrault2004}. It introduces an approximation of non-linear functions of the form,
 %
 \begin{equation}\label{eq:deimRHSApprox}
-    \resFunc{\consVec} \approx \resApproxFunc{\consVec} \defEq \deimBasis \left[ \sampMat \deimBasis \right]^{-1} \sampMat \resFunc{\consVec},
+    \resFunc{\dummyVec} \approx \resApproxFunc{\dummyVec} \defEq \deimBasis \left[ \sampMat \deimBasis \right]^{-1} \sampMat \resFunc{\dummyVec},
 \end{equation}
 %
-where $\sampMat = [\canonVec_{\dummyIdx_1}, \; \canonVec_{\dummyIdx_2}, \; \hdots, \; \canonVec_{\dummyIdx_{\numSamps}} ]^\top \inRTwo{\numSamps}{\numDOF}$ is composed of \numSamps\ unique canonical unit vectors $\canonVec_{\dummyIdx} \inROne{\numDOF}$. The operation $\sampMat \resVec \inROne{\numSamps}$ thus selects each $\dummyIdx$th degree of freedom from $\resVec$. The matrix $\deimBasis = [\deimBasisVec_1, \; \deimBasisVec_2, \; \hdots, \; \deimBasisVec_{\numResModes}] \inRTwo{\numDOF}{\numResModes}$ is an orthonormal basis, usually generated by POD from FOM snapshots of the non-linear function $\resVec$. It is assumed that the matrix $\sampMat \deimBasis \inRTwo{\numSamps}{\numResModes}$ has full rank. In computing $\resApproxVec$, we see that the non-linear function $\resVec$ must only be computed, or \textit{sampled}, at $\numSamps$ degrees of freedom, instead of its full dimension $\numDOF$. When $\numSamps \ll \numDOF$, the cost of computing $\resApproxVec$ may be much less than the cost of computing $\resVec$.
+where we use the residual function $\resVec$ for the sake of notational simplicity, but note that this method extends to approximation of any non-linear function. Here, $\sampMat \defEq [\canonVec_{\dummyIdx_1}, \; \canonVec_{\dummyIdx_2}, \; \hdots, \; \canonVec_{\dummyIdx_{\numSamps}} ]^\top \inRTwo{\numSamps}{\numDOF}$ is composed of $\numSamps$ unique canonical unit vectors $\canonVec_{\dummyIdx} \inROne{\numDOF}$. The operation $\sampMat \resVec \inROne{\numSamps}$ thus selects each $\dummyIdx$th degree of freedom from $\resVec$. The matrix $\deimBasis \defEq [\deimBasisVec_1, \; \deimBasisVec_2, \; \hdots, \; \deimBasisVec_{\numResModes}] \inRTwo{\numDOF}{\numResModes}$ is an orthonormal basis, usually generated by POD from FOM snapshots of the non-linear function $\resVec$. It is assumed that the matrix $\sampMat \deimBasis \inRTwo{\numSamps}{\numResModes}$ has full rank. In computing $\resApproxVec$, we see that the non-linear function $\resVec$ must only be computed, or \textit{sampled}, at $\numSamps$ degrees of freedom, instead of its full dimension $\numDOF$. When $\numSamps \ll \numDOF$, the cost of computing $\resApproxVec$ may be much less than the cost of computing $\resVec$.
 
 Note that here, the number of DEIM basis modes is equal to the number of sampled degrees of freedom, i.e., $\numSamps = \numResModes$. By this formulation, the non-linear function is interpolated exactly at $\numSamps < \numDOF$ degrees of freedom and interpolated approximately at all other degrees of freedom. The error in this approximation is bounded~\cite{Chaturantabut2010} by the inequality
 %
 \begin{equation}\label{eq:deimErrorBound}
-   \left\Vert \resFunc{\consVec} - \resApproxFunc{\consVec} \right\Vert_2 \le \left\Vert \left[ \sampMat \deimBasis \right]^{-1} \right\Vert_2 \left\Vert \left[ \identMat - \deimBasis \deimBasis^\top \right] \resFunc{\consVec} \right\Vert_2,
+   \left\Vert \resFunc{\dummyVec} - \resApproxFunc{\dummyVec} \right\Vert_2 \le \left\Vert \left[ \sampMat \deimBasis \right]^{-1} \right\Vert_2 \left\Vert \left[ \identMat - \deimBasis \deimBasis^\top \right] \resFunc{\dummyVec} \right\Vert_2,
 \end{equation}
 %
 where the first norm term on the right-hand side is a measure of the \textit{sampling error}, and the second norm term is the \textit{projection error}. As will be discussed shortly, various methods of selecting the sampling degrees of freedom often attempt to minimize these sources of error.
 
-DEIM has been successfully applied to a variety of interesting dynamical systems~\cite{Chaturantabut2011, Henneron2014}, but is quite limited by the restriction $\numSamps = \numResModes$. Recall that for practical engineering systems, $\numResModes \ll \numDOF$ generally, and such extreme sparse sampling may result in high interpolation error at the unsampled degrees of freedom. Furthermore, Peherstorfer et al.~\cite{Peherstorfer2020} show that increasing $\numResModes$ can lead to an unstable increase in the interpolation error.
-
-Gappy POD, originally developed well before the advent of DEIM to approximate full field data from a few sparse samples~\cite{Everson1995}, can also be used to approximate non-linear functions in dynamical systems. The method takes a very similar approach to DEIM, but relaxes the restriction on the number of sampled degrees of freedom, allowing $\numSamps \ge \numResModes$. Thus, the approximation becomes a least-squares regression of the form,
+Again, DEIM is restricted to the case where $\numSamps = \numResModes$. For practical engineering systems, $\numResModes \ll \numDOF$ generally, and such extreme sparse sampling may result in high interpolation error at the unsampled degrees of freedom. Furthermore, Peherstorfer et al.~\cite{Peherstorfer2020} show that increasing $\numResModes$ can lead to an unstable increase in the interpolation error. Gappy POD was originally developed well before the advent of DEIM to approximate full field data from a few sparse samples~\cite{Everson1995}, and has seen extensive use in sparse sensor placement~\cite{willcoxGappyPOD,ManoharSparseSensor} and mission point estimation~\cite{BuiThanh2004,Astrid2008,Zimmermann2016}. Additionally, gappy POD can be used to approximate non-linear functions in dynamical systems. The method takes a very similar approach to DEIM, but relaxes the restriction on the number of sampled degrees of freedom, allowing $\numSamps \ge \numResModes$. Thus, the approximation becomes a least-squares regression of the form
 %
 \begin{equation}\label{eq:gappyPODRHSApprox}
-    \resFunc{\consVec} \approx \resApproxFunc{\consVec} \defEq \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resFunc{\consVec},
+    \resFunc{\dummyVec} \approx \resApproxFunc{\dummyVec} \defEq \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resFunc{\dummyVec},
 \end{equation}
 %
-where the operation $\dummyMat^+$ indicates the Moore--Penrose inverse (or pseudo-inverse). Again, this assumes $\sampMat \deimBasis$ has full rank. Similarly to Eq.~\ref{eq:deimErrorBound}, the gappy POD regression error is bounded by
+where the operation $\dummyMat^+$ indicates the Moore--Penrose inverse (or pseudo-inverse). Again, this assumes $\sampMat \deimBasis$, which is now a rectangular matrix, has full column rank. Similarly to Eq.~\ref{eq:deimErrorBound}, the gappy POD regression error is bounded by
 %
 \begin{equation}\label{eq:gappyPODErrorBound}
-    \left\Vert \resFunc{\consVec} - \resApproxFunc{\consVec} \right\Vert_2 \le \left\Vert \left[ \sampMat \deimBasis \right]^{+} \right\Vert_2 \left\Vert \left[ \identMat - \deimBasis \deimBasis^\top \right] \resFunc{\consVec} \right\Vert_2.
+    \left\Vert \resFunc{\dummyVec} - \resApproxFunc{\dummyVec} \right\Vert_2 \le \left\Vert \left[ \sampMat \deimBasis \right]^{+} \right\Vert_2 \left\Vert \left[ \identMat - \deimBasis \deimBasis^\top \right] \resFunc{\dummyVec} \right\Vert_2.
 \end{equation}
 %
 For the remainder of this thesis, we will restrict discussion of hyper-reduction to gappy POD, as it is more general than DEIM. We simply remind the reader that in the specific case of $\numResModes = \numConsModes$, gappy POD is equivalent to DEIM.
 
+\subsection{Hyper-reduction}
+%
+The approximation of non-linear functions by Eq.~\ref{eq:gappyPODRHSApprox} can be applied to projection-based ROM formulations to vastly reduce the computational cost of evaluating non-linear terms arising from the discretization of the governing equations. Hyper-reduction of Galerkin ROMs is described first, followed by hyper-reduction of LSPG and MP-LSVT ROMs.
+
 \paragraph*{Hyper-reduction of Galerkin ROMs}\mbox{}\\
 %
-The approximation of non-linear functions by Eq.~\ref{eq:gappyPODRHSApprox} can be directly applied to projection-based ROM formulations. In the case of Galerkin projection, the non-linear terms $\rhsVec$ may be approximated as
+For Galerkin projection ROMs, the traditional method of hyper-reduction approximates the non-linear terms $\rhsVec$ as
 %
 \begin{equation}
 	\rhsApproxFunc{\consVec, \; \timeVar} \defEq \deimBasis \left[ \sampMat \deimBasis \right]^+ \sampMat \rhsFunc{\consVec, \; \timeVar}.
@@ -72,18 +76,46 @@ The low-dimensional matrix $\left[\consTrial^\top \consScale \resScaleInv \consS
 %
 where again, the low-dimensional matrix $\consTrial^\top \deimBasis \left[ \sampMat \deimBasis \right]^+ \inRTwo{\numConsModes}{\numSamps}$ can be precomputed. {\color{red}Add some citations of applications}
 
+An alternative method of computing the hyper-reduced Galerkin ROM is posed by Peherstorfer~\cite{Peherstorfer2020Adaptive}, who reframes the fully discrete O$\Delta$E in the form
+%
+\begin{equation}\label{eq:benResidual}
+	\consVec^{\timeIdx-1} = \rhsResFunc{\consVec^{\timeIdx}, \timeVar}
+\end{equation}
+%
+where all terms of the time integrator, except for $\consVec^{\timeIdx - 1}$, have been grouped with the non-linear terms $\rhsFunc{\cdot}$ into the lumped $\rhsResFunc{\cdot}$. This form is, at first glance, confusing, as we normally seek the solution solution at the next time step, $\consVec^{\timeIdx}$, as a function of past time steps, not the other way around as in Eq.~\ref{eq:benResidual}. However, this simply reflects the nature of implicit time integrators, in which the non-linear terms $\rhsVec$ are evaluated at future time steps. For example, the backward Euler (BDF1) time integrator would compute $\rhsResVec$ as
+%
+\begin{equation}
+	\rhsResFunc{\consVec^{\timeIdx}} \defEq \consVec^{\timeIdx} - \dt \rhsFunc{\consVec^{\timeIdx}} \quad \text{(BDF1)}
+\end{equation}
+%
+The approximate non-linear term is then approximated as
+%
+\begin{equation}
+	\rhsResFunc{\consVec} \approx \rhsResApproxFunc{\consVec} \defEq \deimBasis \left[\sampMat \deimBasis \right] \sampMat \rhsResFunc{\consVec}
+\end{equation}
+%
+Substitution into Eq.~\ref{eq:benResidual} and projection by the tangent trial space leads to an alternative hyper-reduced Galerkin ROM of the form
+%
+\begin{equation}
+    \consVecCoef^{\timeIdx-1} = \left[\jacobDecode^\top \resScaleInv \jacobDecode\right]^{-1} \jacobDecode^\top \resScaleInv \rhsResApproxFunc{\consVecRom^{\timeIdx}}.
+\end{equation}
+%
+As mentioned previously, the above formulation is fairly non-standard and can be quite confusing for ROM practitioners. However, as will be discussed in Sections~\ref{subsec:regBasis}, this formulation lends itself to a simplification in which the regression basis $\deimBasis$ can be equated to the solution trial basis $\consTrial$ or $\primTrial$. Its use in adaptive bases and sampling is also outlined in Section~\ref{sec:adaptation}.
+
 \paragraph*{Hyper-reduction of LSPG and MP-LSVT ROMs}\mbox{}\\
 %
-Applying gappy POD to LSPG and MP-LSVT ROMs takes a slightly different approach than that used for Galerkin ROMs. Instead of constructing a least-squares regression for the non-linear function $\rhsVec$, the complete fully-discrete residual $\resVec$ is approximated, as in Eq.~\ref{eq:gappyPODRHSApprox}, and substituted into the residual minimization problem given by Eq.~\ref{eq:lspgLS} or~\ref{eq:mplsvtLS}. We first examine the procedure for LSPG, which was first formulated by Carlberg and coworkers~\cite{Carlberg2010,Carlberg2013}, who referred to the procedure as Gauss--Newton with approximated tensors (GNAT). Substituting the residual approximation into Eq.~\ref{eq:lspgLS} results in the non-linear least-squares problem
+{\color{red}TALK ABOUT COLLOCATION}
+
+Applying gappy POD to LSPG and MP-LSVT ROMs takes a slightly different approach than that used for Galerkin ROMs. Instead of constructing a least-squares regression for the non-linear function $\rhsVec$, the complete fully-discrete residual $\resVec$ is approximated and substituted into the residual minimization problem given by Eq.~\ref{eq:lspgLS} or~\ref{eq:mplsvtLS}. We first examine the procedure for LSPG, which was first formulated by Carlberg and coworkers~\cite{Carlberg2010,Carlberg2013}, who referred to the procedure as Gauss--Newton with approximated tensors (GNAT). Substituting the residual approximation into Eq.~\ref{eq:lspgLS} results in the non-linear least-squares problem
 %
 \begin{equation}\label{eq:lspgLSHR}
-    \consVecCoef^{\timeIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resFunc{\dummyVec} \right\Vert_2.
+    \consVecCoef^{\timeIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resScaleInv \resFunc{\dummyVec} \right\Vert_2.
 \end{equation}
 %
 Solving Eq.~\ref{eq:lspgLSHR} by Gauss--Newton results in the iterative process
 %
 \begin{equation}\label{eq:lsgpLinHR}
-    \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \deimBasis \left[ \sampMat \deimBasis \right]^{+} \left(\sampMat \jacobRes^{\newtonIdx} \dummyVec - \sampMat \resFunc{\consVecCoef^{\newtonIdx}}\right) \right\Vert_2,
+    \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resScaleInv \left( \jacobRes^{\newtonIdx} \dummyVec - \resFunc{\consVecCoef^{\newtonIdx}}\right) \right\Vert_2,
 \end{equation}
 \begin{equation}
     \consVecCoef^{\newtonIdx + 1} = \consVecCoef^{\newtonIdx} + \alpha \left[ \delta \consVecCoef^{\newtonIdx} \right].
@@ -92,45 +124,71 @@ Solving Eq.~\ref{eq:lspgLSHR} by Gauss--Newton results in the iterative process
 Solution of Eq.~\ref{eq:lsgpLinHR} via the normal equations is again given by a Petrov--Galerkin ROM of the form
 %
 \begin{equation}\label{eq:lspgHRSolve}
-    \left[ \testBasisCons^\newtonIdx \right]^\top \testBasisCons^\newtonIdx \delta \consVecCoef^{\newtonIdx} = -\left[\testBasisCons^\newtonIdx \right]^\top \resScaleInv \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resFunc{\consVecCoef^{\newtonIdx}}.
+    \left[ \testBasisCons^\newtonIdx \right]^\top \testBasisCons^\newtonIdx \delta \consVecCoef^{\newtonIdx} = -\left[\testBasisCons^\newtonIdx \right]^\top \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resScaleInv \resFunc{\consVecCoef^{\newtonIdx}}.
 \end{equation}
 %
 where the test basis is defined as
 %
 \begin{equation}\label{eq:lspgHRTest}
-    \testBasisCons^\newtonIdx \defEq \resScaleInv \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \jacobCons^{\newtonIdx} \jacobDecode^{\newtonIdx}.
+    \testBasisCons^\newtonIdx \defEq \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resScaleInv \jacobCons^{\newtonIdx} \jacobDecode^{\newtonIdx}.
 \end{equation}
 %
 
 Hyper-reduction of MP-LSVT ROMs via gappy POD follow an extremely similar method, beginning from the fully-discrete residual minimization with respect to the target state latent variables,
 %
 \begin{equation}
-    \primVecCoef^{\timeIdx} = \argmin{\dummyVec \inROne{\numPrimModes}} \left\Vert \resScaleInv \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resFunc{\dummyVec} \right\Vert_2
+    \primVecCoef^{\timeIdx} = \argmin{\dummyVec \inROne{\numPrimModes}} \left\Vert \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resScaleInv \resFunc{\dummyVec} \right\Vert_2.
 \end{equation}
 %
 Solution via Gauss--Newton and the normal equations results in a similar hyper-reduced Petrov--Galerkin formulation of
 %
 \begin{equation}\label{eq:mplsvtHRSolve}
-    \left[ \testBasisPrim^\newtonIdx \right]^\top \testBasisPrim^\newtonIdx \delta \primVecCoef^{\newtonIdx} = -\left[\testBasisPrim^\newtonIdx \right]^\top \resScaleInv \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resFunc{\primVecCoef^{\newtonIdx}},
+    \left[ \testBasisPrim^\newtonIdx \right]^\top \testBasisPrim^\newtonIdx \delta \primVecCoef^{\newtonIdx} = -\left[\testBasisPrim^\newtonIdx \right]^\top \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resScaleInv \resFunc{\primVecCoef^{\newtonIdx}},
 \end{equation}
 %
 with the test basis
 %
 \begin{equation}\label{eq:mplsvtHRTest}
-    \testBasisPrim^\newtonIdx \defEq \resScaleInv \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \jacobPrim^{\newtonIdx} \jacobDecode^{\newtonIdx}.
+    \testBasisPrim^\newtonIdx \defEq \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resScaleInv \jacobPrim^{\newtonIdx} \jacobDecode^{\newtonIdx}.
 \end{equation}
 %
-Only $[ \sampMat \deimBasis ]^{+} \inRTwo{\numResModes}{\numSamps}$ is pre-computed off-line. Although the matrix $\deimBasis [ \sampMat \deimBasis ]^{+} \inRTwo{\numDOF}{\numSamps}$ can be pre-computed off-line, a matrix of $\numDOF \times \numSamps$ elements can be prohibitively large for high-dimensional systems and may not be possible to store in memory.
+Only $[ \sampMat \deimBasis ]^{+} \inRTwo{\numResModes}{\numSamps}$ is pre-computed offline. Although the matrix $\deimBasis [ \sampMat \deimBasis ]^{+} \inRTwo{\numDOF}{\numSamps}$ can be pre-computed offline, a matrix of $\numDOF \times \numSamps$ elements can be prohibitively large for high-dimensional systems and may not be possible to store in memory. Further, substitution of Eq.~\ref{eq:mplsvtHRTest} into Eq.~\ref{eq:mplsvtHRSolve} and recognizing the product $\deimBasis^\top \deimBasis = \identMat$ eliminates the need to precompute $\deimBasis [ \sampMat \deimBasis ]^{+}$.
 
-In Eqs.~\ref{eq:lspgHRSolve} and~\ref{eq:mplsvtHRSolve}, we see that computing the sampled residual $\sampMat \resFunc{\cdot}$ only requires that the residual be evaluated at $\numSamps$ degrees of freedom. Further, in Eqs.~\ref{eq:lspgHRTest} and~\ref{eq:mplsvtHRTest} we see that only the corresponding $\numSamps$ rows of the residual Jacobians $\sampMat $ and $\sampMat$ need to be computed. Thus, the hyper-reduced ROM is truly independent of the FOM dimension $\numDOF$. When $\numSamps \ll \numDOF$ and evaluation of the non-linear terms accounts for a majority of the computational burden, this sparse sampling has the potential to drastically reduce the cost of the hyper-reduced ROM relative to the FOM. Up to four orders of magnitude cost reduction has been recorded, consuming a few core-seconds to compute a ROM where the equivalent FOM simulation might consume many core-hours. Such cost savings bring projection-based ROMs into the realm of possibility for many-query applications.
+In Eqs.~\ref{eq:lspgHRSolve} and~\ref{eq:mplsvtHRSolve}, we see that computing the sampled residual $\sampMat \resFunc{\cdot}$ only requires that the residual be evaluated at $\numSamps$ degrees of freedom. Further, in Eqs.~\ref{eq:lspgHRTest} and~\ref{eq:mplsvtHRTest} we see that only the corresponding $\numSamps$ rows of the residual Jacobians $\jacobCons $ and $\jacobPrim$ need to be computed. Thus, the hyper-reduced ROM is truly independent of the FOM dimension $\numDOF$. When $\numSamps \ll \numDOF$ and evaluation of the non-linear terms accounts for a majority of the computational burden, this sparse sampling has the potential to drastically reduce the cost of the hyper-reduced ROM relative to the FOM. Our work has recorded four orders of magnitude cost reduction for a three-dimensional model rocket combustor~\cite{Wentland2021}. Up to five orders of magnitude cost reduction has been recorded~\cite{Grimberg2021}, consuming a few core-hours to compute a ROM where the equivalent FOM simulation consumed over two thousand core-weeks. Such cost savings bring projection-based ROMs into the realm of possibility for many-query applications.
 
-% Finally, we re-emphasize that traditional approaches to approximating non-linear functions by DEIM and gappy POD have computed \deimBasis\ from FOM time snapshots of the non-linear function being approximated~\cite{sorensen_deim, carlberg_gnat}. This is immediately intuitive, as DEIM and gappy POD seek to approximate the non-linear function. However, we take a slightly different approach in this work, instead using the trial basis computed from the state snapshots to compute the regression as well, i.e., $ \deimBasis = \trialBasisPrim$. Although similar approaches have been successfully employed in past research~\cite{Astrid2008}, this approach is not typically used by DEIM/gappy POD ROM practitioners. Curiously, early investigations by the authors revealed that this decision yields accurate and robust hyper-reduced SP-LSVT ROMs. The reason for this is not yet clearly understood, but will be the subject of future research.
+\subsection{Regression Basis Calculation}\label{subsec:regBasis}
+%
+We now address the question of how the regression basis $\deimBasis$ is computed. Although the process generally follows that of computing the solution trial bases $\consTrial$ or $\primTrial$, there are several approaches for computing $\deimBasis$ which are suggested by the literature and deserve explanation.
 
-\subsection{Regression Basis Calculation}
+In the case of Galerkin projection ROMs, we have already explicitly outlined the two approximations of non-linear terms in the ROM ODE/O$\Delta$E, which we restate here. The traditional method of hyper-reduction for Galerkin projection ROMs~\cite{Chaturantabut2010} computes a regression for the non-linear function $\rhsFunc{\cdot}$ of the form
+%
+\begin{equation}
+	\rhsFunc{\consVec, \timeVar} \approx \rhsApproxFunc{\consVec, \timeVar} \defEq \deimBasis \left[\sampMat \deimBasis \right] \sampMat \rhsFunc{\consVec, \timeVar}
+\end{equation}
+%
+In this case, as with computing the solution trial bases, snapshots of the unsteady non-linear term field $\rhsFunc{\consVec, \timeVar}$ are collected from FOM simulations. Unlike the process for the solution trial bases, we do not define a reference state about which snapshots are centered. However, disparate scales of the non-linear terms must be accounted for, and we suggest using the same scaling format as that used for scaling the fully-discrete residual, $\resScaleInv$. The snapshot matrix is thus aggregated as
+%
+% \begin{equation}
+
+% \end{equation}
+%
+
+The method of Peherstorfer~\cite{}
+%
+\begin{equation}
+	\consVec^{\timeIdx} = \rhsResFunc{\consVec^{\dummyIdx}, \timeVar}, \quad \dummyIdx \leq \timeIdx
+\end{equation}
+%
 
 \subsection{Sample Selection}
 
-As described above, the computation of the non-linear function regression basis $\deimBasis$ is somewhat nuanced, but is ultimately derived from the POD of a snapshot matrix. Methods for selecting sampling indices, and hence the construction of the sampling operator $\sampMat$, however, are much more varied. The selection of $\numSamps > \numResModes$ samples which globally minimize the regression error (Eq.~\ref{eq:gappyPODErrorBound}) is a computationally-intractable problem. As such, almost all methods for selecting sampling points are \textit{greedy} methods, which iteratively select points based on some measure of local optimality at a given iteration. The ``best'' choice of local error measure, and hence greedy sampling method, is an area of active research. Unfortunately, very few comparisons between sampling methods have been published, with the exception of the work by Peherstorfer \textit{et al.}~\cite{Peherstorfer2020}. Although extremely insightful, their exploration of hyper-reduced ROMs was limited to a simple one-dimensional model problem. Results presented in Chapter~\ref{chap:CavityAndCVRC} seek to expand on their work by studying more complex, 2D and 3D multi-scale and multi-physics problems. In this thesis, we study DEIM greedy sampling (\textit{GappyPOD+D}), random sampling (\textit{GappyPOD+R}), and eigenvector-based sampling (\textit{GappyPOD+E}), which are detailed in turn.
+{\color{red} ALGORITHMS}
+
+As described above, the computation of the non-linear function regression basis $\deimBasis$ is somewhat nuanced, but is ultimately derived from the POD of a solution, non-linear terms, or fully-discrete residual snapshot matrix. Methods for selecting sampling indices, and hence the construction of the sampling operator $\sampMat$, are much more varied. The selection of $\numSamps > \numResModes$ samples which globally minimize the regression error (Eq.~\ref{eq:gappyPODErrorBound}) is a computationally-intractable problem. As such, almost all methods for selecting sampling points are \textit{greedy} methods, which iteratively select points based on some measure of local optimality at a given iteration. The ``best'' choice of local error measure, and hence greedy sampling method, is an area of active research. Unfortunately, very few comparisons between sampling methods have been published, with the exception of the work by Peherstorfer \textit{et al.}~\cite{Peherstorfer2020}. Although extremely insightful, their exploration of hyper-reduced ROMs was limited to simple one-dimensional steady systems. Results presented in Chapter~\ref{chap:CavityAndCVRC} seek to expand on their work by studying more complex, unsteady 2D and 3D multi-scale and multi-physics problems. In this thesis, we study random sampling (\textit{GappyPOD+R}), DEIM greedy sampling (\textit{GappyPOD+D}), and eigenvector-based sampling (\textit{GappyPOD+E}), which are detailed in turn.
+
+\vspace{0.5cm}
+\noindent \textit{GappyPOD+R}:
+For the GappyPOD+R method, the first $\numResModes$ samples are selected by the rank-revealing QR factorization of $\numResModes$. The first $\numResModes$ pivots of the factorization are chosen as sampling points. This \textit{QDEIM} procedure, proposed by Drma\v{c} and Gugercin~\cite{Drmac2016}, has been shown to exhibit tighter error bounds on the resulting interpolant over the traditional DEIM greedy sampling procedure. It has the added benefit of being easily implemented using existing high-performance, parallel linear algebra software libraries.
 
 \vspace{0.5cm}
 \noindent \textit{GappyPOD+D}:
@@ -141,10 +199,6 @@ The GappyPOD+D strategy follows the greedy sampling method originally proposed f
 \end{equation}
 %
 where the index $\dummyIdx$ repeatedly loops through the integer interval $\{1, \hdots, \; \numResModes\}$ (the greedy element of this approach), and $\deimBasis_{\dummyIdxTwo} \inRTwo{\numDOF}{\dummyIdxTwo}$ contains the leading $\dummyIdxTwo$ basis vectors of $\deimBasis$. The index $\dummyIdxTwo$ begins at 1 and is incremented by one at every sampling loop, until $\dummyIdxTwo = \numResModes$. At every iteration, the degree of freedom for which the absolute error $|\errVec_{\greedyIdx}|$ is greatest is sampled, and the corresponding canonical unit vector appended to $\sampMat_{\greedyIdx}$. For DEIM interpolations, Chaturantabut and Sorensen~\cite{Chaturantabut2010} showed that this algorithm limits the growth of the error bounds in Eq.~\ref{eq:deimErrorBound} at every iteration $\greedyIdx$.
-
-\vspace{0.5cm}
-\noindent \textit{GappyPOD+R}:
-For the GappyPOD+R method, the first $\numResModes$ samples are selected by the rank-revealing QR factorization of $\numResModes$. The first $\numResModes$ pivots of the factorization are chosen as sampling points. This \textit{QDEIM} procedure, proposed by Drma\v{c} and Gugercin~\cite{Drmac2016}, has been shown to exhibit tighter error bounds on the resulting interpolant over the traditional DEIM greedy sampling procedure. It has the added benefit of being easily implemented using existing high-performance, parallel linear algebra software libraries.
 
 Selecting the remaining $\numSamps - \numResModes$ samples via the GappyPOD+R strategy is extremely straightforward, as they are simply selected randomly from a discrete uniform distribution. Peherstorfer \textit{et al.}~\cite{Peherstorfer2020} provide probabilistic analyses to show that randomized oversampling limits the growth in regression error as the regression dimension $\numResModes$ is increased, even in the presence of additional system noise.
 
@@ -190,9 +244,9 @@ We visualize this in Fig.~\ref{fig:IBlankConfig} in the context of a cell-center
     \caption{\label{fig:IBlankConfig}Sampling schemes for 2nd-order flux scheme in 2D (left) and 3D (right).\\Blue cells are directly sampled, red are flux cells, and yellow are gradient/vertex cells.}
 \end{figure}
 
-At each of these cells, the fluid state ($\consVecRom$ and/or $\primVecRom$), trial basis ($\consTrial$ or $\primTrial$) and centering state ($\consVecCent$ or $\primVecCent$), must be held in memory. At directly sampled and flux cells, any thermodynamic/transport properties and state gradients must also be held in memory and calculated at every sub-iteration of the solver. The above discussion demonstrates how rapidly the computational cost and memory consumption can increase with increased sampling. Furthermore, one should not expect a linear correlation between the sampling rate and the resulting computational cost of the hyper-reduced ROM.
+At each of these cells, the fluid state ($\consVecRom$ and/or $\primVecRom$), trial basis ($\consTrial$ or $\primTrial$) and centering state ($\consVecCent$ or $\primVecCent$), must be held in memory. At directly sampled and flux cells, any thermodynamic/transport properties and state gradients must also be held in memory and calculated at every sub-iteration of the solver. This gives a sense of how rapidly the computational cost and memory consumption can increase with increased sampling. Furthermore, one should not expect a linear correlation between the sampling rate and the resulting computational cost of the hyper-reduced ROM.
 
-Note, however, that for $\numSamps \ll \numDOF$, the solution to the static hyper-reduced ROMs (Eqs.~\ref{eq:galerkinROMHR}, \ref{eq:lspgHRSolve}, and~\ref{eq:mplsvtHRSolve}) do not require access to the full-dimensional state. Indeed, the low-dimensional latent state $\consVecCoef$, $\primVecCoef$ can be advanced in time using only sampled degrees of freedom and those auxiliary degrees of freedom required to evaluate $\sampMat \resFunc{\cdot}$. The full-dimensional state $\consVecRom$, $\primVecRom \inROne{\numDOF}$ can be reconstructed \textit{after} the hyper-reduced ROM has been computed. This motivates the idea of the \textit{sample mesh} concept discussed by Carlberg \textit{et al.}~\cite{Carlberg2013}: only those mesh elements and associated state variables that are strictly required to compute $\sampMat \resFunc{\cdot}$ must be allocated in memory. Those mesh elements, state variables, and additional parameters which are not required are simply not allocated. An example of a sample mesh for the transonic cavity flow presented in Section~\ref{sec:cavity} is displayed in Fig.~\ref{fig:sampMeshExample}. The sample mesh concept has deep ramifications for the compute- and memory-scalability of projection-based ROMs.
+Note, however, that for $\numSamps \ll \numDOF$, the solution to the hyper-reduced ROMs (Eqs.~\ref{eq:galerkinROMHR}, \ref{eq:lspgHRSolve}, and~\ref{eq:mplsvtHRSolve}) do not require access to the full $\numDOF$-dimensional state. Indeed, the low-dimensional latent state $\consVecCoef$, $\primVecCoef$ can be advanced in time using only sampled degrees of freedom and those auxiliary degrees of freedom required to evaluate $\sampMat \resFunc{\cdot}$. The full-dimensional state $\consVecRom$, $\primVecRom \inROne{\numDOF}$ can be reconstructed \textit{after} the hyper-reduced ROM has been computed. This motivates the idea of the \textit{sample mesh} concept discussed by Carlberg \textit{et al.}~\cite{Carlberg2013}: only those mesh elements and associated state variables that are strictly required to compute $\sampMat \resFunc{\cdot}$ must be allocated in memory. Those mesh elements, state variables, and additional variables which are not required are simply not allocated. An example of a sample mesh for the transonic cavity flow presented in Section~\ref{sec:cavity} is displayed in Fig.~\ref{fig:sampMeshExample}. The sample mesh concept has deep ramifications for the compute- and memory-scalability of projection-based ROMs.
 
 \begin{figure}
 	\centering
@@ -200,11 +254,11 @@ Note, however, that for $\numSamps \ll \numDOF$, the solution to the static hype
 	\caption{\label{fig:sampMeshExample}Example sample mesh for 2D transonic cavity flow, 1\% sampling. Colored elements indicate cells included in the sample mesh and gray elements indicate cells which are excluded.}
 \end{figure}
 
-The most obvious benefit of the sample mesh is, of course, a drastic decrease in memory allocation. If the sample mesh accounts for 1\% of the total mesh, the memory consumption of the hyper-reduced ROM should be roughly 1\% of that consumed by the unsampled ROM. For sufficiently small sample meshes, hyper-reduced ROMs may fit into desktop workstation or even laptop computer memory (usually 8-32 GB), eliminating the need for high-memory HPC node memory (usually 64-256 GB). This would thus enable the use of hyper-reduced ROMs by industrial engineers who do not have access to HPC resources.
+The most obvious benefit of the sample mesh is, of course, a drastic decrease in memory allocation. If the sample mesh accounts for 1\% of the total mesh, the memory consumption of the hyper-reduced ROM should be roughly 1\% of that consumed by the unsampled ROM. For sufficiently small sample meshes, hyper-reduced ROMs may fit into desktop workstation or even laptop computer memory (usually 8-32 GB), eliminating the need for high-capacity HPC node memory (usually 64-256 GB). This would thus enable the use of hyper-reduced ROMs by industrial engineers who do not have access to HPC resources.
 
-The sample mesh often has the additional benefit of improving \textit{load balancing}. In distributed-memory computing, load balancing refers to the equal distribution of the computational load between parallel processing units. This equal distribution is critical to reduce the amount of time in which processing units are idle, waiting to send or receive data from other units before they can proceed with the calculation. Minimizing the volume and/or frequency of data communications between units is of equal importance, as the latency in transfers between units is orders of magnitude greater than the latency between a computational unit and its on-chip cache or on-node memory. Mesh partitioning software such as METIS~\cite{metis} attempts to assign an equal number of mesh elements to each processing unit while minimizing the number of communications between units.
+The sample mesh often has the additional benefit of improving \textit{load balancing}. In distributed-memory computing, load balancing refers to the equal distribution of the computational load between parallel processing units. This equal distribution is critical to minimizing the amount of time in which processing units are idle, waiting to send or receive data from other units before they can proceed with the calculation. Minimizing the volume and/or frequency of data communications between units is of equal importance, as the latency in transfers between units is orders of magnitude greater than the latency between a computational unit and its on-chip cache or on-node memory. Mesh partitioning software such as METIS~\cite{metis} attempts to assign an equal number of mesh elements to each processing unit while minimizing the number of communications between units.
 
-In general, a sample mesh naturally incurs fewer inter-process communications simply by nature of containing fewer mesh elements. However, careful consideration of the interaction between sampled cells can assist the mesh partitioning software in finding improved load distributions. In the case of METIS, which treats the unstructured finite volume mesh as an unstructured graph, the cells are treated as graph nodes, and cells which share faces are connected by a graph edge. An edge represents the two-way exchange of information between two graph nodes (referred to as a \textit{point-to-point} communication), but in many instances no information exchange is required between cells in the sample mesh. The most obvious exclusion is to remove all graph nodes (cells) which are not sampled. Additionally, any graph edges between two gradient/vertex cells which do not originate from the same directly sampled cell can be eliminated. Figure~\ref{fig:edgeCuts} displays a scenario in which edges between cells which share a face may be eliminated, and another scenario in which they may not. Eliminating edges in 3D follows a similar process. Eliminating as many graph edges as possible helps METIS to compute an optimal load balancing, as it no longer needs to consider possible edge cuts where edges have been eliminated.
+In general, a sample mesh naturally incurs fewer inter-process communications simply by nature of containing fewer mesh elements. However, careful consideration of the interaction between sampled cells can assist the mesh partitioning software in finding improved load distributions. In the case of METIS, which treats the unstructured finite volume mesh as an unstructured graph, the cells are treated as graph nodes, and cells which share faces are connected by a graph edge. An edge represents the two-way exchange of information between two graph nodes (referred to as a \textit{point-to-point} communication), but in many instances no information exchange is required between cells in the sample mesh. The most obvious exclusion is to remove all graph nodes (cells) which are not sampled. Additionally, any graph edges between two gradient/vertex cells which do not originate from the same directly sampled cell can be eliminated. Figure~\ref{fig:edgeCuts} displays a scenario in which edges between cells which share a face may be eliminated, and another scenario in which they may not. Eliminating edges in three spatial dimensions follows a similar process. Eliminating as many graph edges as possible helps METIS to compute an optimal load balancing, as it no longer needs to consider possible edge cuts where edges have been eliminated.
 
 \begin{figure}
     \centering

@@ -1,10 +1,39 @@
 \section{Basis and Sampling Adaptation}\label{sec:adaptation}
 
+Up to this point, we have treated the trial bases $\consTrial$ and $\primTrial$, regression basis $\deimBasis$, and hyper-reduction samples $\sampMat$ as constant throughout the duration of the unsteady ROM simulation. Such treatment is normally sufficient to generate stable and accurate ROMs which are strictly \textit{reconstructive}, or those which are computed for the same initial conditions, parameterization, and duration as that of the FOM training simulations. The ROM simply seeks to reconstruct the unsteady solution from which the trial basis and sampling indices were computed. However, the ultimate goal of any data-driven method is to be \textit{predictive}, or provide accurate simulations for initial conditions, parameterizations, or durations which were not accounted for in the training data set. Reduced-order model methods such as balanced truncation or the reduced basis method have been demonstrated to exhibit excellent predictive capabilities for parameterized PDEs, but their success is generally restricted to elliptic or parabolic systems which are characterized by a very smooth solution manifold in parameter space. ROMs of general non-linear, hyperbolic systems, particularly those defined by a linear trial space, often exhibit abysmal predictive performance.
+
+As outlined in Section~\ref{subsec:nonlinManifold}, non-linear trial manifolds have been proposed as a potential solution to this problem. However, as will be discussed in Chapter~\ref{chap:TransientFlame}, the computational cost of training and implementing autoencoder non-linear manifold ROMs, and difficulties in applying effective hyper-reduction, often precludes their useful application. Alternatively, several methods have been proposed which \textit{adapt} a linear trial basis and hyper-reduction sampling configuration during the unsteady solution of the linear subspace ROM. In this thesis, we explore the AADEIM framework by Peherstorfer~\cite{Peherstorfer2015} and the recent one-step adaptation framework by Huang and Duraisamy~\cite{1}.
+
+{\color{red}TALK ABOUT OTHER ADAPTIVE METHODS, like dictionary methods}
+
+\subsection{AADEIM}
+
+The AADEIM framework, originally posed by Peherstorfer and Willcox~\cite{Peherstorfer2015} and later refined by Peherstorfer~\cite{Peherstorfer2020Adaptive,Peherstorfer2022}, is predicated on the formulation of the fully discrete FOM ODE as given in Eq., repeated here as
+%
+\begin{equation}
+	\consVec^{\timeIdx} = \rhsResFunc{\consVec^{\dummyIdx}, \timeVar}, \quad \dummyIdx \leq \timeIdx
+\end{equation}
+%
+AADEIM proposes adaptation of the trial basis $\consTrial$ as additive low-rank updates of the form
+%
+\begin{equation}
+	\consTrial^{\timeIdx+1} = \consTrial^{\timeIdx} + \adeimAlpha^{\timeIdx} \left[\adeimBeta^{\timeIdx}\right]^\top.
+\end{equation}
+%
+The matrices $\adeimAlpha \inRTwo{\numDOF}{\numRank}$ and $\adeimBeta \inRTwo{\numConsModes}{\numRank}$ compute the low-rank updated, where $\numRank$ indicates the rank of the update.
+%
+\begin{equation}
+	\adeimAlpha^{\timeIdx} \left[\adeimBeta^{\timeIdx}\right]^\top = \argmin{\adeimAlpha \inRTwo{\numDOF}{\numRank},\; \adeimBeta \inRTwo{\numConsModes}{\numRank}} \left\Vert \sampMat^{\timeIdx} \left[\left[\consTrial^{\timeIdx} + \adeimAlpha \adeimBeta^\top \right] \left[\sampMat^{\timeIdx} \consTrial^{\timeIdx}\right]^+ \sampMat^{\timeIdx} - \identMat \right] \resWindow^{\timeIdx} \right\Vert_F^2
+\end{equation}
+%
+
+\subsection{One-step Basis Adaptation}
+
 \begin{algorithm}
     \caption{Basis and sampling adaptation}\label{alg:adapt}
     \begin{algorithmic}
 
-    \STATE \texttt{init} $\leftarrow$ \texttt{istart} + \texttt{initWindow} - 1 
+    \STATE \texttt{init} $\leftarrow$ \texttt{istart} + \texttt{initWindow} - 1
     \FOR{$\timeIdx$ = \texttt{istart} to \texttt{iend}}
         \STATE $\consVecCoef^{\timeIdx} = \rhsApproxFunc{\consVecCoef^{\timeIdx-1}}$
         \STATE $\consVecRom^{\timeIdx}[\sampVec^{\timeIdx-1}] = \consTrial^{\timeIdx-1}[\sampVec^{\timeIdx-1}, \; :] \consVecCoef^{\timeIdx}$
@@ -21,7 +50,7 @@
             % compute full-order residual
             % calculate interpolation error
             % argsort error
-            % pick samples 
+            % pick samples
         \ELSE
             \STATE $\sampVec^{\timeIdx} \leftarrow \sampVec^{\timeIdx-1}$
         \ENDIF
@@ -30,8 +59,4 @@
     \end{algorithmic}
 \end{algorithm}
 
-\subsection{AADEIM}
-
-\subsection{One-step Basis Adaptation}
-
-\subsection{Alternative Adaptation Modifications}
+\subsection{Adaptation Modifications}

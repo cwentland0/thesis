@@ -44,31 +44,39 @@ Substituting this into Eq.~\ref{eq:projRomGen} arrives at
     \ode{\consVecCoef}{\timeVar} = \left[\jacobDecode^\top \resScaleInv \jacobDecode\right]^{-1} \jacobDecode^\top \resScaleInv \rhsFunc{\consVecRom, \; \timeVar}.
 \end{equation}
 %
-For a linear representation, the test basis is given simply by $\testBasisCons = \jacobDecode = \consScale \consTrial$. In the specific case of $\consScale = \resScale = \identMat$, recalling that the POD basis is orthonormal, this simplifies the ODE greatly to
+As detailed extensively by Lee and Carlberg~\cite{Lee2020}, when employing a non-linear manifold trial space, the solution of Eq.~\ref{eq:galerkinROMODE} with an implicit time integrator via Newton's method requires the calculation of the third-order tensor $\partial \jacobDecode / \partial \consVecCoef$. This is generally computational intractable, and neglecting this term amounts to a quasi-Newton method with an approximate residual Jacobian.
+
+For a linear representation, the test basis is simply $\testBasisCons = \consScale \consTrial$. In the specific case of $\consScale = \resScale = \identMat$, recalling that $\consTrial$ is orthonormal, this simplifies the ODE greatly to
 %
 \begin{equation}
     \ode{\consVecCoef}{\timeVar} = \consTrial^\top \rhsFunc{\consVecRom, \; \timeVar}.
 \end{equation}
 
-As discussed in Section~\ref{sec:dataDrivenModeling}, Galerkin projection ROMs have a long history of applications to simulations of fluid flows (e.g.,~\cite{Aubry1988,Cazemier1998,BuiThanh2007}). However, they have been observed to exhibit unacceptable stability and accuracy issues for more complex systems. Although the Galerkin PROM can be shown to be continuous-optimal in the sense that it minimizes the $\ell^2$ norm of the semi-discrete ROM residual~\cite{Carlberg2017}, in reality the fully-discrete ROM residual is of more practical concern. This fact motivates the least-squares Petrov--Galerkin projection method.
+As discussed in Section~\ref{sec:dataDrivenModeling}, Galerkin projection ROMs have a long history of applications to simulations of fluid flows (e.g.,~\cite{Aubry1988,Cazemier1998,BuiThanh2007}). However, they have been observed to exhibit unacceptable stability and accuracy issues for more complex systems. Although the Galerkin PROM can be shown to be continuous-optimal in the sense that it minimizes the $\ell^2$ norm of the semi-discrete ROM residual~\cite{Carlberg2017}, in reality the fully-discrete ROM residual is of more practical concern. Further, there is no expectation that the projection of the non-linear function $\rhsVec$ onto the tangent trial space is accurate, as the conservative state space and the space $\{\rhsFunc{\dummyVec} \vert \; \dummyVec \inROne{\numDOF} \}$ are entirely different. This fact motivates the least-squares Petrov--Galerkin projection method.
 
 \subsection{Least-squares Petrov--Galerkin Projection}
 
-The least-squares Petrov--Galerkin (LSPG) projection method, formulated and refined over time by Carlberg and coworkers~\cite{Carlberg2010,Carlberg2013,Carlberg2017}, is motivated by minimizing the \textit{fully-discrete ROM residual}, opposed to the semi-discrete residual minimized by Galerkin projection. The fully-discrete ROM residual $\funcMap{\resVec}{\ROne{\numConsModes}}{\ROne{\numDOF}}$ can be written as
+The least-squares Petrov--Galerkin (LSPG) projection method, formulated and refined by Carlberg and coworkers~\cite{Carlberg2010,Carlberg2013,Carlberg2017}, is motivated by minimizing the \textit{fully-discrete ROM residual}, opposed to the semi-discrete residual minimized by Galerkin projection. The fully-discrete ROM residual $\funcMap{\resVec}{\ROne{\numConsModes}}{\ROne{\numDOF}}$ is given as
 %
 \begin{equation}
-    \resFunc{\consVecCoef^\timeIdx} \defEq \jacobDecode^{\timeIdx} \consVecCoefDt^\timeIdx - \rhsFunc{\consVecRom^\timeIdx, \; \timeVar} = \zeroVec,
+    \resFunc{\consVecCoef^\timeIdx} \defEq \consVecRomDt^{\timeIdx} - \rhsFunc{\decoderFunc{\consVecCoef^{\timeIdx}}, \; \timeVar} = \zeroVec,
 \end{equation}
 %
-where $\consVecCoefDt$ is the temporal discretization operator (e.g. forward Euler, BDF) of the latent state at the $\timeIdx$th time step. Minimizing the scaled fully-discrete residual takes the form,
+where $\consVecRomDt$ is the temporal discretization operator (e.g. forward Euler, BDF) of the approximate state $\consVecRom = \decoderFunc{\consVecCoef}$ at the $\timeIdx$th time step. Minimizing the scaled fully-discrete residual takes the form,
 %
 \begin{equation}\label{eq:lspgLS}
     \consVecCoef^{\timeIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \resFunc{\dummyVec} \right\Vert_2,
 \end{equation}
 %
-where we now see the purpose of scaling the residual by $\resScaleInv$. This has the effect of ensuring that, with careful calculation of $\resScale$, the various elements of the residual contribute similarly to the solution of the non-linear least squares problem. This is particularly important for systems which exhibit extreme scale disparities (as is often the case in high-pressure reacting systems) and solvers which cannot readily be non-dimensionalized (such as compressible combustion solvers). This concept has been linked to ROM preconditioning by Lindsay \textit{et al.}~\cite{Lindsay2022}, who showed that even simple Jacobi preconditioners result in drastic improvements in ROM stability and accuracy relative to ROMs of the equivalent unscaled, dimensional system. We discuss this residual weighting process in more detail in Section~\ref{subsec:resWeight}.
+where we now see the purpose of scaling the residual by $\resScaleInv$. This has the effect of ensuring that, with careful calculation of $\resScale$, the various elements of the residual contribute similarly to the solution of the non-linear least squares problem. This is particularly important for systems which exhibit extreme scale disparities (as is often the case in high-pressure reacting systems) and solvers which cannot readily be non-dimensionalized (such as compressible combustion solvers). The residual weighting is sometimes couched in terms of a weighted norm, written alternatively as
+%
+\begin{equation}
+	\consVecCoef^{\timeIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resFunc{\dummyVec} \right\Vert_{\resScaleInv},
+\end{equation}
+%
+where the weighted norm indicates $\Vert\resVec\Vert_{\resScaleInv} \defEq \sqrt{\resVec^\top \resScale^{-2} \resVec}$. We eschew this notation for the sake of clarity. This concept has also been linked to ROM preconditioning by Lindsay \textit{et al.}~\cite{Lindsay2022}, who showed that even a simple Jacobi preconditioner results in drastic improvements in ROM stability and accuracy relative to ROMs of the equivalent unscaled, dimensional system. We discuss this residual weighting process in more detail in Section~\ref{subsec:resWeight}.
 
-The solution of Eq.~\ref{eq:lspgLS} is usually accomplished iteratively by linearizing the residual about the solution at the $\newtonIdx$th iteration, given by the process
+The solution of Eq.~\ref{eq:lspgLS} is usually accomplished iteratively by linearizing the residual at the $\timeIdx$th time step about the solution at the $\newtonIdx$th subiteration, given by the process
 %
 \begin{equation}\label{eq:lspgLSLin}
     \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \left(\jacobRes^{\newtonIdx} \dummyVec - \resFunc{\consVecCoef^{\newtonIdx}}\right) \right\Vert_2,
@@ -83,13 +91,13 @@ where the ROM residual Jacobian is defined as $\jacobRes^\newtonIdx \defEq \func
     \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \left[\jacobCons^{\newtonIdx} \jacobDecode \dummyVec - \resFunc{\consVecCoef^{\newtonIdx}}\right] \right\Vert_2.
 \end{equation}
 %
-Recalling that for a linear trial space, $\jacobDecode = \consScale \consTrial$, this simplifies to
+In the case of a linear trial space, $\jacobDecode = \consScale \consTrial$, and this simplifies to
 %
 \begin{equation}
     \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \left[\jacobCons^{\newtonIdx} \consScale \consTrial \dummyVec - \resFunc{\consVecCoef^{\newtonIdx}}\right] \right\Vert_2.
 \end{equation}
 %
-This particular form is useful inasmuch as the full-order residual Jacobian $\jacobCons$ is normally already available if a given FOM solver contains implicit time integration capabilities.
+This particular form is useful inasmuch as the full-order residual Jacobian $\jacobCons$ is normally already available if a given FOM solver contains implicit time integration capabilities. The form given in Eq.~\ref{eq:lspgLSLin} may simpler if automatic differentiation tools are available in the solver. In either case, upon sufficient convergence of the solution, the iterative solution is set to the solution at the next physical time step, i.e. $\consVecCoef^{\timeIdx} \leftarrow \consVecCoef^{\newtonIdx}$, and the process is repeated for proceeding time steps.
 
 The simplest means of computing the solution to Eq.~\ref{eq:lspgLSLin} is the formation of the normal equations, given by,
 %
@@ -125,6 +133,6 @@ where $\mathbf{Q} \defEq \left[\mathbf{Q}_{\numConsModes}, \; \mathbf{Q}_{\numDO
 %
 The upper triangular solve is significantly less expensive than the dense solve in Eq.~\ref{eq:lspgNormal}, and does not require the dense matrix-matrix multiplication $\left[\resScaleInv \jacobRes^{\newtonIdx}\right]^\top \resScaleInv \jacobRes^{\newtonIdx}$.
 
-Least-squares Petrov--Galerkin projection has been shown to generate vastly more accurate and stable ROMs compared to Galerkin ROMs. The first publications to outline LSPG computed a robust ROM simulation of a three-dimensional Ahmed body~\cite{Carlberg2010,Carlberg2013}, and later reported excellent results for transonic flow over a two-dimensional open cavity~\cite{Carlberg2017}. Continued work with LSPG has produced stable and accurate ROMs of three-dimensional separated flow over an airfoil at high angle-of-attack~\cite{Grimberg2020Hyper} and flow around a three-dimensional model of an F-16 aircraft~\cite{Grimberg2021}. The success of LSPG has been attributed to the fact that it minimizes the fully-discrete ROM residual~\cite{Grimberg2020} which is, in practice, the set of equations being solved by the ROM, whereas Galerkin projection minimizes the semi-discrete ROM residual.
+Least-squares Petrov--Galerkin projection has been shown to generate vastly more accurate and stable ROMs compared to Galerkin ROMs. The first publications to outline LSPG computed a robust ROM simulation of a three-dimensional Ahmed body~\cite{Carlberg2010,Carlberg2013}, and later reported excellent results for transonic flow over a two-dimensional open cavity~\cite{Carlberg2017}. Continued work with LSPG has produced stable and accurate ROMs of three-dimensional separated flow over an airfoil at high angle-of-attack~\cite{Grimberg2020Hyper} and flow around a three-dimensional model of an F-16 aircraft~\cite{Grimberg2021}. The success of LSPG has been attributed to the fact that it minimizes the fully-discrete ROM residual~\cite{Grimberg2020} which is, in practice, the set of equations being solved by the ROM, whereas Galerkin projection minimizes the semi-discrete ROM residual. This has the effect of avoiding the inaccurate projection of the non-linear terms $\rhsFunc{\cdot}$ onto the tangent trial space (as seen in Eq.~\ref{eq:galerkinROMODE}), and instead projects the fully-discrete residual via the space tangent to the fully-discrete residual (as seen in Eq.~\ref{eq:lspgNormal}).
 
 However, early applications of both Galerkin and LSPG ROMs to advection-dominated combustion problems indicated that both methods were insufficient in generating robust and accurate ROMs for such systems~\cite{Huang2018b,Huang2019}. Both methods frequently resulted in large deviations in the expected heat release, and often produced non-physical states such as negative temperature or pressure values. Limiter methods were proposed to prevent such non-physical phenomena~\cite{Huang2019,Huang2020}, but are generally considered \textit{ad hoc} solutions. Anecdotally, these issues were linked to persistently stiff ROMs which had difficulty converging due to the high degree of non-linearity induced by chemical source terms, which are extremely sensitive to small changes in chemical composition and temperature.

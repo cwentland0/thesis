@@ -129,6 +129,9 @@
 \newcommand{\resApproxFunc}[1]{\ensuremath{\mathbf{\widetilde{\resVar}}\left(#1\right)}}
 \newcommand{\resApproxFuncIter}[2]{\ensuremath{\mathbf{\widetilde{\resVar}}^{#1} \left(#2\right)}}
 \newcommand{\sampFunc}[1]{\ensuremath{\mathbf{s}\left(#1\right)}}
+\newcommand{\rhsResVec}{\ensuremath{\mathbf{\rhsVar}_{\resVec}}}
+\newcommand{\rhsResFunc}[1]{\ensuremath{\mathbf{\rhsVar}_{\resVec}\left(#1\right)}}
+\newcommand{\rhsResApproxFunc}[1]{\ensuremath{\mathbf{\widetilde{\rhsVar}}_{\resVec}\left(#1\right)}}
 
 % Jacobians
 \newcommand{\jacobMat}{\ensuremath{\mathbf{J}}}
@@ -162,6 +165,8 @@
 \newcommand{\testBasisPrim}{\ensuremath{\mathbf{\MakeUppercase{\testBasisVar}}_{\primVar}}}
 \newcommand{\testBasisFunc}[1]{\ensuremath{\testBasisMat}\left(#1\right)}
 \newcommand{\testBasisApproxFunc}[1]{\ensuremath{\widetilde{\testBasisMat}}\left(#1\right)}
+
+% DEIM
 \newcommand{\deimBasisVar}{\ensuremath{\Psi}}
 \newcommand{\deimBasisVec}{\ensuremath{\boldsymbol{\psi}}}
 \newcommand{\deimBasisMat}{\ensuremath{\mathbf{\MakeUppercase{\deimBasisVar}}}}
@@ -184,6 +189,13 @@
 \newcommand{\deimRegressorJacSmall}{\ensuremath{(\sampMat \deimBasisJac)^+ \sampMat}}
 \newcommand{\deimBasisREvecRow}{\ensuremath{\deimBasisVec'_+}}
 \newcommand{\deimBasisRowUpdate}{\ensuremath{\deimBasisVec_+}}
+
+% ADEIM
+\newcommand{\adeimAlpha}{\ensuremath{\boldsymbol{\alpha}}}
+\newcommand{\adeimBeta}{\ensuremath{\boldsymbol{\beta}}}
+\newcommand{\resWindow}{\ensuremath{\mathbf{\MakeUppercase{\resVar}}}}
+\newcommand{\numWindow}{w}
+\newcommand{\numRank}{z}
 
 % SVD
 \newcommand{\lEvecVar}{x}
