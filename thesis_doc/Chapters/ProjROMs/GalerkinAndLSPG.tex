@@ -46,9 +46,15 @@ Substituting this into Eq.~\ref{eq:projRomGen} arrives at
 %
 As detailed extensively by Lee and Carlberg~\cite{Lee2020}, when employing a non-linear manifold trial space, the solution of Eq.~\ref{eq:galerkinROMODE} with an implicit time integrator via Newton's method requires the calculation of the third-order tensor $\partial \jacobDecode / \partial \consVecCoef$. This is generally computational intractable, and neglecting this term amounts to a quasi-Newton method with an approximate residual Jacobian.
 
-For a linear representation, the test basis is simply $\testBasisCons = \consScale \consTrial$. In the specific case of $\consScale = \resScale = \identMat$, recalling that $\consTrial$ is orthonormal, this simplifies the ODE greatly to
+For a linear representation, the test basis is simply $\testBasisCons = \consScale \consTrial$, leading to
 %
-\begin{equation}
+\begin{equation}\label{eq:galerkinROMODELinear}
+	\ode{\consVecCoef}{\timeVar} = \left[\consTrial^\top \consScale \resScaleInv \consScale \consTrial\right]^{-1} \consTrial^\top \consScale \resScaleInv \rhsFunc{\consVecRom, \; \timeVar}.
+\end{equation}
+%
+In the specific case of $\consScale = \resScale = \identMat$, recalling that $\consTrial$ is orthonormal, this simplifies the ODE greatly to the more familiar Galerkin ROM form
+%
+\begin{equation}\label{eq:galerkinROMODELinearSimple}
     \ode{\consVecCoef}{\timeVar} = \consTrial^\top \rhsFunc{\consVecRom, \; \timeVar}.
 \end{equation}
 
@@ -88,16 +94,16 @@ The solution of Eq.~\ref{eq:lspgLS} is usually accomplished iteratively by linea
 where the ROM residual Jacobian is defined as $\jacobRes^\newtonIdx \defEq \funcMap{\partial \resFunc{\consVecCoef^\newtonIdx} / \partial \consVecCoef}{\ROne{\numConsModes}}{\RTwo{\numDOF}{\numConsModes}}$. The constant factor $\alpha \in \mathbb{R}_+$ is the step size, which is unity for all ROMs in this thesis; alternative methods may adapt $\alpha \defEq \alpha^{\timeIdx,\newtonIdx}$ to control iterative convergence. Further, the least-squares problem may be computed in terms of the full-order Jacobian $\jacobCons^{\newtonIdx} \defEq \funcMap{\partial \resFunc{\consVecCoef^\newtonIdx} / \partial \consVec}{\ROne{\numConsModes}}{\RTwo{\numDOF}{\numDOF}}$ via the chain rule,
 %
 \begin{equation}
-    \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \left[\jacobCons^{\newtonIdx} \jacobDecode \dummyVec - \resFunc{\consVecCoef^{\newtonIdx}}\right] \right\Vert_2.
+    \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \left[\jacobCons^{\newtonIdx} \jacobDecode^{\newtonIdx} \dummyVec - \resFunc{\consVecCoef^{\newtonIdx}}\right] \right\Vert_2,
 \end{equation}
 %
-In the case of a linear trial space, $\jacobDecode = \consScale \consTrial$, and this simplifies to
+where the decoder Jacobian $\jacobDecode^{\newtonIdx} \defEq \partial \decoderFunc{\consVecCoef^{\newtonIdx}} / \partial \consVecCoef$ is now specified in the time-discrete setting for non-linear trial manifolds. In the case of a linear trial space, $\jacobDecode^{\newtonIdx} = \consScale \consTrial$, and this simplifies to
 %
 \begin{equation}
     \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \left[\jacobCons^{\newtonIdx} \consScale \consTrial \dummyVec - \resFunc{\consVecCoef^{\newtonIdx}}\right] \right\Vert_2.
 \end{equation}
 %
-This particular form is useful inasmuch as the full-order residual Jacobian $\jacobCons$ is normally already available if a given FOM solver contains implicit time integration capabilities. The form given in Eq.~\ref{eq:lspgLSLin} may simpler if automatic differentiation tools are available in the solver. In either case, upon sufficient convergence of the solution, the iterative solution is set to the solution at the next physical time step, i.e. $\consVecCoef^{\timeIdx} \leftarrow \consVecCoef^{\newtonIdx}$, and the process is repeated for proceeding time steps.
+This particular form is useful inasmuch as the full-order residual Jacobian $\jacobCons^{\newtonIdx}$ is normally already available if a given FOM solver contains implicit time integration capabilities. The form given in Eq.~\ref{eq:lspgLSLin} may be simpler if automatic differentiation tools are available in the solver. In either case, upon sufficient convergence of the solution, the iterative solution is set to the solution at the next physical time step, i.e. $\consVecCoef^{\timeIdx} \leftarrow \consVecCoef^{\newtonIdx}$, and the process is repeated for proceeding time steps.
 
 The simplest means of computing the solution to Eq.~\ref{eq:lspgLSLin} is the formation of the normal equations, given by,
 %

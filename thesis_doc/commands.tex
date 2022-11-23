@@ -40,6 +40,7 @@
 \newcommand{\numResModes}{\ensuremath{N_r}}
 \newcommand{\numJacobModes}{\ensuremath{N_J}}
 \newcommand{\numSamps}{\ensuremath{N_s}}
+\newcommand{\numSampsFull}{\ensuremath{\widetilde{N}_s}}
 \newcommand{\numReacs}{\ensuremath{N_r}}
 \newcommand{\numSnaps}{\ensuremath{N_{\finalTime}}}
 \newcommand{\numProg}{\ensuremath{N_{\text{prog}}}}
@@ -47,6 +48,7 @@
 \newcommand{\numNNInput}{\ensuremath{N_{I}}}
 \newcommand{\numNNOutput}{\ensuremath{N_{O}}}
 \newcommand{\numVars}{\ensuremath{N_{v}}}
+\newcommand{\numCells}{\ensuremath{N_{e}}}
 
 % spatial coordinates
 \newcommand{\spatialVar}{\ensuremath{x}}
@@ -77,7 +79,8 @@
 \newcommand{\targetVec}{\ensuremath{\mathbf{\stateVar}_{\targetVar}}}
 
 % dummies
-\newcommand{\dummyVec}{\ensuremath{\mathbf{y}}}
+\newcommand{\dummyVecVar}{y}
+\newcommand{\dummyVec}{\ensuremath{\mathbf{\dummyVecVar}}}
 \newcommand{\dummyVecOne}{\ensuremath{\mathbf{a}}}
 \newcommand{\dummyVecTwo}{\ensuremath{\mathbf{b}}}
 \newcommand{\dummyIdx}{\ensuremath{i}}
@@ -116,12 +119,12 @@
 \newcommand{\viscFluxDirArg}[1]{\ensuremath{\mathbf{\fluxVar}_{\nu,#1}}}
 \newcommand{\sourceVar}{\ensuremath{s}}
 \newcommand{\sourceVec}{\mathbf{\sourceVar}}
-\newcommand{\rhsVar}{\ensuremath{f}}
+\newcommand{\rhsVar}{f}
 \newcommand{\rhsVec}{\ensuremath{\mathbf{\rhsVar}}}
 \newcommand{\rhsFunc}[1]{\ensuremath{\rhsVec \left(#1\right)}}
 \newcommand{\rhsApproxVec}{\ensuremath{\mathbf{\widetilde{\rhsVar}}}}
 \newcommand{\rhsApproxFunc}[1]{\ensuremath{\mathbf{\widetilde{\rhsVar}}\left(#1\right)}}
-\newcommand{\resVar}{\ensuremath{r}}
+\newcommand{\resVar}{r}
 \newcommand{\resVec}{\ensuremath{\mathbf{\resVar}}}
 \newcommand{\resFunc}[1]{\ensuremath{\resVec\left(#1\right)}}
 \newcommand{\resFuncIter}[2]{\ensuremath{\resVec^{#1}\left(#2\right)}}
@@ -132,6 +135,8 @@
 \newcommand{\rhsResVec}{\ensuremath{\mathbf{\rhsVar}_{\resVec}}}
 \newcommand{\rhsResFunc}[1]{\ensuremath{\mathbf{\rhsVar}_{\resVec}\left(#1\right)}}
 \newcommand{\rhsResApproxFunc}[1]{\ensuremath{\mathbf{\widetilde{\rhsVar}}_{\resVec}\left(#1\right)}}
+\newcommand{\rhsDataMat}{\ensuremath{\mathbf{\MakeUppercase{\rhsVar}}}}
+\newcommand{\resDataMat}{\ensuremath{\mathbf{\MakeUppercase{\resVar}}}}
 
 % Jacobians
 \newcommand{\jacobMat}{\ensuremath{\mathbf{J}}}
@@ -170,13 +175,16 @@
 \newcommand{\deimBasisVar}{\ensuremath{\Psi}}
 \newcommand{\deimBasisVec}{\ensuremath{\boldsymbol{\psi}}}
 \newcommand{\deimBasisMat}{\ensuremath{\mathbf{\MakeUppercase{\deimBasisVar}}}}
-\newcommand{\deimBasisRes}{\ensuremath{\deimBasisMat_{\resVar}}}
-\newcommand{\deimBasisJac}{\ensuremath{\deimBasisMat_{J}}}
 \newcommand{\deimBasisCons}{\ensuremath{\deimBasisMat_{\consVar}}}
 \newcommand{\deimBasisRhs}{\ensuremath{\deimBasisMat_{\rhsVar}}}
 \newcommand{\deimBasis}{\ensuremath{\deimBasisMat}}
+\newcommand{\deimBasisRes}{\ensuremath{\deimBasisMat_{\resVec}}}
+\newcommand{\deimBasisJacob}{\ensuremath{\deimBasisMat_{\jacobMat}}}
 \newcommand{\sampVec}{\ensuremath{\mathbf{s}}}
 \newcommand{\sampMat}{\ensuremath{\mathbf{S}}}
+\newcommand{\sampMatFull}{\ensuremath{\mathbf{\widetilde{S}}}}
+\newcommand{\sampSet}{\ensuremath{\MC{S}}}
+\newcommand{\sampSetFull}{\ensuremath{\MC{\widetilde{S}}}}
 \newcommand{\deimRegressorCons}{\ensuremath{\deimBasisCons (\sampMat \deimBasisCons)^+ \sampMat}}
 \newcommand{\deimRegressorConsSmall}{\ensuremath{(\sampMat \deimBasisCons)^+ \sampMat}}
 \newcommand{\deimRegressorConsTiny}{\ensuremath{(\sampMat \deimBasisCons)^+}}
@@ -190,7 +198,7 @@
 \newcommand{\deimBasisREvecRow}{\ensuremath{\deimBasisVec'_+}}
 \newcommand{\deimBasisRowUpdate}{\ensuremath{\deimBasisVec_+}}
 
-% ADEIM
+% AADEIM
 \newcommand{\adeimAlpha}{\ensuremath{\boldsymbol{\alpha}}}
 \newcommand{\adeimBeta}{\ensuremath{\boldsymbol{\beta}}}
 \newcommand{\resWindow}{\ensuremath{\mathbf{\MakeUppercase{\resVar}}}}
