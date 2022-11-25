@@ -52,11 +52,13 @@
 
 % spatial coordinates
 \newcommand{\spatialVar}{\ensuremath{x}}
+\newcommand{\spatialVec}{\ensuremath{\mathbf{x}}}
 \newcommand{\spatialVarDir}{\ensuremath{\spatialVar_{\spatialIdx}}}
 
 % state variables
 \newcommand{\stateVar}{q}
 \newcommand{\stateVec}{\ensuremath{\mathbf{\stateVar}}}
+\newcommand{\stateVecVar}{\ensuremath{\mathbf{\stateVar}_{\varIdx}}}
 \newcommand{\consVar}{c}
 \newcommand{\primVar}{p}
 \newcommand{\consVec}{\ensuremath{\mathbf{\stateVar}_{\consVar}}}
@@ -66,11 +68,20 @@
 \newcommand{\consFunc}[1]{\ensuremath{\consVec \left(#1\right)}}
 \newcommand{\consFuncUns}[1]{\ensuremath{\consVec' \left(#1\right)}}
 \newcommand{\primFuncUns}[1]{\ensuremath{\primVec' \left(#1\right)}}
+\newcommand{\stateVecCent}{\ensuremath{\mathbf{\overline{\stateVar}}}}
+\newcommand{\consValCentVar}{\ensuremath{\overline{\stateVar}_{\consVar,\varIdx}}}
 \newcommand{\consVecCent}{\ensuremath{\mathbf{\overline{\stateVar}}_{\consVar}}}
+\newcommand{\consVecCentVar}{\ensuremath{\mathbf{\overline{\stateVar}}_{\consVar,\varIdx}}}
 \newcommand{\primFunc}[1]{\ensuremath{\primVec \left(#1\right)}}
 \newcommand{\primVecCent}{\ensuremath{\mathbf{\overline{\stateVar}}_{\primVar}}}
-\newcommand{\consDataMatUns}{\ensuremath{\mathbf{\MakeUppercase{\stateVar}}_{\consVar}'}}
-\newcommand{\primDataMatUns}{\ensuremath{\mathbf{\MakeUppercase{\stateVar}}_{\primVar}'}}
+\newcommand{\primVecCentVar}{\ensuremath{\mathbf{\overline{\stateVar}}_{\primVar,\varIdx}}}
+\newcommand{\primValCentVar}{\ensuremath{\overline{\stateVar}_{\primVar,\varIdx}}}
+\newcommand{\consDataMat}{\ensuremath{\mathbf{\MakeUppercase{\stateVar}}_{\consVar}}}
+\newcommand{\consDataMatUns}{\ensuremath{\consDataMat'}}
+\newcommand{\consDataMatVar}{\ensuremath{\mathbf{\MakeUppercase{\stateVar}}_{\consVar,\varIdx}}}
+\newcommand{\primDataMat}{\ensuremath{\mathbf{\MakeUppercase{\stateVar}}_{\primVar}}}
+\newcommand{\primDataMatUns}{\ensuremath{\primDataMat'}}
+\newcommand{\primDataMatVar}{\ensuremath{\mathbf{\MakeUppercase{\stateVar}}_{\primVar,\varIdx}}}
 \newcommand{\rkVec}{\ensuremath{\mathbf{h}}}
 \newcommand{\consVecDt}{\ensuremath{\dott{\mathbf{\stateVar}}_{\consVar}}}
 \newcommand{\consVecRomDt}{\ensuremath{\dott{\mathbf{\widetilde{\stateVar}}}_{\consVar}}}
@@ -243,11 +254,23 @@
 \newcommand{\nnCostFunc}[1]{\ensuremath{\nnCost\left(#1\right)}}
 
 % scaling matrices
-\newcommand{\consScaleVar}{p}
-\newcommand{\consScale}{\ensuremath{\mathbf{\MakeUppercase{\consScaleVar}}}}
+% \newcommand{\consScaleVar}{p}
+% \newcommand{\consScale}{\ensuremath{\mathbf{\MakeUppercase{\consScaleVar}}}}
+% \newcommand{\consScaleInv}{\ensuremath{\consScale^{-1}}}
+% \newcommand{\primScaleVar}{h}
+% \newcommand{\primScale}{\ensuremath{\mathbf{\MakeUppercase{\primScaleVar}}}}
+% \newcommand{\primScaleInv}{\ensuremath{\primScale^{-1}}}
+\newcommand{\scaleVar}{h}
+\newcommand{\scaleMat}{\ensuremath{\mathbf{\MakeUppercase{\scaleVar}}}}
+\newcommand{\scaleVec}{\ensuremath{\mathbf{\scaleVar}}}
+\newcommand{\scaleMatInv}{\ensuremath{\scaleMat^{-1}}}
+\newcommand{\consScaleVar}[1]{\ensuremath{\scaleVar_{\consVar,#1}}}
+\newcommand{\consScaleVecVar}[1]{\ensuremath{\scaleVec_{\consVar,#1}}}
+\newcommand{\consScale}{\ensuremath{\scaleMat_{\consVar}}}
 \newcommand{\consScaleInv}{\ensuremath{\consScale^{-1}}}
-\newcommand{\primScaleVar}{h}
-\newcommand{\primScale}{\ensuremath{\mathbf{\MakeUppercase{\primScaleVar}}}}
+\newcommand{\primScaleVar}[1]{\ensuremath{\scaleVar_{\primVar,#1}}}
+\newcommand{\primScaleVecVar}[1]{\ensuremath{\scaleVec_{\primVar,#1}}}
+\newcommand{\primScale}{\ensuremath{\scaleMat_{\primVar}}}
 \newcommand{\primScaleInv}{\ensuremath{\primScale^{-1}}}
 \newcommand{\rhsScaleVar}{g}
 \newcommand{\rhsScale}{\ensuremath{\mathbf{\MakeUppercase{\rhsScaleVar}}}}

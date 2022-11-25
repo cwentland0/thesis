@@ -21,7 +21,7 @@
 \usepackage{comment}
 \usepackage{float}
 \usepackage{graphicx}
-\usepackage[hidelinks]{hyperref}
+\usepackage[hidelinks,breaklinks]{hyperref}
 \usepackage{longtable}
 \usepackage{booktabs}
 \usepackage{mathtools}
@@ -38,10 +38,14 @@
 \renewcommand{\nomname}{List of Symbols}
 
 \usepackage[
-    style=numeric,
-    sorting=none,
+	style=numeric,
+	sorting=none,
+	maxbibnames=99,
 ]{biblatex}
 \addbibresource{ref.bib}
+\setcounter{biburlnumpenalty}{9000}
+\setcounter{biburllcpenalty}{9000}
+\setcounter{biburlucpenalty}{9000}
 
 % \setlength{\parindent}{0pt}
 \pagestyle{plain}
@@ -52,16 +56,16 @@
 % Formatting table of contents %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
 
-    \titlecontents{chapter}[0em]{\addvspace{0em}}%
-        {\bfseries\@chapapp\ \thecontentslabel:\ }%
-        {\hspace{-0em}}{\hfill\contentspage}[\addvspace{0pt}]
+	\titlecontents{chapter}[0em]{\addvspace{0em}}%
+		{\bfseries\@chapapp\ \thecontentslabel:\ }%
+		{\hspace{-0em}}{\hfill\contentspage}[\addvspace{0pt}]
 
-    \def\__mychapapp{\protect\@chapapp}
-    \g@addto@macro\appendices{
-        \addtocontents{toc}{
-            \protect\renewcommand{\__mychapapp}{\appendixname}
-        }
-    }
+	\def\__mychapapp{\protect\@chapapp}
+	\g@addto@macro\appendices{
+		\addtocontents{toc}{
+			\protect\renewcommand{\__mychapapp}{\appendixname}
+		}
+	}
 
 \makeatother
 
@@ -76,35 +80,35 @@
 % List of appendices %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand\listappendixname{List of Appendices}
 \makeatletter
-    \newcommand\appchapter[1]{
-        \chapter{#1}
-        \addcontentsline{app}{chapter}{Appendix \thechapter: #1}
-    }
+	\newcommand\appchapter[1]{
+		\chapter{#1}
+		\addcontentsline{app}{chapter}{Appendix \thechapter: #1}
+	}
 
-    \newcommand\appsection[1]{
-        \section{#1}
-        \addcontentsline{app}{section}{\thesection\hspace{0.5em} #1}
-    }
+	\newcommand\appsection[1]{
+		\section{#1}
+		\addcontentsline{app}{section}{\thesection\hspace{0.5em} #1}
+	}
 
-    \newcommand\appsubsection[1]{
-        \subsection{#1}
-        \addcontentsline{app}{subsection}{\thesubsection\hspace{0.5em} #1}
-    }
+	\newcommand\appsubsection[1]{
+		\subsection{#1}
+		\addcontentsline{app}{subsection}{\thesubsection\hspace{0.5em} #1}
+	}
 
-    \newcommand\appsubsubsection[1]{
-        \subsubsection{#1}
-    }
+	\newcommand\appsubsubsection[1]{
+		\subsubsection{#1}
+	}
 
-    \newcommand\listofappendices{
-        \chapter*{\listappendixname}\@starttoc{app}
-    }
+	\newcommand\listofappendices{
+		\chapter*{\listappendixname}\@starttoc{app}
+	}
 \makeatother
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % Centering chapter titles %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
-    \titleformat{\chapter}[display]{\bfseries\centering}{\Large \@chapapp\ \thechapter}{1em}{\Large}
+	\titleformat{\chapter}[display]{\bfseries\centering}{\Large \@chapapp\ \thechapter}{1em}{\Large}
 \makeatother
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
