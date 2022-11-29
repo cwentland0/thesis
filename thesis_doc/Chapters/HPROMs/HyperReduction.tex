@@ -4,16 +4,16 @@
 Hyper-reduction via missing point estimation (MPE) was introduced by Astrid and coworkers, first for ROMs of a linear time-varying 2D heat conduction problem~\cite{Astrid2004} and later for a non-linear model of a glass melt feeder~\cite{Astrid2008}. It aims to reduce the computational expense of non-linear ROMs by sampling the governing semi-discrete ODE, followed by Galerkin projection of the ODE via the sampled trial basis. The first step can be written by applying the sampling operator to the full-order ROM ODE (Eq.~\ref{eq:romFullODEMod})
 %
 \begin{equation}
-    \resScaleInv \sampMat \left[\jacobDecode \ode{\consVecCoef}{\timeVar} - \sampMat \rhsFunc{\consVecRom, \; \timeVar}\right] = \zeroVec
+    \resScaleInv \sampMat \left[\jacobDecodeCons \ode{\consVecCoef}{\timeVar} - \sampMat \rhsFunc{\consVecRom, \; \timeVar}\right] = \zeroVec
 \end{equation}
 %
-Projection by $\sampMat \jacobDecode$ and rearranging terms leads to the equation
+Projection by $\sampMat \jacobDecodeCons$ and rearranging terms leads to the equation
 %
 \begin{equation}
-	\ode{\consVecCoef}{\timeVar} = \left[ \left[\sampMat \jacobDecode\right]^\top \resScaleInv \sampMat \jacobDecode\right]^{-1} \left[\sampMat \jacobDecode\right]^\top \resScaleInv \sampMat \rhsFunc{\consVecRom, \; \timeVar}
+	\ode{\consVecCoef}{\timeVar} = \left[ \left[\sampMat \jacobDecodeCons\right]^\top \resScaleInv \sampMat \jacobDecodeCons\right]^{-1} \left[\sampMat \jacobDecodeCons\right]^\top \resScaleInv \sampMat \rhsFunc{\consVecRom, \; \timeVar}
 \end{equation}
 %
-In this work, we only perform hyper-reduction for linear trial spaces, so substituting $\jacobDecode = \consScale \consTrial$ leads to the form
+In this work, we only perform hyper-reduction for linear trial spaces, so substituting $\jacobDecodeCons = \consScale \consTrial$ leads to the form
 %
 \begin{equation}\label{eq:mpeGalerkinLinear}
 	\ode{\consVecCoef}{\timeVar} = \left[ \left[\sampMat \consScale \consTrial \right]^\top \resScaleInv \sampMat \consScale \consTrial \right]^{-1} \left[\sampMat \consScale \consTrial \right]^\top \resScaleInv \sampMat \rhsFunc{\consVecRom, \; \timeVar}
@@ -44,7 +44,7 @@ By this process, the least-squares minimization problem must only be computed ba
 The solution of Eq.~\ref{eq:collocLSPG} by Gauss--Newton is given as
 %
 \begin{equation}\label{eq:collocLSPGGauss}
-    \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \sampMat \resScaleInv \left[\jacobRes^{\newtonIdx} \dummyVec - \resFunc{\consVecCoef^{\newtonIdx}}\right] \right\Vert_2,
+    \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \sampMat \resScaleInv \left[\jacobResCons^{\newtonIdx} \dummyVec - \resFunc{\consVecCoef^{\newtonIdx}}\right] \right\Vert_2,
 \end{equation}
 \begin{equation}
     \consVecCoef^{\newtonIdx + 1} = \consVecCoef^{\newtonIdx} + \alpha \left[ \delta \consVecCoef^{\newtonIdx} \right].
@@ -59,7 +59,7 @@ The normal equations for Eq.~\ref{eq:collocLSPGGauss} is thus given by
 where the test basis is defined as
 %
 \begin{equation}
-    \testBasisCons^\newtonIdx \defEq \sampMat \resScaleInv \jacobCons^\newtonIdx \jacobDecode^{\newtonIdx}.
+    \testBasisCons^\newtonIdx \defEq \sampMat \resScaleInv \jacobCons^\newtonIdx \jacobDecodeCons^{\newtonIdx}.
 \end{equation}
 %
 In the case of a linear trial space, the test basis simplifies to
@@ -169,7 +169,7 @@ The approximate non-linear term is then approximated as
 Substitution into Eq.~\ref{eq:benResidual} and projection by the tangent trial space leads to an alternative hyper-reduced Galerkin ROM of the form
 %
 \begin{equation}
-    \consVecCoef^{\timeIdx-1} - \left[\jacobDecode^\top \resScaleInv \jacobDecode\right]^{-1} \jacobDecode^\top \resScaleInv \rhsResApproxFunc{\consVecRom^{\timeIdx}} = \zeroVec.
+    \consVecCoef^{\timeIdx-1} - \left[\jacobDecodeCons^\top \resScaleInv \jacobDecodeCons\right]^{-1} \jacobDecodeCons^\top \resScaleInv \rhsResApproxFunc{\consVecRom^{\timeIdx}} = \zeroVec.
 \end{equation}
 %
 As mentioned previously, the above formulation is fairly non-standard and can be quite confusing for ROM practitioners. However, as will be discussed in Sections~\ref{subsec:regBasis}, this formulation lends itself to a simplification in which the regression basis $\deimBasis$ can be equated to the solution trial basis $\consTrial$ or $\primTrial$. Its use in adaptive bases and sampling is also outlined in Section~\ref{sec:adaptation}.
@@ -185,7 +185,7 @@ Applying gappy POD to LSPG and MP-LSVT ROMs takes an approach akin to that of co
 Solving Eq.~\ref{eq:lspgLSHR} by Gauss--Newton results in the iterative process
 %
 \begin{equation}\label{eq:lsgpLinHR}
-    \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resScaleInv \left[ \jacobRes^{\newtonIdx} \dummyVec - \resFunc{\consVecCoef^{\newtonIdx}}\right] \right\Vert_2,
+    \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resScaleInv \left[ \jacobResCons^{\newtonIdx} \dummyVec - \resFunc{\consVecCoef^{\newtonIdx}}\right] \right\Vert_2,
 \end{equation}
 \begin{equation}
     \consVecCoef^{\newtonIdx + 1} = \consVecCoef^{\newtonIdx} + \alpha \left[ \delta \consVecCoef^{\newtonIdx} \right].
@@ -200,13 +200,13 @@ Solution of Eq.~\ref{eq:lsgpLinHR} via the normal equations is again given by a 
 where the test basis is defined as
 %
 \begin{equation}\label{eq:lspgHRTest}
-    \testBasisCons^\newtonIdx \defEq \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resScaleInv \jacobCons^{\newtonIdx} \jacobDecode^{\newtonIdx}.
+    \testBasisCons^\newtonIdx \defEq \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resScaleInv \jacobCons^{\newtonIdx} \jacobDecodeCons^{\newtonIdx}.
 \end{equation}
 %
 The original work on GNAT~\cite{Carlberg2013} suggests an alternative formulation, whereby separate regression bases are computed for the residual and residual Jacobian, denoted by $\deimBasisRes \inRTwo{\numDOF}{\numResModes}$ and $\deimBasisJacob \inRTwo{\numDOF}{\numJacobModes}$ respectively. Equation~\ref{eq:lsgpLinHR} can thus be written as
 %
 \begin{equation}\label{eq:separateBasesGNAT}
-    \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \deimBasisJacob \left[ \sampMat \deimBasisJacob \right]^{+} \sampMat \resScaleInv \jacobRes^{\newtonIdx} \dummyVec - \deimBasisRes \left[ \sampMat \deimBasisRes \right]^{+} \sampMat \resScaleInv \resFunc{\consVecCoef^{\newtonIdx}} \right\Vert_2,
+    \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \deimBasisJacob \left[ \sampMat \deimBasisJacob \right]^{+} \sampMat \resScaleInv \jacobResCons^{\newtonIdx} \dummyVec - \deimBasisRes \left[ \sampMat \deimBasisRes \right]^{+} \sampMat \resScaleInv \resFunc{\consVecCoef^{\newtonIdx}} \right\Vert_2,
 \end{equation}
 %
 In practice, choosing $\deimBasisRes \neq \deimBasisJacob$ has not been observed to generate hyper-reduced ROMs which are drastically better than those generated by choosing $\deimBasisRes = \deimBasisJacob$. The added computational complexity makes it difficult to justify implementing Eq.~\ref{eq:separateBasesGNAT}. As such, for all results presented in this thesis we choose $\deimBasisRes = \deimBasisJacob$.
@@ -226,7 +226,7 @@ Solution via Gauss--Newton and the normal equations results in a similar hyper-r
 with the test basis
 %
 \begin{equation}\label{eq:mplsvtHRTest}
-    \testBasisPrim^\newtonIdx \defEq \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resScaleInv \jacobPrim^{\newtonIdx} \jacobDecode^{\newtonIdx}.
+    \testBasisPrim^\newtonIdx \defEq \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resScaleInv \jacobPrim^{\newtonIdx} \jacobDecodePrim^{\newtonIdx}.
 \end{equation}
 %
 Only $[ \sampMat \deimBasis ]^{+} \inRTwo{\numResModes}{\numSamps}$ is pre-computed offline. Although the matrix $\deimBasis [ \sampMat \deimBasis ]^{+} \inRTwo{\numDOF}{\numSamps}$ can be pre-computed offline, a matrix of $\numDOF \times \numSamps$ elements can be prohibitively large for high-dimensional systems and may not be possible to store in memory. Further, substitution of Eq.~\ref{eq:mplsvtHRTest} into Eq.~\ref{eq:mplsvtHRSolve} and recognizing the product $\deimBasis^\top \deimBasis = \identMat$ eliminates the need to precompute $\deimBasis [ \sampMat \deimBasis ]^{+}$.

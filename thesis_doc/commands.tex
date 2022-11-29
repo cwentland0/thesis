@@ -151,12 +151,17 @@
 
 % Jacobians
 \newcommand{\jacobMat}{\ensuremath{\mathbf{J}}}
-\newcommand{\jacobDecode}{\ensuremath{\jacobMat_{\decoderVar}}}
-\newcommand{\jacobRes}{\ensuremath{\jacobMat_{\resVar}}}
+\newcommand{\jacobDecodeCons}{\ensuremath{\jacobMat_{\decoderVar,\consVar}}}
+\newcommand{\jacobDecodePrim}{\ensuremath{\jacobMat_{\decoderVar,\primVar}}}
+\newcommand{\jacobMatCoef}{\ensuremath{\mathbf{\widehat{J}}}}
+\newcommand{\jacobResCons}{\ensuremath{\jacobMat_{\resVar,\consVar}}}
+\newcommand{\jacobResPrim}{\ensuremath{\jacobMat_{\resVar,\primVar}}}
+\newcommand{\jacobResCoefCons}{\ensuremath{\jacobMatCoef_{\resVar,\consVar}}}
+\newcommand{\jacobResCoefPrim}{\ensuremath{\jacobMatCoef_{\resVar,\primVar}}}
 \newcommand{\jacobCons}{\ensuremath{\jacobMat_{\consVar}}}
 \newcommand{\jacobPrim}{\ensuremath{\jacobMat_{\primVar}}}
-\newcommand{\jacobDecodeFunc}[1]{\ensuremath{\jacobMat_{\decoderVar} \left(#1\right)}}
-\newcommand{\jacobFunc}[1]{\ensuremath{\mathbf{J}\left(#1\right)}}
+\newcommand{\jacobDecodeConsFunc}[1]{\ensuremath{\jacobDecodeCons \left(#1\right)}}
+\newcommand{\jacobDecodePrimFunc}[1]{\ensuremath{\jacobDecodePrim \left(#1\right)}}
 \newcommand{\jacobApproxFunc}[1]{\ensuremath{\widetilde{\jacobMat}}\left(#1\right)}
 \newcommand{\gm}{\ensuremath{\boldsymbol{\Gamma}}}
 \newcommand{\gmFunc}[1]{\ensuremath{\gm \left(#1\right)}}
