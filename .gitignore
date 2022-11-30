@@ -20,3 +20,4 @@
 *.xml
 *.nlo
 *.dvi
+__pycache__/
