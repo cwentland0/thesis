@@ -1,12 +1,11 @@
-import os
 import sys
-sys.path.append("/home/chris/Research/Papers/Thesis_CW/thesis/thesis_doc/scripts")
+sys.path.append("/home/chris/Research/Papers/thesis/thesis_doc/scripts")
 
 from plotSlices import plotContourOrSlices
 
-data_dir = "/home/chris/Research/GEMS_runs/2d_cavity/FOM/SZLFiles"
+data_dir = "/home/chris/Research/Papers/thesis/thesis_doc/data/cavity/FOM/SZLFiles"
 snap_iter = 104000
-output_dir = "/home/chris/Research/Papers/Thesis_CW/thesis/thesis_doc/Chapters/CavityAndCVRC/Images/cavity"
+output_dir = "/home/chris/Research/Papers/thesis/thesis_doc/Chapters/CavityAndCVRC/Images/cavity"
 
 fig_width=1024
 
@@ -44,9 +43,13 @@ plotContourOrSlices(
 )
 
 # Pressure zoom
-zoom_lims = [[-0.07, 0.16], [-0.05, 0.055]]
-legend_spacing = 3
-legend_level_skip = 60
+frame_height = 7
+frame_width = 9
+# zoom_lims = [[-0.07, 0.16], [-0.05, 0.055]]
+zoom_lims = [[-0.01, 0.114], [-0.05, 0.04]]
+legend_position = (81, 50)
+legend_spacing = 2.5
+legend_level_skip = 30
 file_header = "pressure_example"
 
 plotContourOrSlices(
@@ -69,7 +72,7 @@ plotContourOrSlices(
     vertical_legend=True,
     legend_spacing=legend_spacing,
     legend_level_skip=legend_level_skip,
-    legend_position=(10, 43),
+    legend_position=legend_position,
     var_name_legend=var_name_legend,
 )
 
@@ -79,8 +82,8 @@ var_name_legend = "V (m/s)"
 colormap = "cmocean - balance"
 colormap_bounds = [-125, 125]
 num_colormap_levels = 101
-legend_spacing = 1.2
-legend_level_skip = 10
+legend_spacing = 2.5
+legend_level_skip = 25
 file_header = "y_vel_example"
 
 plotContourOrSlices(
@@ -99,6 +102,12 @@ plotContourOrSlices(
     fig_width=fig_width,
     zoom=True,
     zoom_lims=zoom_lims,
+    show_legend=True,
+    vertical_legend=True,
+    legend_spacing=legend_spacing,
+    legend_level_skip=legend_level_skip,
+    legend_position=legend_position,
+    var_name_legend=var_name_legend,
 )
 
 print("Finished")

@@ -1,7 +1,6 @@
 #!MC 1410
-$!VarSet |LFDSRN1| = 'Tecplot Subzone Data Loader'
-$!VarSet |LFDSVL1| = ''
-$!VarSet |LFDSFN1| = '"STANDARDSYNTAX" "1.0" "FILENAME_FILE" "/home/chris/Research/Papers/thesis/thesis_doc/data/cavity/FOM/SZLFiles/gemsma_cmb_104000.szplt"'
+$!VarSet |LFDSFN1| = '"../../../../../GEMS_runs/2d_cavity/ROMs/primitive/Spatial_Modes/DEIM/solutionModes/eigenvec/pinv_modes100_samp0.1/mesh_10/dfd_cell.plt"'
+$!VarSet |LFDSVL1| = '"x" "y" "ipart" "id" "iBlank"'
 $!SetStyleBase Factory
 $!CreateColorMap 
   Name = 'Sequential - Viridis'
@@ -218,11 +217,13 @@ $!Page
     }
 ### Frame Number 1 ###
 $!ReadDataSet  '|LFDSFN1|'
-  DataSetReader = '|LFDSRN1|'
-  VarNameList = '|LFDSVL1|'
   InitialPlotType = Cartesian2D
+  IncludeText = No
+  IncludeGeom = No
   ResetStyle = No
-$!RemoveVar |LFDSRN1|
+  AssignStrandIDs = Yes
+  VarLoadMode = ByName
+  VarNameList = '|LFDSVL1|'
 $!RemoveVar |LFDSVL1|
 $!RemoveVar |LFDSFN1|
 $!FrameLayout 
@@ -231,41 +232,69 @@ $!FrameLayout
   HeaderColor = Red
   XYPos
     {
-    X = -0.38346
+    X = -0.9015
     Y = 0.25
     }
-  Width = 10.985
-  Height = 5.2675
+  Width = 11.767
+  Height = 5.8844
 $!ThreeDAxis 
   AspectRatioLimit = 25
   BoxAspectRatioLimit = 25
 $!PlotType  = Cartesian2D
 $!FrameName  = 'Frame 001'
 $!GlobalTime 
-  SolutionTime = 0.10005
+  SolutionTime = 0
 $!ActiveFieldMaps  =  [1]
 $!GlobalRGB 
+  RedChannelVar = 3
+  GreenChannelVar = 3
+  BlueChannelVar = 3
   RangeMin = 0
   RangeMax = 1
 $!GlobalContour  1
-  ColorMapName = 'Sequential - Viridis'
+  Var = 5
+  ColorMapName = 'Doppler'
+  DefNumLevels = 14
   Legend
     {
-    Show = Yes
     XYPos
       {
       X = 95
       }
+    }
+  ColorCutoff
+    {
+    RangeMin = 0.75
+    RangeMax = 2.25
     }
   ColorMapFilter
     {
     ContinuousColor
       {
       CMin = 0
-      CMax = 1
+      CMax = 3
       }
     }
+$!ContourLevels New
+  ContourGroup = 1
+  RawData
+14
+0.25
+0.269230769231
+0.288461538462
+0.307692307692
+0.326923076923
+0.346153846154
+0.365384615385
+0.384615384615
+0.403846153846
+0.423076923077
+0.442307692308
+0.461538461538
+0.480769230769
+0.5
 $!GlobalContour  2
+  Var = 4
   ColorMapName = 'Sequential - Viridis'
   Legend
     {
@@ -283,7 +312,31 @@ $!GlobalContour  2
       CMax = 1
       }
     }
+$!ContourLevels New
+  ContourGroup = 2
+  RawData
+19
+5000
+10000
+15000
+20000
+25000
+30000
+35000
+40000
+45000
+50000
+55000
+60000
+65000
+70000
+75000
+80000
+85000
+90000
+95000
 $!GlobalContour  3
+  Var = 3
   ColorMapName = 'Sequential - Viridis'
   Legend
     {
@@ -301,7 +354,31 @@ $!GlobalContour  3
       CMax = 1
       }
     }
+$!ContourLevels New
+  ContourGroup = 3
+  RawData
+19
+1.5
+2
+2.5
+3
+3.5
+4
+4.5
+5
+5.5
+6
+6.5
+7
+7.5
+8
+8.5
+9
+9.5
+10
+10.5
 $!GlobalContour  4
+  Var = 3
   ColorMapName = 'Sequential - Viridis'
   Legend
     {
@@ -319,7 +396,31 @@ $!GlobalContour  4
       CMax = 1
       }
     }
+$!ContourLevels New
+  ContourGroup = 4
+  RawData
+19
+1.5
+2
+2.5
+3
+3.5
+4
+4.5
+5
+5.5
+6
+6.5
+7
+7.5
+8
+8.5
+9
+9.5
+10
+10.5
 $!GlobalContour  5
+  Var = 3
   ColorMapName = 'Sequential - Viridis'
   Legend
     {
@@ -337,7 +438,31 @@ $!GlobalContour  5
       CMax = 1
       }
     }
+$!ContourLevels New
+  ContourGroup = 5
+  RawData
+19
+1.5
+2
+2.5
+3
+3.5
+4
+4.5
+5
+5.5
+6
+6.5
+7
+7.5
+8
+8.5
+9
+9.5
+10
+10.5
 $!GlobalContour  6
+  Var = 3
   ColorMapName = 'Sequential - Viridis'
   Legend
     {
@@ -355,7 +480,31 @@ $!GlobalContour  6
       CMax = 1
       }
     }
+$!ContourLevels New
+  ContourGroup = 6
+  RawData
+19
+1.5
+2
+2.5
+3
+3.5
+4
+4.5
+5
+5.5
+6
+6.5
+7
+7.5
+8
+8.5
+9
+9.5
+10
+10.5
 $!GlobalContour  7
+  Var = 3
   ColorMapName = 'Sequential - Viridis'
   Legend
     {
@@ -373,7 +522,31 @@ $!GlobalContour  7
       CMax = 1
       }
     }
+$!ContourLevels New
+  ContourGroup = 7
+  RawData
+19
+1.5
+2
+2.5
+3
+3.5
+4
+4.5
+5
+5.5
+6
+6.5
+7
+7.5
+8
+8.5
+9
+9.5
+10
+10.5
 $!GlobalContour  8
+  Var = 3
   ColorMapName = 'Sequential - Viridis'
   Legend
     {
@@ -391,6 +564,29 @@ $!GlobalContour  8
       CMax = 1
       }
     }
+$!ContourLevels New
+  ContourGroup = 8
+  RawData
+19
+1.5
+2
+2.5
+3
+3.5
+4
+4.5
+5
+5.5
+6
+6.5
+7
+7.5
+8
+8.5
+9
+9.5
+10
+10.5
 $!GlobalScatter 
   Legend
     {
@@ -404,6 +600,17 @@ $!GlobalScatter
     Color = Red
     FillColor = Red
     }
+$!Blanking 
+  Value
+    {
+    Include = Yes
+    ValueBlankCellMode = PrimaryValue
+    Constraint 1
+      {
+      Include = Yes
+      VarA = 5
+      }
+    }
 $!FieldMap  [1]
   Mesh
     {
@@ -411,7 +618,7 @@ $!FieldMap  [1]
     }
   Contour
     {
-    ContourType = Flood
+    ContourType = PrimaryValue
     Color = Black
     UseLightingEffect = Yes
     }
@@ -431,7 +638,7 @@ $!FieldMap  [1]
     {
     Show = Yes
     Color = Black
-    LineThickness = 0.8
+    LineThickness = 0.1
     }
   Points
     {
@@ -470,61 +677,35 @@ $!TwoDAxis
 $!View Fit
 $!TwoDAxis 
   DepXToYRatio = 1
+  ViewportPosition
+    {
+    X1 = 5
+    Y1 = 5
+    X2 = 95
+    Y2 = 95
+    }
+  ViewportTopSnapTarget = 95
 $!TwoDAxis 
   XDetail
     {
-    RangeMin = -0.32206698562683955256
-    RangeMax = 0.4138483449715613105
-    AutoGrid = No
-    GRSpacing = 0.1
-    TickLabel
-      {
-      TextShape
-        {
-        FontFamily = 'Times'
-        IsBold = Yes
-        Height = 5
-        }
-      }
-    Title
-      {
-      TitleMode = UseText
-      Text = 'x (m)'
-      TextShape
-        {
-        FontFamily = 'Times'
-        Height = 7.6
-        }
-      }
+    ShowAxis = No
+    RangeMin = -295.52635892064313339
+    RangeMax = 394.35323056528181951
+    GRSpacing = 100
     }
 $!TwoDAxis 
   YDetail
     {
-    RangeMin = -0.06156801760615193686
-    RangeMax = 0.30072462755743589735
-    GRSpacing = 0.1
-    TickLabel
-      {
-      TextShape
-        {
-        FontFamily = 'Times'
-        IsBold = Yes
-        Height = 5
-        }
-      }
-    Title
-      {
-      TitleMode = UseText
-      Text = 'y (m)'
-      TextShape
-        {
-        FontFamily = 'Times'
-        Height = 7.6
-        }
-      }
+    ShowAxis = No
+    RangeMin = -46.501373140940067685
+    RangeMax = 298.50119499506013199
+    GRSpacing = 100
     }
 $!IsoSurfaceAttributes  1
   IsoSurfaceSelection = OneSpecificValue
+  Isovalue1 = 0.75
+  Isovalue2 = 1.5
+  Isovalue3 = 2.25
   Effects
     {
     LightingEffect = Gouraud
@@ -742,89 +923,10 @@ $!StreamAttributes
   MaxSteps = 10000
 $!FieldLayers 
   ShowMesh = No
+  ShowContour = Yes
+  ShowShade = Yes
 $!StreamtraceLayers 
   Show = No
-$!AttachText 
-  AnchorPos
-    {
-    X = 47.22737479254122
-    Y = 31.25996810207335
-    }
-  TextShape
-    {
-    FontFamily = 'Times'
-    Height = 23
-    }
-  Text = 'Wall'
-$!AttachText 
-  AnchorPos
-    {
-    X = 17.54856975495459
-    Y = 53.74800637958532
-    }
-  TextShape
-    {
-    FontFamily = 'Times'
-    Height = 23
-    }
-  Text = 'Inlet'
-$!AttachText 
-  AnchorPos
-    {
-    X = 67.92443620033191
-    Y = 51.99362041467306
-    }
-  TextShape
-    {
-    FontFamily = 'Times'
-    Height = 23
-    }
-  Text = 'Right Outlet'
-$!AttachText 
-  AnchorPos
-    {
-    X = 41.91643073318362
-    Y = 77.19298245614034
-    }
-  TextShape
-    {
-    FontFamily = 'Times'
-    Height = 23
-    }
-  Text = 'Upper Outlet'
-$!AttachGeom 
-  AnchorPos
-    {
-    X = 0.006881826621545351
-    Y = 0.04038004857706817
-    }
-  RawData
-1
-2
-0 0 
--0.0475139431655 -0.0275887418538 
-$!AttachGeom 
-  AnchorPos
-    {
-    X = 0.04290046234740669
-    Y = 0.02581932349640081
-    }
-  RawData
-1
-2
-0 0 
-0 -0.056710191071 
-$!AttachGeom 
-  AnchorPos
-    {
-    X = 0.07815274412165385
-    Y = 0.04114640252868262
-    }
-  RawData
-1
-2
-1.84048898344E-09 3.79959730346E-10 
-0.0429158210754 -0.0283550955355 
 $!FrameControl ActivateByNumber
   Frame = 1
 $!SetStyleBase Config

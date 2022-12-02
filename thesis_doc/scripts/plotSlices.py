@@ -55,6 +55,7 @@ def plotContourOrSlices(
         zoom_lims=None,
         fig_width=512,
         file_header=None,
+        scale_val=1.0,
     ):
 
 
@@ -88,6 +89,10 @@ def plotContourOrSlices(
         if num_dims == 3:
             if (slice_axis is None) or (slice_origin is None):
                 raise ValueError("Did not pass slice_axis or slice_origin")
+
+        # scale data, if requested
+        if scale_val != 1.0:
+            tec.data.operate.execute_equation('{' + var_name + '} = {' + var_name + '} * ' +str(scale_val), zones=tZone)
 
         # get some relevant objects
         tFrame = tec.active_frame()
@@ -172,10 +177,11 @@ def plotContourOrSlices(
             tLegend.show = False
 
         # miscellaneous
-        tPlot.axes.viewport.left = 5
-        tPlot.axes.viewport.right = 95
-        tPlot.axes.viewport.top = 95
-        tPlot.axes.viewport.bottom = 5
+        if num_dims == 2:
+            tPlot.axes.viewport.left = 5
+            tPlot.axes.viewport.right = 95
+            tPlot.axes.viewport.top = 95
+            tPlot.axes.viewport.bottom = 5
         if num_dims == 3:
             tPlot.axes.orientation_axis.show = False
         tec.macro.execute_command('$!WorkspaceView FitAllFrames')

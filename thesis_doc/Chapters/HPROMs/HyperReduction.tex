@@ -451,8 +451,12 @@ Note, however, that for $\numSamps \ll \numDOF$, the solution to the hyper-reduc
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.6\linewidth]{example-image-a}
-	\caption{\label{fig:sampMeshExample}Example sample mesh for 2D transonic cavity flow, 1\% sampling. Colored elements indicate cells included in the sample mesh and gray elements indicate cells which are excluded.}
+	\ifdefined\DRAFT
+		\includegraphics[width=0.75\linewidth]{example-image-a}
+	\else
+		\includegraphics[width=0.75\linewidth]{Chapters/HPROMs/Images/cavity_sample_mesh.png}
+	\fi
+	\caption{\label{fig:sampMeshExample}Example sample mesh for 2D transonic cavity flow, 1\% sampling. Red elements indicate cells included in the sample mesh.}
 \end{figure}
 
 The most obvious benefit of the sample mesh is, of course, a drastic decrease in memory allocation. If the sample mesh accounts for 1\% of the total mesh, the memory consumption of the hyper-reduced PROM should be roughly 1\% of that consumed by the unsampled PROM. For sufficiently small sample meshes, hyper-reduced ROMs may fit into desktop workstation or even laptop computer memory (usually 8-32 GB), eliminating the need for high-capacity HPC node memory (usually 64-256 GB). This would thus enable the use of hyper-reduced ROMs by industrial engineers who do not have access to HPC resources.
