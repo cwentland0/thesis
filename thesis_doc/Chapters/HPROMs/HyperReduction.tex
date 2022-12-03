@@ -273,7 +273,7 @@ At first glance, this formulation might suggests that we can use the solution tr
 	\consVec \approx \consVecCent + \consScale \consTrial \left[\sampMat \consScale \consTrial\right]^+ \sampMat \left[\consVec - \consVecCent\right]
 \end{equation}
 %
-which is not appropriate for use in Eq.~\ref{eq:benResidualApprox}. The governing system in Eq.~\ref{eq:benResidual} requires some manipulation to achieve a more appropriate gappy POD approximation.
+which is not appropriate for use in Eq.~\ref{eq:benResidualApprox}, especially in the context of time-variant $\consTrial$ or $\sampMat$ (adaptive methods). The governing system in Eq.~\ref{eq:benResidual} requires some manipulation to achieve a more appropriate gappy POD approximation.
 
 We will restrict discussion to linear multi-step methods, which normally take the general form
 %
@@ -307,16 +307,29 @@ Given the resulting equivalence
 %
 it now appears appropriate to approximate the lumped non-linear term as $\rhsResApproxFunc{\cdot} \defEq \deimBasis \left[\sampMat \deimBasis\right]^+ \sampMat \rhsResFunc{\cdot}$ by choosing $\deimBasis = \consScale \consTrial$. Although this derivation may seem tedious to make this distinction solely in the context of linear multistep time integrators, we recall that the attempt to naively set $\deimBasis = \consTrial$ for any time integration scheme resulted in the unusable gappy POD approximation given in Eq.~\ref{eq:stateGPODWrong}.
 
-The usefulness of this formulation lies solely in
-{\color{red} INCOMPLETE, NO JUSTIFICATION FOR MP-LSVT}
+{\color{red} I DO NOT HAVE A SIMILAR JUSTIFICATION FOR MP-LSVT}
 
 \subsection{Residual Approximation}
 %
-{\color{red} FINISH}
+For hyper-reduction of LSPG PROMs by GNAT, recall that the Gauss--Newton least-squares minimization problem takes the general form
+%
+\begin{equation}
+    \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \deimBasisJacob \left[ \sampMat \deimBasisJacob \right]^{+} \sampMat \resScaleInv \jacobResCoefCons^{\newtonIdx} \dummyVec - \deimBasisRes \left[ \sampMat \deimBasisRes \right]^{+} \sampMat \resScaleInv \resFunc{\consVecCoef^{\newtonIdx}} \right\Vert_2,
+\end{equation}
+%
+where the gappy POD regression via the bases $\deimBasisRes \inRTwo{\numDOF}{\numResModes}$ and $\deimBasisJacob \inRTwo{\numDOF}{\numJacobModes}$ seek approximate reconstructions of the residual vector $\resFunc{\consVecCoef^{\newtonIdx}}$ and the residual Jacobian $\jacobResCoefCons^{\newtonIdx} = \jacobResCons^{\newtonIdx} \consScale \consTrial$, respectively.
+
+The most obvious (albeit naive) approach for constructing $\deimBasisRes$ and $\deimBasisJacob$ is to compute POD bases from snapshots of $\resFunc{\consVecCoef}$ and $\jacobResCons^{\newtonIdx} \consScale \consTrial$. However, this approach begs two important questions. First, the residual and its Jacobian are defined for each Newton iteration; should snapshots from all iterations be saved, or one, or a few? Second, saving $\numConsModes$ snapshots for a given Newton iteration evaluation of $\jacobResCons^{\newtonIdx} \consScale \consTrial$ quickly causes storage consumption and offline POD basis calculation costs grow drastically. Is this added cost worthwhile?
+
+In the original work on LSPG and GNAT by Carlberg \textit{et al.}~\cite{Carlberg2010}, several methods are offered as possible approaches. Their ``Method 3'' indicates the most expensive extreme: compute $\deimBasisJacob$ from snapshots of $\resFunc{\consVecCoef^{\newtonIdx}}$ and $\jacobResCons^{\newtonIdx} \consScale \consTrial$ for \textit{every} Newton iteration, resulting in $\numConsModes + 1$ snapshots for every Newton iteration. This approach is quickly discarded as computationally infeasible, and no work since appears to use this method. As a step down, their ``Method 2'' computes $\deimBasisJacob$ from snapshots of the action of the residual Jacobian on the Gauss--Newton search direction, i.e. $\jacobResCons^{\newtonIdx} \consScale \consTrial \delta \consVecCoef^{\newtonIdx}$. This reduces the number of snapshots saved per Newton iteration to two, and is show to perform well in the original work by Carlberg \textit{et al.}~\cite{Carlberg2010} and later work by Bai and Wang~\cite{Bai2022}. The final and least computationally expensive method simply sets $\deimBasisJacob = \deimBasisRes$, where $\deimBasisRes$ is computed from Newton iteration snapshots of the residual vector $\resFunc{\cdot}$. This method is employed in later work by Carlberg \textit{et al.}~\cite{Carlberg2013,Carlberg2017}, and is implied to be used by Lauzon \textit{et al.}~\cite{Lauzon2022}.
+
+We note that the collection of snapshots for every Newton subiteration can quickly become computationally burdensome, often increasing storage requirements by more than ten times. Other works suggest that only a single snapshot should be saved, as in the work by Grimberg \textit{et al.}~\cite{Grimberg2021}. They choose to collect the residual of the first Newton iteration for a given time step, arguing that the residuals for a well-converged Gauss--Newton solve quickly approach machine precision and result in poorly-conditioned POD approximations. The first Newton iteration represents the largest magnitude residuals observed for a given time step, and encourages more accurate gappy POD approximations. Similar notions are explored by Tezaur \textit{et al.}~\cite{Tezaur2022} in the context of PROMs of steady-state aerodynamics problems, whereby they find that the approximation is most accurate when computed from residual Jacobians of converged solutions or pre-convergence residuals, while those computed from residuals of the converged solution perform relatively poorly.
+
+In this work, we will not examine GNAT PROMs using POD bases computed from the residual or residual Jacobian. It is the author's opinion (informed by many failed numerical experiments) that this approach requires far too much trial-and-error and manual tuning in selecting appropriate residual snapshots and computing (often poorly-conditioned) gappy POD approximations. Further, the dependence of the residual field convergence on the FOM sparse linear solver is not experienced in the low-dimensional dense PROM solve, and it is not clear if the resulting approximation is appropriate for the entire Gauss--Newton solve.
 
 \section{Sample Selection}\label{subsec:sampleSelect}
 
-As described above, the computation of the non-linear function regression basis $\deimBasis$ is somewhat nuanced, but is ultimately derived from the POD of a solution, non-linear terms, or fully-discrete residual snapshot matrix. Methods for selecting sampling indices, and hence the construction of the sampling operator $\sampMat$, are much more varied. The selection of $\numSamps > \numResModes$ samples which globally minimize the regression error (Eq.~\ref{eq:gappyPODErrorBound}) is a computationally-intractable problem. As such, almost all methods for selecting sampling points are \textit{greedy} methods, which iteratively select points based on some measure of local optimality at a given iteration. The ``best'' choice of greedy sampling method is an area of active research. Unfortunately, very few comparisons between sampling methods have been published, with the exception of the work by Peherstorfer \textit{et al.}~\cite{Peherstorfer2020}. Although extremely insightful, their exploration of hyper-reduced ROMs was limited to simple one-dimensional steady reaction-diffusion system. Results presented in Chapter~\ref{chap:CavityAndCVRC} seek to expand on their work by studying more complex, unsteady 2D and 3D multi-scale and multi-physics problems.
+As described above, the computation of the non-linear function regression basis $\deimBasis$ is somewhat nuanced, but is ultimately derived from the POD of a solution, non-linear terms, or fully-discrete residual (Jacobian) snapshot matrix. Methods for selecting sampling indices, and hence the construction of the sampling operator $\sampMat$, are much more varied. The selection of $\numSamps > \numResModes$ samples which globally minimize the regression error (Eq.~\ref{eq:gappyPODErrorBound}) is a computationally-intractable problem. As such, almost all methods for selecting sampling points are \textit{greedy} methods, which iteratively select points based on some measure of local optimality at a given iteration. The ``best'' choice of greedy sampling method is an area of active research. Unfortunately, very few comparisons between sampling methods have been published, with the exception of the work by Peherstorfer \textit{et al.}~\cite{Peherstorfer2020}. Although extremely insightful, their exploration of hyper-reduced ROMs was limited to simple one-dimensional steady reaction-diffusion system. Results presented in Chapter~\ref{chap:CavityAndCVRC} seek to expand on their work by studying more complex, unsteady 2D and 3D multi-scale and multi-physics problems.
 
 \subsection{Sampling Criteria}
 %
@@ -358,7 +371,6 @@ As an aside, prior work~\cite{Carlberg2013} has noted that it is important to sa
 
 \subsection{Sampling Algorithms}
 %
-{\color{red} ALGORITHMS}
 We now turn to specific algorithms for selecting samples for hyper-reduction. In this thesis, we study random sampling, DEIM-like sampling, eigenvector-based sampling, and determinant-based sampling, which are each detailed in turn.
 
 For all sampling algorithms, the first $\numResModes$ sampled degrees of freedom are selected by the \textit{QDEIM} procedure proposed by Drma\v{c} and Gugercin~\cite{Drmac2016}. In the context of DEIM ROMs ($\numResModes = \numSamps$), this has been shown to exhibit tighter error bounds on the resulting interpolant over the traditional DEIM greedy sampling procedure. As such, each algorithm described here must only select $\numSamps - \numResModes$ samples. This is largely done to maintain consistency between algorithms, some of which require an initial set of sampling points and others which do not.

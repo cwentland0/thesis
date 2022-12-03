@@ -29,34 +29,34 @@ The matrices $\adeimAlpha \inRTwo{\numDOF}{\numRank}$ and $\adeimBeta \inRTwo{\n
 
 \subsection{One-step Basis Adaptation}
 
-\begin{algorithm}
-    \caption{Basis and sampling adaptation}\label{alg:adapt}
-    \begin{algorithmic}
+% \begin{algorithm}
+%     \caption{Basis and sampling adaptation}\label{alg:adapt}
+%     \begin{algorithmic}
 
-    \STATE \texttt{init} $\leftarrow$ \texttt{istart} + \texttt{initWindow} - 1
-    \FOR{$\timeIdx$ = \texttt{istart} to \texttt{iend}}
-        \STATE $\consVecCoef^{\timeIdx} = \rhsApproxFunc{\consVecCoef^{\timeIdx-1}}$
-        \STATE $\consVecRom^{\timeIdx}[\sampVec^{\timeIdx-1}] = \consTrial^{\timeIdx-1}[\sampVec^{\timeIdx-1}, \; :] \consVecCoef^{\timeIdx}$
-        \IF{mod($\timeIdx$ - \texttt{init}, \texttt{basisInterval}) == 0 \AND $\timeIdx \ge$ \texttt{init}}
-            \STATE $\consVec^{\timeIdx}[\sampVec^{\timeIdx-1}] = \rhsFunc{\consVecRom^{\timeIdx - 1}[\sampVec^{\timeIdx-1}]}$
-            \STATE $\consTrial^{\timeIdx}$ = \texttt{OneStepAdapt}($\consVecCoef^{\timeIdx}, \; \consVecRom^{\timeIdx}[\sampVec^{\timeIdx-1}], \; \consVec^{\timeIdx}[\sampVec^{\timeIdx-1}]$)
-        \ELSE
-            \STATE $\consTrial^{\timeIdx} \leftarrow \consTrial^{\timeIdx - 1}$
-        \ENDIF
-        \IF{mod($n$ - \texttt{init}, \texttt{sampInterval}) == 0 \AND $\timeIdx \ge$ \texttt{init}}
-            \STATE $\consVec^{\timeIdx} = \rhsFunc{\consVecRom^{\timeIdx-1}}$
-            \STATE $\resVec^{\timeIdx} = \consVec^{\timeIdx} - \consTrial^{\timeIdx} [\consTrial^{\timeIdx}[\sampVec^{\timeIdx-1}, \; :]]^+ \consVec^{\timeIdx}[\sampVec^{\timeIdx - 1}]$
-            \STATE $\sampVec^{\timeIdx} = $ \texttt{argsort}$(\resVec^{\timeIdx})$[:\texttt{numSamps}]
-            % compute full-order residual
-            % calculate interpolation error
-            % argsort error
-            % pick samples
-        \ELSE
-            \STATE $\sampVec^{\timeIdx} \leftarrow \sampVec^{\timeIdx-1}$
-        \ENDIF
-    \ENDFOR
+%     \STATE \texttt{init} $\leftarrow$ \texttt{istart} + \texttt{initWindow} - 1
+%     \FOR{$\timeIdx$ = \texttt{istart} to \texttt{iend}}
+%         \STATE $\consVecCoef^{\timeIdx} = \rhsApproxFunc{\consVecCoef^{\timeIdx-1}}$
+%         \STATE $\consVecRom^{\timeIdx}[\sampVec^{\timeIdx-1}] = \consTrial^{\timeIdx-1}[\sampVec^{\timeIdx-1}, \; :] \consVecCoef^{\timeIdx}$
+%         \IF{mod($\timeIdx$ - \texttt{init}, \texttt{basisInterval}) == 0 \AND $\timeIdx \ge$ \texttt{init}}
+%             \STATE $\consVec^{\timeIdx}[\sampVec^{\timeIdx-1}] = \rhsFunc{\consVecRom^{\timeIdx - 1}[\sampVec^{\timeIdx-1}]}$
+%             \STATE $\consTrial^{\timeIdx}$ = \texttt{OneStepAdapt}($\consVecCoef^{\timeIdx}, \; \consVecRom^{\timeIdx}[\sampVec^{\timeIdx-1}], \; \consVec^{\timeIdx}[\sampVec^{\timeIdx-1}]$)
+%         \ELSE
+%             \STATE $\consTrial^{\timeIdx} \leftarrow \consTrial^{\timeIdx - 1}$
+%         \ENDIF
+%         \IF{mod($n$ - \texttt{init}, \texttt{sampInterval}) == 0 \AND $\timeIdx \ge$ \texttt{init}}
+%             \STATE $\consVec^{\timeIdx} = \rhsFunc{\consVecRom^{\timeIdx-1}}$
+%             \STATE $\resVec^{\timeIdx} = \consVec^{\timeIdx} - \consTrial^{\timeIdx} [\consTrial^{\timeIdx}[\sampVec^{\timeIdx-1}, \; :]]^+ \consVec^{\timeIdx}[\sampVec^{\timeIdx - 1}]$
+%             \STATE $\sampVec^{\timeIdx} = $ \texttt{argsort}$(\resVec^{\timeIdx})$[:\texttt{numSamps}]
+%             % compute full-order residual
+%             % calculate interpolation error
+%             % argsort error
+%             % pick samples
+%         \ELSE
+%             \STATE $\sampVec^{\timeIdx} \leftarrow \sampVec^{\timeIdx-1}$
+%         \ENDIF
+%     \ENDFOR
 
-    \end{algorithmic}
-\end{algorithm}
+%     \end{algorithmic}
+% \end{algorithm}
 
 \subsection{Adaptation Modifications}
