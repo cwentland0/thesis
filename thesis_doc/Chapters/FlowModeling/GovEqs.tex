@@ -251,7 +251,7 @@ The second transport property calculation method is drawn from the TRANSPORT lib
 %
 Again, the scalar terms $\fitScalTwoSpec{\dummyIdx}$, $\fitScalThreeSpec{\dummyIdx}$, and $\fitScalFourSpec{\dummyIdx}$, $\dummyIdx \in \{1 \hdots 4\}$ are empirically determined for the $\specIdx$th species (and pairing of the $\specIdx$th and $\specIdxTwo$th species for binary diffusion coefficients). The scaling factors convert dynamic viscosity from poise to kg/m-s, thermal conductivity from erg/s-cm-K to W/m-K, and mass diffusivity from cm$^2$/s to m$^2$/s. The diffusion of the $\specIdx$th species into the mixture is again computed by Eq.~\ref{eq:curtissAvgDiff}.
 
-\subsection{Subgrid-scale Models}
+\subsection{Subgrid-scale Models}\label{subsec:subgrid}
 
 In general, simulations of practical combustion systems will always be under-resolved due to the extremely small characteristic spatio-temporal scales of reacting flows. To reduce the high cost of resolving these scales, large eddy simulations filter the governing equations into resolved (large-scale) and unresolved (small-scale) motions. The resulting set of equations can be solved for the resolved scales, with the exception of the subgrid stresses. As the subgrid stresses cannot be directly computed (they are a function of unresolved motions), they must be modeled. A broader discussion of turbulence and subgrid scale modeling can be found in~\cite{Pope2000}; we discuss only topics relevant to results presented in this thesis.
 

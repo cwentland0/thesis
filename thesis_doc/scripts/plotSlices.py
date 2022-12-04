@@ -56,6 +56,7 @@ def plotContourOrSlices(
         fig_width=512,
         file_header=None,
         scale_val=1.0,
+        theta=0.0,
     ):
 
 
@@ -126,7 +127,7 @@ def plotContourOrSlices(
                 if (num_dims == 3):
                     tSlice.orientation = SliceSurface.ZPlanes
                     tPlot.view.psi = 0
-                    tPlot.view.theta = 0
+                    tPlot.view.theta = theta
                     tSlice.origin = (tSlice.origin[0], tSlice.origin[1], slice_origin)
                 else:
                     raise ValueError("No z-dimension for 2-dimensional data")
@@ -134,6 +135,7 @@ def plotContourOrSlices(
                 raise ValueError("Invalid slice_axis input")
 
             tSlice.edge.show = True
+            tSlice.edge.line_thickness = 0.2
         else:
             if axes_off:
                 tPlot.axes.x_axis.show = False
@@ -212,11 +214,12 @@ def plotContourOrSlices(
                 file_header = "fig_" + var_name
             else:
                 file_header = "fig_" + slice_axis + "_" + var_name
+        out_file = file_header
         if num_iters > 1:
-            file_header += "_" + str(iter_num)
+            out_file += "_" + str(iter_num)
         if zoom:
-            file_header += "_zoom"
+            out_file += "_zoom"
 
-        out_file = file_header + ".png"
+        out_file += ".png"
         out_file = os.path.join(output_dir,  out_file)
         tec.export.save_png(out_file, width=fig_width)

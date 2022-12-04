@@ -95,13 +95,8 @@ def plotPODResEnergy(
         axins.set_xlim(zoom_bounds_x)
         axins.set_ylim(zoom_bounds_y)
         axins.set_xticklabels('')
-        # axins.get_xaxis().set_ticks([])
         axins.set_yticklabels('')
-        # axins.get_yaxis().set_ticks([])
-        # axins.get_yaxis().set_ticks([], minor=True)
-        # axins.set_yticks([], minor=True)
         plt.setp(axins.get_yminorticklabels(), visible=False)
-        # axins.minorticks_off()
         ax.indicate_inset_zoom(axins, edgecolor='r', linewidth=2)
 
     if outfile is None:
