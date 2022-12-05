@@ -253,7 +253,7 @@ In this case, as with computing the solution trial bases, snapshots of the unste
 %
 The regression basis is then computed from the POD of the snapshot matrix $\rhsDataMat$, extracting the leading $\numResModes$ singular vectors as $\deimBasis$.
 
-\subsection{State Approximation}
+\subsection{State Approximation}\label{subsec:stateApproxDEIM}
 %
 The method of Peherstorfer~\cite{Peherstorfer2020Adaptive}, as previously discussed in Section~\ref{subsec:gappyPOD}, reframes the fully-discrete residual as
 %
@@ -373,10 +373,10 @@ As an aside, prior work~\cite{Carlberg2013} has noted that it is important to sa
 %
 We now turn to specific algorithms for selecting samples for hyper-reduction. In this thesis, we study random sampling, DEIM-like sampling, eigenvector-based sampling, and determinant-based sampling, which are each detailed in turn.
 
-For all sampling algorithms, the first $\numResModes$ sampled degrees of freedom are selected by the \textit{QDEIM} procedure proposed by Drma\v{c} and Gugercin~\cite{Drmac2016}. In the context of DEIM ROMs ($\numResModes = \numSamps$), this has been shown to exhibit tighter error bounds on the resulting interpolant over the traditional DEIM greedy sampling procedure. As such, each algorithm described here must only select $\numSamps - \numResModes$ samples. This is largely done to maintain consistency between algorithms, some of which require an initial set of sampling points and others which do not.
+For all sampling algorithms, the first $\numResModes$ sampled degrees of freedom are selected by the QDEIM procedure proposed by Drma\v{c} and Gugercin~\cite{Drmac2016}. In the context of DEIM ROMs ($\numResModes = \numSamps$), this has been shown to exhibit tighter error bounds on the resulting interpolant over the traditional DEIM greedy sampling procedure. As such, each algorithm described here must only select $\numSamps - \numResModes$ samples. This is largely done to maintain consistency between algorithms, some of which require an initial set of sampling points and others which do not.
 
 \begin{enumerate}
-	\item \textit{Random Sampling}: By far the simplest method, random sampling randomly selects $\numSamps - \numResModes$ degrees of freedom using a random shuffle \CC routine. Peherstorfer \textit{et al.}~\cite{Peherstorfer2020} provide probabilistic analyses to show that randomized oversampling limits the growth in regression error as the regression dimension $\numResModes$ is increased, even in the presence of additional system noise. Although this method has been observed to generate reasonable reconstructions of unsteady flow fields from a few samples, it often leads to poor results for hyper-reduced ROMs of reacting flows~\cite{Wentland2021}. However, the simplicity of this method can be appealing, as it requires no complex computations or distributed-memory software for large datasets. The computational burden of the offline cost is thus strictly limited to the precomputation of $\left[\sampMat \deimBasis\right]^+$, which is universal to all sampling methods presented here.
+	\item \textit{Random Sampling}: By far the simplest method, random sampling randomly selects $\numSamps - \numResModes$ degrees of freedom using a random shuffle \CC\ routine. Peherstorfer \textit{et al.}~\cite{Peherstorfer2020} provide probabilistic analyses to show that randomized oversampling limits the growth in regression error as the regression dimension $\numResModes$ is increased, even in the presence of additional system noise. Although this method has been observed to generate reasonable reconstructions of unsteady flow fields from a few samples, it often leads to poor results for hyper-reduced ROMs of reacting flows~\cite{Wentland2021}. However, the simplicity of this method can be appealing, as it requires no complex computations or distributed-memory software for large datasets. The computational burden of the offline cost is thus strictly limited to the precomputation of $\left[\sampMat \deimBasis\right]^+$, which is universal to all sampling methods presented here.
 
 	\item \textit{DEIM-like Sampling}: The DEIM-like sampling strategy follows the greedy sampling method originally proposed for DEIM~\cite{Chaturantabut2010} and extended to gappy POD by several researchers~\cite{Zhou2012,Carlberg2013}. This method seeks to minimize the error in computing the regression of the basis vectors $\deimBasisVec_{\dummyIdx}$ themselves. Following a greedy approach, at each sampling iteration $\greedyIdx$ the regression error is calculated by
 	%
@@ -414,7 +414,7 @@ For all sampling algorithms, the first $\numResModes$ sampled degrees of freedom
 
 	\item \textit{Determinant-based Sampling}:
 
-	The algorithm for determinant-based sampling is provided in Alg.~\ref{alg:eigSampling}.
+	The algorithm for determinant-based sampling is provided in Alg.~\ref{alg:detSampling}.
 
 \end{enumerate}
 
