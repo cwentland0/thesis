@@ -82,7 +82,7 @@ For this flow regime and cavity geometry, the formula of Rossiter~\cite{Rossiter
 	\end{minipage}
 \end{figure}
 
-The POD trial bases are computed from the 10,001 snapshots of the conservative and primitive variables. The POD residual energy decay is displayed in Fig.~\ref{fig:cavityPODEnergy}. Achieving 1\%, 0.1\%, and 0.01\% of the conservative state POD residual energy requires 20, 73, and 155 modes respectively. For the primitive state, this increases to 26, 92, and 180 modes respectively. Although this is a fairly simple problem without any reaction phenomena, this slow POD residual energy decay exhibits how traveling waves and large fluctuations in the unsteady flow field can require a large number of trial bases to approximate accurately. Indeed, the primitive and conservative variable projection error plots in Figs.~\ref{fig:cavityProjErrPrim} and~\ref{fig:cavityProjErrCons}, respectively, indicate that over 200 modes are required to decrease the projection error of the $y$-velocity and $y$-momentum below 1\% relative error.
+The POD trial bases are computed from the 10,001 snapshots of the conservative and primitive variables. The POD residual energy decay is displayed in Fig.~\ref{fig:cavityPODEnergy}. Achieving 1\%, 0.1\%, and 0.01\% of the conservative state POD residual energy requires 20, 73, and 155 modes respectively. For the primitive state, this increases to 26, 92, and 180 modes respectively. Although this is a fairly simple problem without any reaction phenomena, this slow POD residual energy decay exhibits how traveling waves and large fluctuations in the unsteady flow field can require a large number of trial bases to approximate accurately. Indeed, the primitive and conservative variable projection error plots in Fig.~\ref{fig:cavityProjErr} indicate that over 125 modes are required to decrease the projection error of the  and velocity and momentum magnitudes below 0.1\% relative error.
 
 \begin{figure}
 	\centering
@@ -101,7 +101,7 @@ The POD trial bases are computed from the 10,001 snapshots of the conservative a
 		\else
 			\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/projection_error_primitive.png}
 		\fi
-		\caption{\label{fig:cavityProjErrPrim}Primitive variables time-average projection error.}
+		\subcaption{Primitive variables.}
 	\end{minipage} \hspace{0.5em}
 	\begin{minipage}{0.48\linewidth}
 		\ifdefined\DRAFT
@@ -109,8 +109,30 @@ The POD trial bases are computed from the 10,001 snapshots of the conservative a
 		\else
 			\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/projection_error_conservative.png}
 		\fi
-		\caption{\label{fig:cavityProjErrCons}Conservative variables time-average projection error.}
+		\subcaption{Conservative variables.}
 	\end{minipage}
+	\caption{\label{fig:cavityProjErr}Time-average POD projection error.}
 \end{figure}
 
 \subsection{Unsampled PROMs}
+
+\begin{figure}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/unsampled/unsampled_dt1e-6_Average_errorRaw.png}
+		\subcaption{$\dt = \dtFOM$}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/unsampled/unsampled_dt2p5e-6_Average_errorRaw.png}
+		\subcaption{$\dt = 2.5 \times \dtFOM$}
+	\end{minipage}
+
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/unsampled/unsampled_dt5e-6_Average_errorRaw.png}
+		\subcaption{$\dt = 5 \times \dtFOM$}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/unsampled/unsampled_dt1e-5_Average_errorRaw.png}
+		\subcaption{$\dt = 10 \times \dtFOM$}
+	\end{minipage}
+	\caption{\label{fig:cavityUnsampledROMErrVsModes}2D cavity unsampled ROM time-average error, various $\dt$}
+\end{figure}
