@@ -9,7 +9,7 @@ from dataExtractionFuncs import extractSolverWalltimeStats, extractIntError
 mpl.rc('font', family='serif',size='10')
 mpl.rc('axes', labelsize='x-large')
 mpl.rc('figure', facecolor='w')
-mpl.rc('text', usetex=False)
+mpl.rc('text', usetex=True)
 mpl.rc('text.latex',preamble=r'\usepackage{amsmath}')
 
 def plotErrorAvgVs(
@@ -32,17 +32,21 @@ def plotErrorAvgVs(
     vs_raw=True,
     time_type=2,
     plot_walltime=False,
-    vel_mag=False,
+    mags=False,
     calc_time_ratio=True,
     xscale="linear",
     yscale="linear",
     ybounds=None,
-    ybounds_wall=None,
+    xbounds=None,
+    xbounds_wall=None,
     xticks=None,
     plot_legend=False,
     legend_labels=None,
     legend_loc="best",
     legend_fontsize=12,
+    marker_types=['o']*50,
+    line_styles=['-']*50,
+    marker_sizes=[6]*50,
 ):
 
     if plot_legend:
@@ -111,15 +115,15 @@ def plotErrorAvgVs(
         raise ValueError("Invalid choice for plot_type: "+str(plot_type))
     out_file += ".png"
 
-    artistList = [None]*numLines
+    artist_list = []
 
     # loop over lines in plot
     for lineIdx in range(numLines):
 
         # average, min, max, std
         if (plot_type > 0):
-            plotTimeVals = np.zeros((num_points_list[lineIdx],3,4), dtype=np.float64)
-            plotTimeValsWall = np.zeros((num_points_list[lineIdx],3,4), dtype=np.float64)
+            plot_time_vals = np.zeros((num_points_list[lineIdx],3,4), dtype=np.float64)
+            plot_time_vals_wall = np.zeros((num_points_list[lineIdx],3,4), dtype=np.float64)
 
         # error values at each
         if ((plot_type == 0) or (plot_type == 2) or (plot_type)):
@@ -132,31 +136,31 @@ def plotErrorAvgVs(
 
             if (plot_type > 0):
                 # load timing data
-                timeFilePath = os.path.join(setDir, "wall_time.dat")
-                plotTimeValsWall[setIdx, :, :] = extractSolverWalltimeStats(timeFilePath)
+                timeFilePath = os.path.join(setDir, "../wall_time.dat")
+                plot_time_vals_wall[setIdx, :, :] = extractSolverWalltimeStats(timeFilePath)
 
                 # scale timings by number of cores
-                plotTimeVals[setIdx, :, :] = plotTimeValsWall[setIdx,:,:]*cores_list[lineIdx][setIdx]
+                plot_time_vals[setIdx, :, :] = plot_time_vals_wall[setIdx,:,:]*cores_list[lineIdx][setIdx]
 
             if ((plot_type == 0) or (plot_type == 2) or (plot_type == 3)):
                 # load error data
-                plotErrVals[setIdx] = extractIntError(setDir, iter_start_list[lineIdx][setIdx], iter_end_list[lineIdx][setIdx], iter_skip_list[lineIdx][setIdx], plot_var, vs_raw, vel_mag)[0]
+                plotErrVals[setIdx] = extractIntError(setDir, iter_start_list[lineIdx][setIdx], iter_end_list[lineIdx][setIdx], iter_skip_list[lineIdx][setIdx], plot_var, vs_raw, mags)[0]
 
 
         if (plot_type > 0):
 
             # get the required metrics
             if (time_type == 0):
-                plotTimeMetric = plotTimeVals[:,0,:]
-                plotTimeMetricWall = plotTimeValsWall[:,0,:]
+                plotTimeMetric = plot_time_vals[:,0,:]
+                plotTimeMetricWall = plot_time_vals_wall[:,0,:]
                 plot_time_fom_wall = fom_cpu_hours_calc[0]
             elif (time_type == 1):
-                plotTimeMetric = plotTimeVals[:,1,:]
-                plotTimeMetricWall = plotTimeValsWall[:,1,:]
+                plotTimeMetric = plot_time_vals[:,1,:]
+                plotTimeMetricWall = plot_time_vals_wall[:,1,:]
                 plot_time_fom_wall = fom_cpu_hours_mpi[0]
             elif (time_type == 2):
-                plotTimeMetric = plotTimeVals[:,0,:] + plotTimeVals[:,1,:]
-                plotTimeMetricWall = plotTimeValsWall[:,0,:] + plotTimeValsWall[:,1,:]
+                plotTimeMetric = plot_time_vals[:,0,:] + plot_time_vals[:,1,:]
+                plotTimeMetricWall = plot_time_vals_wall[:,0,:] + plot_time_vals_wall[:,1,:]
                 plot_time_fom_wall = fom_cpu_hours_calc[0] + fom_cpu_hours_mpi[0]
             else:
                 raise ValueError("Invalid entry for time_type: "+str(time_type))
@@ -196,66 +200,72 @@ def plotErrorAvgVs(
 
             # some generalizations for Pareto fronts
             if (plot_type == 3):
-                yerr1 = None
-                yerr2 = None
                 xVals = avgTimeVals
                 yVals = plotErrVals
 
             else:
-                xerr1 = None
-                xerr2 = None
                 xVals = xvals_list[lineIdx]
                 yVals = avgTimeVals
 
-            minMaxBarWidth = 1
-            stdBarWidth = 3
+            # deal with large errors and NaN
+            yVals[yVals > 1.0] = 1.0
+            nan_mask = np.isfinite(yVals)
+
             # no bars
-            artistList[lineIdx], = axTime.plot(xVals, yVals, color=plot_colors[lineIdx],
-                marker="o", linestyle=axTimeStyle)
+            artistTemp, = axTime.plot(xVals[nan_mask], yVals[nan_mask], color=plot_colors[lineIdx],
+                marker=marker_types[lineIdx], linestyle=line_styles[lineIdx], markersize=marker_sizes[lineIdx])
+            artist_list.append(artistTemp)
 
             if plot_walltime:
+                if (num_points_list[lineIdx] == 1):
+                    marker_types[lineIdx] = 10
                 artistTemp, = axTimeWall.plot(xVals, avgTimeValsWall, color=plot_colors[lineIdx],
-                    marker='o', linestyle='--')
-
+                    marker=marker_types[lineIdx], linestyle=line_styles[lineIdx], markersize=marker_sizes[lineIdx])
+                if (num_points_list[lineIdx] == 1):
+                    artist_list.append(artistTemp)
 
             axTime.set_xscale(xscale)
             axTime.set_yscale(yscale)
             if (plot_type == 3):
-                axTime.set_xlabel(r"Speedup Ratio")
+                if plot_walltime:
+                    axTime.set_xlabel(r"Speedup Ratio (Core Time)")
+                else:
+                    axTime.set_xlabel(r"Speedup Ratio")
                 if (plot_var == "Average"):
                     axTime.set_ylabel(r'Average $\ell^2$ Error')
                 else:
                     axTime.set_ylabel(r'Field $\ell^2$ Error')
                 if ybounds is not None:
-                    axTime.set_ylim(ybounds[0])
+                    axTime.set_ylim(ybounds)
             else:
                 axTime.set_xlabel(xlabel)
                 if (plot_type == 2):
                     axTime.set_ylabel(r"Runtime Ratio (--)")
                     if ybounds is not None:
-                        axTime.set_ylim(ybounds[-1])
+                        axTime.set_ylim(ybounds)
                 else:
                     if plot_walltime:
                         axTime.set_ylabel(r"Speedup Ratio (Core Time)")
                     else:
                         axTime.set_ylabel(r"Speedup Ratio")
                     if ybounds is not None:
-                        axTime.set_ylim(ybounds[0])
+                        axTime.set_ylim(ybounds)
 
+            if xbounds is not None:
+                axTime.set_xlim(xbounds)
             if xticks is not None:
                 axTime.xaxis.set_ticks(xticks)
 
             if plot_walltime:
-                axTimeWall.set_ylabel("Speedup Ratio (Wall Time)")
-                axTimeWall.set_yscale(yscale)
-                if ybounds_wall is not None:
-                    axTimeWall.set_ylim(ybounds_wall)
+                axTimeWall.set_xlabel("Speedup Ratio (Wall Time)")
+                axTimeWall.set_xscale(xscale)
+                axTimeWall.set_xlim(xbounds_wall)
 
 
         if ((plot_type == 0) or (plot_type == 2)):
             artist, = axErr.plot(xvals_list[lineIdx],plotErrVals,color=plot_colors[lineIdx], marker='o',linestyle=axErrStyle)
             if (plot_type == 0):
-                artistList[lineIdx] = artist
+                artist_list.append(artist)
                 axErr.set_xscale(xscale)
                 axErr.set_xlabel(xlabel)
                 if xticks is not None:
@@ -270,14 +280,16 @@ def plotErrorAvgVs(
                 else:
                     axErr.set_ylabel(r'Field $\ell^2$ Error ($\mathbf{-}$)')
             axErr.set_yscale('log')
+            if xbounds is not None:
+                axErr.set_xlim(xbounds)
             if ybounds is not None:
-                axErr.set_ylim(ybounds[0])
+                axErr.set_ylim(ybounds)
 
     if plot_legend:
         if (plot_type > 0):
-            axTime.legend(artistList, legend_labels, loc=legend_loc, framealpha=0.8, prop={'size':legend_fontsize})
+            axTime.legend(artist_list, legend_labels, loc=legend_loc, framealpha=0.8, prop={'size':legend_fontsize})
         else:
-            axErr.legend(artistList, legend_labels, loc=legend_loc, framealpha=0.8, prop={'size':legend_fontsize})
+            axErr.legend(artist_list, legend_labels, loc=legend_loc, framealpha=0.8, prop={'size':legend_fontsize})
 
 
     plt.tight_layout()

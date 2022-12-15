@@ -105,14 +105,15 @@ def extractCommsFromASCIIMesh(meshDir, meshName, numParts):
     return sendNum
 
 # get integrated error values
-def extractIntError(caseDir, iterStart, iterEnd, iterSkip, varNames, vsRaw=True, velMag=True):
+def extractIntError(caseDir, iterStart, iterEnd, iterSkip, varNames, vsRaw=True, mags=False):
 
-    errFileName = "errVals_int_"+str(iterStart)+"_"+str(iterEnd)+"_"+str(iterSkip)
+    # l2_rel_sum_err_vs_raw_2501_2750_1.dat
+    errFileName = "l2_rel_sum_err_vs"
     if vsRaw:
         errFileName += "_raw"
-    if velMag:
-        errFileName += "_velMag"
-    errFileName += ".dat"
+    if mags:
+        errFileName += "_mag"
+    errFileName += "_" + str(iterStart) + "_" + str(iterEnd) + "_" + str(iterSkip) + ".dat"
     fileIn = os.path.join(caseDir, errFileName)
 
     # if single string, convert to list
@@ -124,7 +125,7 @@ def extractIntError(caseDir, iterStart, iterEnd, iterSkip, varNames, vsRaw=True,
 
     errVals = np.zeros(len(varNames), dtype=np.float64)
     for idx in range(errDataMat.shape[0]):
-        varName = errDataMat[idx][0].decode('UTF-8')
+        varName = errDataMat[idx][0].decode('UTF-8')[:-1]
         if varName in varNames:
             insertIdx = varNames.index(varName)
             errVals[insertIdx] = errDataMat[idx][1]

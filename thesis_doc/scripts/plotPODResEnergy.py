@@ -8,7 +8,7 @@ from matplotlib.ticker import FixedFormatter
 mpl.rc('font', family='serif',size='10')
 mpl.rc('axes', labelsize='x-large')
 mpl.rc('figure', facecolor='w')
-mpl.rc('text', usetex=False)
+mpl.rc('text', usetex=True)
 mpl.rc('text.latex',preamble=r'\usepackage{amsmath}')
 
 def plotPODResEnergy(
