@@ -10,7 +10,7 @@ Throughout this thesis, we will work with datasets measuring hundreds of gigabyt
 
 The Parallel Linear Algebra Tool FOr Reduced Modeling (PLATFORM)~\cite{PLATFORM}, developed by Nicholas Arnold-Medabalimi at the University of Michigan, provides such a framework for handling distributed-memory, scalable I/O and linear algebra. The toolbox provides general interfaces to efficiently load large datasets into node memory, distributed among processes in optimal block-cyclic ordering. The datasets can then be processed using functions from the PBLAS/ScaLAPACK libraries, such as the rank-revealing QR factorization (PDGEQPF), least-squares solve (PDGELS), or SVD (PDGESVD). Abstraction of the distributed matrices allow for the rapid prototyping and deployment of new algorithms.
 
-PLATFORM has already been successfully employed for computing decompositions and PROM preprocessing operations for large datasets~\cite{ArnoldMedabalimi2020,Harvazinski2020,Wentland2021,Pan2021,ArnoldMedabalimi2022}. All offline algorithms presented here are implemented using PLATFORM. Performance metrics for the datasets examined in this paper are not included, but benchmarks for other large datasets and detailed explanations of the inner workings of PLATFORM are given by Arnold-Medabalimi \textit{et al.}~\cite{PLATFORM}.
+PLATFORM has already been successfully employed for computing decompositions and PROM preprocessing operations for large datasets~\cite{Wentland2021,ArnoldMedabalimi2020,Harvazinski2020,Pan2021,ArnoldMedabalimi2022}. All offline algorithms presented here are implemented using PLATFORM. Performance metrics for the datasets examined in this paper are not included, but benchmarks for other large datasets and detailed explanations of the inner workings of PLATFORM are given by Arnold-Medabalimi \textit{et al.}~\cite{PLATFORM}.
 
 \subsection{POD Energy}
 %
@@ -38,7 +38,7 @@ Projection-based ROM practitioners will generally begin experimentation with tri
 	\caption{\label{fig:samplePODEnergy}Example of POD residual energy decay for 2D cavity case, for datasets encompassing 2, 6, and 10 milliseconds of simulation time.}
 \end{figure}
 
-Such explorations of POD residual energy for datasets of varying sizes have the additional benefit of indicating whether a dataset describes a statistically-stationary flow. That is, when adding additional snapshots to the dataset does not result in a significant change in its spectral content, the dataset can be considered to capture the characteristic physics of the system. As can be seen in Fig.~\ref{fig:samplePODEnergy}, while it appears that the lower-frequency ($< 25$ modes) has somewhat converged, there is no indication that the higher-frequency spectral content has converged.
+Such explorations of POD residual energy for datasets of varying sizes have the additional benefit of indicating whether a dataset describes a statistically-stationary flow. That is, when adding additional snapshots to the dataset does not result in a significant change in its spectral content, the dataset can be considered to capture the characteristic physics of the system. As can be seen in Fig.~\ref{fig:samplePODEnergy}, while it appears that the lower-frequency range ($< 25$ modes) has somewhat converged, there is no indication that the higher-frequency spectral content has converged.
 
 \subsection{Projection Error}\label{subsec:projError}
 

@@ -9,7 +9,7 @@ The recent model-form preserving least-squares with variable transformation (MP-
     \end{aligned}
 \end{equation}
 %
-Similar to the conservative variable formulation, $\primVecCent \inROne{\numDOF}$ is a constant translation vector, $\primTrial \defEq \left[\primTrialVec{1},\hdots,\primTrialVec{\numPrimModes}\right] \inRTwo{\numDOF}{\numPrimModes}$ is the target state trial basis, and $\funcMap{\primVecCoef \defEq \left[\primVarCoef{1}(\timeVar),\hdots,\primVarCoef{\numPrimModes}(\timeVar)\right]}{\nonnegReals}{\ROne{\numPrimModes}}$ is the target latent state vector. The constant matrix $\primScale \defEq \text{diag}\left(\primScaleVar[1], \hdots , \primScaleVar[\numDOF]\right) \inRTwo{\numDOF}{\numDOF}$ scales the target state variables. For an autoencoder non-linear manifold representation, the encoder/decoder form is given by
+Similar to the conservative variable formulation, $\primVecCent \inROne{\numDOF}$ is a constant translation vector, $\primTrial \defEq \left[\primTrialVec{1}, \; \hdots \;, \; \primTrialVec{\numPrimModes}\right] \inRTwo{\numDOF}{\numPrimModes}$ is the target state trial basis, and $\funcMap{\primVecCoef \defEq \left[\primVarCoef{1}(\timeVar), \; \hdots \;, \; \primVarCoef{\numPrimModes}(\timeVar)\right]}{\nonnegReals}{\ROne{\numPrimModes}}$ is the target latent state vector. The constant matrix $\primScale \defEq \text{diag}\left(\primScaleVar[1], \; \hdots \; , \; \primScaleVar[\numDOF]\right) \inRTwo{\numDOF}{\numDOF}$ scales the target state variables. For an autoencoder non-linear manifold representation, the encoder/decoder form is given by
 %
 \begin{align}
     \encoderFunc{\primVec} &\defEq \nnLayer_{\encoderVar,\primVar} \left(\primScaleInv\left[\primVec - \primVecCent\right], \nnParams^{\encoderVar}\right), \\
@@ -63,7 +63,7 @@ The scaling of the ROM residual by $\resScaleInv$ remains the same, as the model
     \primVecCoef^{\newtonIdx + 1} = \primVecCoef^{\newtonIdx} + \alpha \left[ \delta \primVecCoef^{\newtonIdx} \right],
 \end{equation}
 %
-where the ROM residual Jacobian is now computed with respect to the target latent state, defined as $\jacobResCoefPrim^\timeIdx \defEq \funcMap{\partial \resFunc{\primVecCoef^\newtonIdx} / \partial \primVecCoef}{\ROne{\numPrimModes}}{\RTwo{\numDOF}{\numPrimModes}}$. This Jacobian with can similarly be decomposed as
+where the ROM residual Jacobian is now computed with respect to the target latent state, defined as $\jacobResCoefPrim^\timeIdx \defEq \funcMap{\partial \resFunc{\primVecCoef^\newtonIdx} / \partial \primVecCoef}{\ROne{\numPrimModes}}{\RTwo{\numDOF}{\numPrimModes}}$. This Jacobian can similarly be decomposed as
 %
 \begin{align}
     \jacobResCoefPrim^{\newtonIdx} &\defEq \pde{\resFunc{\primVecCoef^{\newtonIdx}}}{\primVecRom} \pde{\primVecRom^{\newtonIdx}}{\primVecCoef}, \\

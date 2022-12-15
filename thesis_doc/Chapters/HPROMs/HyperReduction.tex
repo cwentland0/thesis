@@ -27,9 +27,9 @@ In the case $\consScale = \resScale = \identMat$, this simplifies further to
 %
 Note that the matrix inverse term is not equal to the identity matrix, as it did in the unsampled Galerkin PROM in Eq.~\ref{eq:galerkinROMODELinearSimple}, as the matrix $\sampMat \consTrial$ has no guarantee of orthonormality. However, the matrix $\left[ \left[\sampMat \consTrial \right]^\top \sampMat \consTrial \right]^{-1} \left[\sampMat \consTrial \right]^\top \inRTwo{\numConsModes}{\numSamps}$ (or the scaled equivalent for Eq.~\ref{eq:mpeGalerkinLinear}) may be precomputed in the offline stage.
 
-The operation $\sampMat \rhsFunc{\consVecRom, \; \timeVar}$ is the key to cost reduction via the MPE method, whereby only $\numSamps$ elements of the non-linear function $\rhsFunc{\cdot}$ must be evaluated. Similar operations underpin all sparse sampling hyper-reduction methods for PROMs of non-linear systems. In the case $\numSamps \ll \numDOF$, the cost of evaluating the non-linear terms may be drastically reduced. Further, only those mesh elements which are required to compute $\sampMat \rhsFunc{\consVecRom, \; \timeVar}$ must be allocated, potentially greatly reducing the memory consumption of the hyper-reduced PROM relative to the FOM or unsampled PROM. This \textit{sample mesh} concept will be discussed at greater length in Section~\ref{subsec:sampleMesh}.
+The operation $\sampMat \rhsFunc{\consVecRom, \; \timeVar}$ is the key to cost reduction via the MPE method, whereby only $\numSamps$ elements of the non-linear function $\rhsFunc{\cdot, \; \timeVar}$ must be evaluated. Similar operations underpin all sparse sampling hyper-reduction methods for PROMs of non-linear systems. In the case $\numSamps \ll \numDOF$, the cost of evaluating the non-linear terms may be drastically reduced. Further, only those mesh elements which are required to compute $\sampMat \rhsFunc{\consVecRom, \; \timeVar}$ must be allocated, potentially greatly reducing the memory consumption of the hyper-reduced PROM relative to the FOM or unsampled PROM. This \textit{sample mesh} concept will be discussed at greater length in Section~\ref{subsec:sampleMesh}.
 
-We mention that a similar method was proposed by Bos \textit{et al.}~\cite{Bos2004} in the context of systems governed by an explicit state space update $\consVec^{\timeIdx} = \rhsFunc{\consVec^{\timeIdx - 1}}$. Their method was proposed at the same time as Astrid~\cite{Astrid2004} and deserves similar credit as it was formulated for general non-linear systems. However, their derivation lacks generality to arbitrary PDEs, and is only equivalent to that of MPE in the specific case of the solution of Eq~\ref{eq:mpeGalerkinLinear} via an explicit time integrator.
+We mention that a similar method was proposed by Bos \textit{et al.}~\cite{Bos2004} in the context of systems governed by an explicit state space update $\consVec^{\timeIdx} = \rhsFunc{\consVec^{\timeIdx - 1}, \; \timeVar}$. Their method was proposed at the same time as Astrid~\cite{Astrid2004} and deserves similar credit as it was formulated for general non-linear systems. However, their derivation lacks generality to arbitrary PDEs, and is only equivalent to that of MPE in the specific case of the solution of Eq~\ref{eq:mpeGalerkinLinear} via an explicit time integrator.
 
 \section{Collocation for LSPG and MP-LSVT ROMs}
 
@@ -116,7 +116,7 @@ Again, DEIM is restricted to the case where $\numSamps = \numResModes$. For prac
     \resFunc{\dummyVec} \approx \resApproxFunc{\dummyVec} \defEq \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resFunc{\dummyVec},
 \end{equation}
 %
-where the operation $[\cdot]^+$ indicates the Moore--Penrose inverse (or pseudo-inverse). Again, this assumes $\sampMat \deimBasis$, which is now a rectangular matrix, has full column rank. Similarly to Eq.~\ref{eq:deimErrorBound}, the gappy POD regression error is bounded by
+where the operation $[\cdot]^+$ indicates the Moore--Penrose inverse (or pseudo-inverse). Again, this assumes $\sampMat \deimBasis$, which is now a rectangular matrix, has full column rank. Similarly to Eq.~\ref{eq:deimErrorBound}, the gappy POD regression error is bounded~\cite{Peherstorfer2020} by
 %
 \begin{equation}\label{eq:gappyPODErrorBound}
     \left\Vert \resFunc{\dummyVec} - \resApproxFunc{\dummyVec} \right\Vert_2 \le \left\Vert \left[ \sampMat \deimBasis \right]^{+} \right\Vert_2 \left\Vert \left[ \identMat - \deimBasis \deimBasis^\top \right] \resFunc{\dummyVec} \right\Vert_2.
@@ -128,7 +128,7 @@ The approximation of non-linear functions by Eq.~\ref{eq:gappyPODRHSApprox} can 
 
 \subsection{Gappy POD for Galerkin ROMs}
 %
-For Galerkin projection ROMs, the traditional method of gappy POD approximates the non-linear terms $\rhsVec$ as
+For Galerkin projection ROMs, the traditional method of gappy POD approximates the non-linear terms $\rhsFunc{\cdot, \; \timeVar}$ as
 %
 \begin{equation}
 	\rhsApproxFunc{\consVec, \; \timeVar} \defEq \deimBasis \left[ \sampMat \deimBasis \right]^+ \sampMat \rhsFunc{\consVec, \; \timeVar}.
@@ -154,10 +154,10 @@ An alternative method of computing the gappy POD Galerkin PROM is posed by Peher
 	\consVec^{\timeIdx-1} - \rhsResFunc{\consVec^{\timeIdx}, \timeVar} = \zeroVec,
 \end{equation}
 %
-where all terms of the time integrator, except for $\consVec^{\timeIdx - 1}$, have been grouped with the non-linear terms $\rhsFunc{\cdot}$ into the lumped $\rhsResFunc{\cdot}$. Note that this is more general than the explicit update discussed by Bos \textit{et al.}~\cite{Bos2004}, as it extends to implicit time integrators as well. This form is, at first glance, confusing, as we normally seek the solution solution at the next time step, $\consVec^{\timeIdx}$, as a function of past time steps, not the other way around as in Eq.~\ref{eq:benResidual}. However, this simply reflects the nature of implicit time integrators, in which the non-linear terms $\rhsVec$ are evaluated at future time steps. For example, the backward Euler (BDF1) time integrator would compute $\rhsResVec$ as
+where all terms of the time integrator, except for $\consVec^{\timeIdx - 1}$, have been grouped with the non-linear terms $\rhsFunc{\cdot, \; \timeVar}$ into the lumped $\rhsResFunc{\cdot, \; \timeVar}$. Note that this is more general than the explicit update discussed by Bos \textit{et al.}~\cite{Bos2004}, as it extends to implicit time integrators as well. This form is, at first glance, confusing, as we normally seek the solution solution at the next time step, $\consVec^{\timeIdx}$, as a function of past time steps, not the other way around as in Eq.~\ref{eq:benResidual}. However, this simply reflects the nature of implicit time integrators, in which the non-linear terms $\rhsFunc{\cdot, \; \timeVar}$ are evaluated at future time steps. For example, the backward Euler (BDF1) time integrator would compute $\rhsResFunc{\cdot, \; \timeVar}$ as
 %
 \begin{equation}
-	\rhsResFunc{\consVec^{\timeIdx}} \defEq \consVec^{\timeIdx} - \dt \rhsFunc{\consVec^{\timeIdx}}. \quad \text{(BDF1)}
+	\rhsResFunc{\consVec^{\timeIdx}, \; \timeVar} \defEq \consVec^{\timeIdx} - \dt \rhsFunc{\consVec^{\timeIdx}, \; \timeVar}. \quad \text{(BDF1)}
 \end{equation}
 %
 The approximate non-linear term is then approximated as
@@ -176,7 +176,7 @@ As mentioned previously, the above formulation is fairly non-standard and can be
 
 \subsection{GNAT for LSPG and MP-LSVT ROMs}
 %
-Applying gappy POD to LSPG and MP-LSVT ROMs takes an approach akin to that of collocation. Instead of constructing a least-squares regression for the sampled non-linear function $\rhsVec$, however, the complete fully-discrete residual $\resVec$ is approximated and substituted into the residual minimization problem given by Eq.~\ref{eq:lspgLS} or~\ref{eq:mplsvtLS}. We first examine the procedure for LSPG, which was first formulated by Carlberg and coworkers~\cite{Carlberg2010,Carlberg2013}, who referred to the procedure as Gauss--Newton with approximated tensors (GNAT). Substituting the residual approximation into Eq.~\ref{eq:lspgLS} results in the non-linear least-squares problem
+Applying gappy POD to LSPG and MP-LSVT ROMs takes an approach akin to that of collocation. Instead of constructing a least-squares regression for the sampled non-linear function $\rhsFunc{\cdot, \; \timeVar}$, however, the complete fully-discrete residual $\resVec$ is approximated and substituted into the residual minimization problem given by Eq.~\ref{eq:lspgLS} or~\ref{eq:mplsvtLS}. We examine the procedure for LSPG, which was first formulated by Carlberg and coworkers~\cite{Carlberg2010,Carlberg2013}, who referred to the procedure as Gauss--Newton with approximated tensors (GNAT). Substituting the residual approximation into Eq.~\ref{eq:lspgLS} results in the non-linear least-squares problem
 %
 \begin{equation}\label{eq:lspgLSHR}
     \consVecCoef^{\timeIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resScaleInv \resFunc{\dummyVec} \right\Vert_2.
@@ -211,7 +211,7 @@ The original work on GNAT~\cite{Carlberg2013} suggests an alternative formulatio
 %
 In practice, choosing $\deimBasisRes \neq \deimBasisJacob$ has not been observed to generate hyper-reduced ROMs which are drastically better than those generated by choosing $\deimBasisRes = \deimBasisJacob$. The added computational complexity makes it difficult to justify implementing Eq.~\ref{eq:separateBasesGNAT}. As such, for all results presented in this thesis we choose $\deimBasisRes = \deimBasisJacob$.
 
-Hyper-reduction of MP-LSVT ROMs via gappy POD follows an extremely similar method, beginning from the fully-discrete residual minimization with respect to the target state latent variables,
+Hyper-reduction of MP-LSVT ROMs via gappy POD follows a similar method, beginning from the fully-discrete residual minimization with respect to the target state latent variables,
 %
 \begin{equation}
     \primVecCoef^{\timeIdx} = \argmin{\dummyVec \inROne{\numPrimModes}} \left\Vert \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resScaleInv \resFunc{\dummyVec} \right\Vert_2.
@@ -239,16 +239,16 @@ We now address the question of how the regression basis $\deimBasis$ is computed
 
 \subsection{Galerkin RHS Approximation}
 %
-In the case of gappy POD Galerkin ROMs, we have already explicitly outlined the two approximations of non-linear terms in the ROM ODE/O$\Delta$E, which we restate here. The traditional method of gappy POD for Galerkin projection ROMs~\cite{Chaturantabut2010} computes a regression for the non-linear function $\rhsFunc{\cdot}$ of the form
+In the case of gappy POD Galerkin ROMs, we have already explicitly outlined the two approximations of non-linear terms in the ROM ODE/O$\Delta$E, which we restate here. The traditional method of gappy POD for Galerkin projection ROMs~\cite{Chaturantabut2010} computes a regression for the non-linear function $\rhsFunc{\cdot, \; \timeVar}$ of the form
 %
 \begin{equation}
-	\rhsFunc{\consVec, \timeVar} \approx \rhsApproxFunc{\consVec, \timeVar} \defEq \deimBasis \left[\sampMat \deimBasis \right]^+ \sampMat \rhsFunc{\consVec, \timeVar}
+	\rhsFunc{\consVec, \; \timeVar} \approx \rhsApproxFunc{\consVec, \timeVar} \defEq \deimBasis \left[\sampMat \deimBasis \right]^+ \sampMat \rhsFunc{\consVec, \; \timeVar}
 \end{equation}
 %
-In this case, as with computing the solution trial bases, snapshots of the unsteady non-linear term field $\rhsFunc{\consVec, \timeVar}$ are collected from FOM simulations. Unlike the process for the solution trial bases, we do not define a reference state about which snapshots are centered. However, disparate scales of the non-linear terms must be accounted for, and we suggest using the same scaling format as that used for scaling the fully-discrete residual, $\resScaleInv$. The snapshot matrix is thus aggregated as
+In this case, as with computing the solution trial bases, snapshots of the unsteady non-linear term field $\rhsFunc{\consVec, \; \timeVar}$ are collected from FOM simulations. Unlike the process for the solution trial bases, we do not define a reference state about which snapshots are centered. However, disparate scales of the non-linear terms must be accounted for, and we suggest using the same scaling format as that used for scaling the fully-discrete residual, $\resScaleInv$. The snapshot matrix is thus aggregated as
 %
 \begin{equation}
-	\rhsDataMat = \left[ \resScaleInv \rhsFunc{\consFunc{\timeVar^0}}, \; \resScaleInv \rhsFunc{\consFunc{\timeVar^1}}, \; \hdots, \; \resScaleInv \rhsFunc{\consFunc{\finalTime}} \right]
+	\rhsDataMat = \left[ \resScaleInv \rhsFunc{\consFunc{\timeVar^0}, \; \timeVar^0}, \; \resScaleInv \rhsFunc{\consFunc{\timeVar^1}, \; \timeVar^1}, \; \hdots, \; \resScaleInv \rhsFunc{\consFunc{\finalTime}, \; \timeVar^{\finalTime}} \right]
 \end{equation}
 %
 The regression basis is then computed from the POD of the snapshot matrix $\rhsDataMat$, extracting the leading $\numResModes$ singular vectors as $\deimBasis$.
@@ -264,7 +264,7 @@ The method of Peherstorfer~\cite{Peherstorfer2020Adaptive}, as previously discus
 Although this formulation may seem non-intuitive, it is only a grouping of terms arising from the implicit time integration of the governing ODE. Interestingly, treating the lumped non-linear term $\rhsResFunc{\cdot}$ as the non-linear function to be approximated makes the connection
 %
 \begin{equation}\label{eq:benResidualApprox}
-	\consVec^{\timeIdx-1} \approx \rhsResApproxFunc{\consVec} \defEq \deimBasis \left[\sampMat \deimBasis \right]^+ \sampMat \rhsResFunc{\consVec}
+	\consVec^{\timeIdx-1} \approx \rhsResApproxFunc{\consVec, \; \timeVar} \defEq \deimBasis \left[\sampMat \deimBasis \right]^+ \sampMat \rhsResFunc{\consVec, \; \timeVar}
 \end{equation}
 %
 At first glance, this formulation might suggests that we can use the solution trial basis as the regression basis; that is, $\deimBasis = \consTrial$. However, this is not entirely accurate, as the state representation is given as $\consVecRom \defEq \consVecCent + \consScale \consTrial \consVecCoef$. Attempting to directly approximate this vector by gappy POD results in
@@ -302,12 +302,12 @@ where we can define the lumped non-linear term as
 Given the resulting equivalence
 %
 \begin{equation}
-	\consScale \consTrial \consVecCoef^{\timeIdx-1} = \rhsResFunc{\consVecCoef^{\timeIdx},\; \timeVar^{\timeIdx}},
+	\consTrial \consVecCoef^{\timeIdx-1} = \consScaleInv \rhsResFunc{\consVecCoef^{\timeIdx},\; \timeVar^{\timeIdx}},
 \end{equation}
 %
-it now appears appropriate to approximate the lumped non-linear term as $\rhsResApproxFunc{\cdot} \defEq \deimBasis \left[\sampMat \deimBasis\right]^+ \sampMat \rhsResFunc{\cdot}$ by choosing $\deimBasis = \consScale \consTrial$. Although this derivation may seem tedious to make this distinction solely in the context of linear multistep time integrators, we recall that the attempt to naively set $\deimBasis = \consTrial$ for any time integration scheme resulted in the unusable gappy POD approximation given in Eq.~\ref{eq:stateGPODWrong}.
+it now appears appropriate to approximate the lumped non-linear term as $\rhsResApproxFunc{\cdot} \defEq \deimBasis \left[\sampMat \deimBasis\right]^+ \sampMat \consScaleInv \rhsResFunc{\cdot}$ by choosing $\deimBasis = \consTrial$. Although this derivation may seem tedious to make this distinction solely in the context of linear multistep time integrators, we recall that the attempt to naively set $\deimBasis = \consTrial$ for any time integration scheme resulted in the unusable gappy POD approximation given in Eq.~\ref{eq:stateGPODWrong}.
 
-{\color{red} I DO NOT HAVE A SIMILAR JUSTIFICATION FOR MP-LSVT}
+This approach is valid for Galerkin, LSPG, and MP-LSVT PROMs alike, as each is derived from the original, conservative governing equations and computes the same full-order fully-discrete ROM residual prior to projection. However, we note that the conservative state gappy POD regression applied to MP-LSVT PROMs necessitates the calculation of two distinct bases: $\primTrial$ for the target state trial space, and $\consTrial$ strictly for the gappy POD regression. For Galerkin and LSPG, the trial basis $\consTrial$ is simply reused for the gappy POD regression (or slightly reduced or expanded, for $\numConsModes \neq \numResModes$).
 
 \subsection{Residual Approximation}
 %
@@ -348,12 +348,12 @@ Before discussing specific sampling algorithms, we must address how sampling cri
 In this work, we construct the corresponding one-dimensional vector by flattening Eq.~\ref{eq:stateMat} along the leading dimension, result in the form
 %
 \begin{equation}
-	\stateVec \defEq \left[\stateVar_{1,1}, \hdots, \stateVar_{\numCells,1},\stateVar_{1,2}, \hdots, \stateVar_{1,\numVars-1}, \stateVar_{1,\numVars}, \hdots, \stateVar_{\numCells,\numVars} \right]^\top
+	\stateVec \defEq \left[\stateVar_{1,1}, \; \hdots \;, \; \stateVar_{\numCells,1}, \; \stateVar_{1,2}, \; \hdots \;, \; \stateVar_{1,\numVars-1}, \; \stateVar_{1,\numVars}, \; \hdots \;, \; \stateVar_{\numCells,\numVars} \right]^\top
 \end{equation}
 %
 For a given mesh element index $j \in \{1,\; \hdots,\; \numCells\}$, all DOF indices in $\stateVec$ for the associated state variables can be retrieved as the set $\dummyIdx \in \{j + (k-1) \numCells \; \vert \; 1 \le k \le \numVars \}$.
 
-As will be discussed in more detail in Section~\ref{subsec:sampleMesh}, sampling individual degrees of freedom of a non-linear function usually requires that additional, auxiliary degrees of freedom also be sampled in order to correctly compute the approximated non-linear function. The union of the sampling operator and these auxiliary degrees of freedom can thus be defined as $\sampMatFull \inRTwo{\numSampsFull}{\numDOF}$, and the sampled non-linear function is computed as $\sampMat \rhsFunc{\stateVec} = \rhsFunc{\sampMatFull \stateVec}$. This understanding that additional degrees of freedom must be included in the calculation can influence how greedy sampling metrics are calculated. Three distinct approaches are described below.
+As will be discussed in more detail in Section~\ref{subsec:sampleMesh}, sampling individual degrees of freedom of a non-linear function usually requires that additional, auxiliary degrees of freedom also be sampled in order to correctly compute the approximated non-linear function. The union of the sampling operator and these auxiliary degrees of freedom can thus be defined as $\sampMatFull \inRTwo{\numSampsFull}{\numDOF}$, and the sampled non-linear function is computed as $\sampMat \rhsFunc{\stateVec, \; \timeVar} = \rhsFunc{\sampMatFull \stateVec, \; \timeVar}$. This understanding that additional degrees of freedom must be included in the calculation can influence how greedy sampling metrics are calculated. Three distinct approaches are described below.
 
 \begin{enumerate}
 	\item \textit{Agnostic}: The agnostic approach is the simplest sampling criterion, whereby the greedy metric is computed for every unsampled DOF, and only one DOF index is added to the sample set at every greedy iteration. That one DOF is then excluded from all future greedy metric evaluations. Only after $\numSamps$ DOFs have been selected for $\sampSet$ are the auxiliary DOFs appended to the full sample set $\sampSetFull$.
@@ -361,7 +361,7 @@ As will be discussed in more detail in Section~\ref{subsec:sampleMesh}, sampling
 	\item \textit{Comprehensive}: The comprehensive method, as with the previous two methods, evaluates the greedy metric at all unsampled degrees of freedom, but then sums the greedy metric for all DOFs associated with a given mesh element. That is, a single greedy metric is evaluated for each mesh element. The mesh element which maximizes/minimizes the greedy metric is sampled, corresponding to appending all degrees of freedom associated with the mesh element to the sample set $\sampSet$. Again, this is repeated until all $\numSamps$ degrees of freedom are selected.
 \end{enumerate}
 
-The post-sampling and comprehensive methods are motivated by the fact that for coupled fluid flow systems, all degrees of freedom associated with a cell must be included in the auxiliary sample set $\sampSetFull$ if even one degree of freedom is sampled by a greedy algorithm. In this sense, they are a sunk cost in evaluating $\sampMat \rhsFunc{\cdot}$, and assessing their contribution to the greedy sampling metric provides a more complete description.
+The post-sampling and comprehensive methods are motivated by the fact that for coupled fluid flow systems, all degrees of freedom associated with a cell must be included in the auxiliary sample set $\sampSetFull$ if even one degree of freedom is sampled by a greedy algorithm. In this sense, they are a sunk cost in evaluating $\sampMat \rhsFunc{\cdot, \; \timeVar}$, and assessing their contribution to the greedy sampling metric provides a more complete description.
 
 To the best of the author's knowledge, much of the literature does not discuss such nuances in evaluating the sampling criteria, as most of the theoretical work has dealt with single-variable systems which do not require these considerations. Anecdotally, it seems that much contemporary work pursues the agnostic approach. {\color{red}TALK ABOUT LITERATURE}
 
