@@ -5,7 +5,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 
-mpl.rc('font', family='serif', size='10')
+mpl.rc('font', family='serif', size='14')
 mpl.rc('axes', labelsize='x-large')
 mpl.rc('figure', facecolor='w')
 mpl.rc('text', usetex=True)
@@ -114,7 +114,6 @@ def plotProbes(
         ax.set_ylabel('Axial Velocity (m/s)')
 
 
-    plt.tight_layout()
     ax.set_xlim([minT, maxT])
     plt.minorticks_on()
 
@@ -140,6 +139,7 @@ def plotProbes(
     if plot_legend:
         ax.legend(legend_labels, loc=legendloc, framealpha=1)
 
+    plt.tight_layout()
     if outfile is None:
         outfile = 'point_' + str(point_mon) + '_' + var_name
     image_file = os.path.join(outdir, outfile + '.png')

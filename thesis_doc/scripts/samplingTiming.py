@@ -1,4 +1,5 @@
 import os
+from math import log10, exp
 
 import numpy as np
 import matplotlib as mpl
@@ -35,6 +36,12 @@ def plotSamplingTiming(
     legend_labels=None,
     legend_loc="best",
     legend_fontsize=12,
+    plot_slopeline=False,
+    slopeline_x=None,
+    slopeline_y=None,
+    slopeline_text="",
+    slopeline_angle=0,
+    slopeline_coords=None,
 ):
 
     assert xvar in ["samp_rate", "num_modes"]
@@ -46,15 +53,6 @@ def plotSamplingTiming(
         assert samp_rate_plot is not None
         plot_idx = samp_rate_list.index(samp_rate_plot)
 
-    # if len(samp_rate_list) == 1:
-    #     xvals = num_modes_list
-    # elif len(num_modes_list) == 1:
-    #     xvals = samp_rate_list
-    # else:
-    #     raise ValueError("samp_rate_list or num_modes_list must be length 1")
-
-    # num_types = len(samp_type_list)
-    # num_x = len(samp_rate_list) * len(num_modes_list)
     time_data = np.zeros((len(samp_rate_list), len(num_modes_list)), dtype=np.float64)
 
     fig = plt.figure()
@@ -90,6 +88,21 @@ def plotSamplingTiming(
             ax.loglog([xval * 100.0 for xval in xvals], time_data[:, 0], plot_styles[samp_type_idx], marker='o')
         else:
             ax.semilogy(xvals, time_data[plot_idx, :], plot_styles[samp_type_idx], marker='o')
+
+
+    if plot_slopeline:
+        if xvar == "samp_rate":
+            ax.loglog(slopeline_x, slopeline_y, 'k')
+        else:
+            ax.semilogy(slopeline_x, slopeline_y, 'k')
+
+        plt.annotate(
+            slopeline_text,
+            slopeline_coords, xycoords='data',
+            ha='center', va='bottom',
+            rotation=15,
+            rotation_mode='anchor',
+        )
 
     if xvar == "samp_rate":
         ax.xaxis.set_major_formatter(ticker.FuncFormatter(lambda y,pos: ('{{:.{:1d}f}}'.format(int(np.maximum(-np.log10(y),0)))).format(y)))

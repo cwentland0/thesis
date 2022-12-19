@@ -3,15 +3,13 @@ from scipy.signal import welch, periodogram, butter, filtfilt
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import matplotlib.ticker as plticker
-import matplotlib.gridspec as gridspec
 from matplotlib.ticker import AutoMinorLocator
 import os
 
-mpl.rc('font', family='serif', size='10')
+mpl.rc('font', family='serif', size='14')
 mpl.rc('axes', labelsize='x-large')
 mpl.rc('figure', facecolor='w')
-mpl.rc('text', usetex=False)
+mpl.rc('text', usetex=True)
 mpl.rc('text.latex',preamble=r'\usepackage{amsmath}')
 
 ##### START USER INPUTS #####

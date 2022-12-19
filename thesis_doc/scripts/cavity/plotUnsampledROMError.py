@@ -15,7 +15,7 @@ plot_colors = ['g', 'r', 'b']
 
 ybounds = [1e-3, 1e-1]
 xticks = None
-xlabel = r"$N_p$"
+xlabel = r"$N_c, N_p$"
 
 plot_legend = True
 legend_labels = [
