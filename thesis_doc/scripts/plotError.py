@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 from dataExtractionFuncs import extractSolverWalltimeStats, extractIntError
 
-mpl.rc('font', family='serif',size='10')
+mpl.rc('font', family='serif',size='14')
 mpl.rc('axes', labelsize='x-large')
 mpl.rc('figure', facecolor='w')
 mpl.rc('text', usetex=True)
@@ -263,7 +263,7 @@ def plotErrorAvgVs(
 
 
         if ((plot_type == 0) or (plot_type == 2)):
-            artist, = axErr.plot(xvals_list[lineIdx],plotErrVals,color=plot_colors[lineIdx], marker='o',linestyle=axErrStyle)
+            artist, = axErr.plot(xvals_list[lineIdx], plotErrVals,color=plot_colors[lineIdx], marker='o',linestyle=axErrStyle)
             if (plot_type == 0):
                 artist_list.append(artist)
                 axErr.set_xscale(xscale)
@@ -308,8 +308,10 @@ def plotErrorVsModesVars(
     x_vals,
     plot_styles,
     outdir,
+    plot_avg=False,
     xlog=False,
     xticks=None,
+    xlabel="Number of Modes",
     ybounds=None,
     legend_labels=None,
     legend_loc="best",
@@ -317,6 +319,11 @@ def plotErrorVsModesVars(
     num_legend_columns=1,
     out_file=None,
 ):
+
+    if plot_avg:
+        assert len(plot_styles) == (len(plot_vars) + 1)
+        if legend_labels is not None:
+            legend_labels.append("Average")
 
     assert(len(data_dirs) == len(x_vals))
 
@@ -345,13 +352,19 @@ def plotErrorVsModesVars(
         else:
             ax.semilogy(x_vals, plot_vals[:,plot_idx], plot_styles[plot_idx], marker="o")
 
+    if plot_avg:
+        avg = np.mean(plot_vals, axis=1)
+        if xlog:
+            ax.loglog(x_vals, avg, plot_styles[-1], marker="o")
+        else:
+            ax.semilogy(x_vals, avg, plot_styles[-1], marker="o")
 
     if xticks is not None:
         ax.xaxis.set_ticks(xticks)
     if ybounds is not None:
         ax.set_ylim(ybounds)
 
-    ax.set_xlabel("Number of Modes")
+    ax.set_xlabel(xlabel)
     if ((len(plot_vars) == 1) and (plot_vars[0] == "Average")):
         ax.set_ylabel(r'Average $\ell^2$ Error')
     else:

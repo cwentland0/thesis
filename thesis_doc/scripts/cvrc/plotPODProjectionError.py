@@ -21,11 +21,13 @@ iter_end_list = [55000] * len(data_dirs)
 iter_skip_list = [50] * len(data_dirs)
 
 ybounds = [5e-4, 1]
-# ybounds = None
 
-plot_styles = ["r", "g", "b", "orange", "pink"]
+plot_styles = ["r", "g", "b", "orange", "pink", "k"]
 legend_loc = "upper right"
 num_legend_columns = 2
+legend_font_size = 14
+
+plot_avg = True
 
 # primitive error
 base_dir = "/home/chris/Research/Papers/thesis/thesis_doc/data/cvrc/FOM/projection"
@@ -47,8 +49,10 @@ plotErrorVsModesVars(
     ybounds=ybounds,
     legend_labels=legend_labels,
     legend_loc=legend_loc,
+    legend_font_size=legend_font_size,
     num_legend_columns=num_legend_columns,
     out_file=out_file,
+    plot_avg=plot_avg,
 )
 
 # conservative error
@@ -68,9 +72,11 @@ plotErrorVsModesVars(
     x_vals,
     plot_styles,
     outdir,
+    plot_avg=plot_avg,
     ybounds=ybounds,
     legend_labels=legend_labels,
     legend_loc=legend_loc,
+    legend_font_size=legend_font_size,
     num_legend_columns=num_legend_columns,
     out_file=out_file,
 )

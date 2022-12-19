@@ -13,13 +13,16 @@ ubound = 200
 outdir = "/home/chris/Research/Papers/thesis/thesis_doc/Chapters/CavityAndCVRC/Images/cavity"
 outfile = "cavity_pod_energy_10ms"
 ybounds = [0.01, 100]
-zoom_loc = [0.225, 0.45, 0.47, 0.47]
+xlabel = r"$N_c, N_p$"
+
+zoom_loc = [0.21, 0.46, 0.47, 0.47]
 zoom_bounds_x = [0, 25]
 zoom_bounds_y = [1, 100]
 legend_labels = [
     "Conservative",
     "Primitive",
 ]
+legend_font_size = 12
 
 plotPODResEnergy(
     base_dir,
@@ -34,4 +37,6 @@ plotPODResEnergy(
     zoom_bounds_y=zoom_bounds_y,
     legend_labels=legend_labels,
     legend_loc="upper right",
+    legend_font_size=legend_font_size,
+    xlabel=xlabel,
 )

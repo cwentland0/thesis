@@ -1,4 +1,5 @@
 #!MC 1410
+$!VarSet |LFBD| = '/home/chris/Research/Papers/thesis/thesis_doc/scripts/cavity'
 $!VarSet |LFDSRN1| = 'Tecplot Subzone Data Loader'
 $!VarSet |LFDSVL1| = ''
 $!VarSet |LFDSFN1| = '"STANDARDSYNTAX" "1.0" "FILENAME_FILE" "/home/chris/Research/Papers/thesis/thesis_doc/data/cavity/FOM/SZLFiles/gemsma_cmb_104000.szplt"'
@@ -242,7 +243,7 @@ $!ThreeDAxis
 $!PlotType  = Cartesian2D
 $!FrameName  = 'Frame 001'
 $!GlobalTime 
-  SolutionTime = 0.10005
+  SolutionTime = 0.103999999999999995
 $!ActiveFieldMaps  =  [1]
 $!GlobalRGB 
   RangeMin = 0
@@ -501,7 +502,7 @@ $!TwoDAxis
   YDetail
     {
     RangeMin = -0.06156801760615193686
-    RangeMax = 0.30072462755743589735
+    RangeMax = 0.30072652744301797689
     GRSpacing = 0.1
     TickLabel
       {
@@ -747,15 +748,15 @@ $!StreamtraceLayers
 $!AttachText 
   AnchorPos
     {
-    X = 47.22737479254122
-    Y = 31.25996810207335
+    X = 56.6620818439126
+    Y = 16.95057420856656
     }
   TextShape
     {
     FontFamily = 'Times'
     Height = 23
     }
-  Text = 'Wall'
+  Text = 'Probe'
 $!AttachText 
   AnchorPos
     {
@@ -792,6 +793,18 @@ $!AttachText
     Height = 23
     }
   Text = 'Upper Outlet'
+$!AttachText 
+  AnchorPos
+    {
+    X = 47.22737479254122
+    Y = 31.25996810207335
+    }
+  TextShape
+    {
+    FontFamily = 'Times'
+    Height = 23
+    }
+  Text = 'Wall'
 $!AttachGeom 
   AnchorPos
     {
@@ -825,6 +838,18 @@ $!AttachGeom
 2
 1.84048898344E-09 3.79959730346E-10 
 0.0429158210754 -0.0283550955355 
+$!AttachGeom 
+  GeomType = Circle
+  AnchorPos
+    {
+    X = 0.09197333996376456
+    Y = -0.0238242702275297
+    }
+  IsFilled = Yes
+  FillColor = Red
+  RawData
+0.00499999988824 
 $!FrameControl ActivateByNumber
   Frame = 1
+$!RemoveVar |LFBD|
 $!SetStyleBase Config

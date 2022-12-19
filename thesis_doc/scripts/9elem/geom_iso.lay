@@ -2,7 +2,7 @@
 $!VarSet |LFBD| = '/home/chris/Research/Papers/thesis/thesis_doc/scripts/9elem'
 $!VarSet |LFDSRN1| = 'Tecplot Subzone Data Loader'
 $!VarSet |LFDSVL1| = ''
-$!VarSet |LFDSFN1| = '"STANDARDSYNTAX" "1.0" "FILELIST_DATAFILES" "2" "/home/chris/Research/Papers/thesis/thesis_doc/data/9elem/SZLFiles/gemsma_grid.szplt" "/home/chris/Research/Papers/thesis/thesis_doc/data/9elem/SZLFiles/gemsma_cmb_215000.szplt"'
+$!VarSet |LFDSFN1| = '"STANDARDSYNTAX" "1.0" "FILELIST_DATAFILES" "2" "/home/chris/Research/Papers/thesis/thesis_doc/data/9elem/FOM/SZLFiles/gemsma_grid.szplt" "/home/chris/Research/Papers/thesis/thesis_doc/data/9elem/FOM/SZLFiles/gemsma_cmb_215000.szplt"'
 $!SetStyleBase Factory
 $!CreateColorMap 
   Name = 'cmocean - balance'

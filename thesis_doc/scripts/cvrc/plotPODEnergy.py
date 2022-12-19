@@ -13,6 +13,7 @@ ubound = 300
 outdir = "/home/chris/Research/Papers/thesis/thesis_doc/Chapters/CavityAndCVRC/Images/cvrc"
 outfile = "cvrc_pod_energy_0p5ms"
 ybounds = [0.01, 100]
+xlabel = r"$N_c, N_p$"
 zoom_loc = [0.27, 0.58, 0.4, 0.4]
 zoom_bounds_x = [0, 25]
 zoom_bounds_y = [10, 100]
@@ -34,4 +35,5 @@ plotPODResEnergy(
     zoom_bounds_y=zoom_bounds_y,
     legend_labels=legend_labels,
     legend_loc="upper right",
+    xlabel=xlabel,
 )

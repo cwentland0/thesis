@@ -5,7 +5,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FixedFormatter
 
-mpl.rc('font', family='serif',size='10')
+mpl.rc('font', family='serif',size='14')
 mpl.rc('axes', labelsize='x-large')
 mpl.rc('figure', facecolor='w')
 mpl.rc('text', usetex=True)
@@ -19,11 +19,14 @@ def plotPODResEnergy(
     outdir,
     outfile=None,
     ybounds=None,
+    ylabel="POD Residual Energy, \%",
+    xlabel="Number of Modes",
     zoom_loc=None,
     zoom_bounds_x=None,
     zoom_bounds_y=None,
     legend_labels=None,
     legend_loc="best",
+    legend_font_size=12,
 ):
 
     fig = plt.figure()
@@ -58,8 +61,8 @@ def plotPODResEnergy(
         if zoom_loc is not None:
             axins.semilogy(range(1, ubound + 1), energy[:ubound], plot_colors[basisIdx], linewidth=2)
 
-    ax.set_ylabel('POD Residual Energy, %')
-    ax.set_xlabel('Number of Modes')
+    ax.set_ylabel(ylabel)
+    ax.set_xlabel(xlabel)
     if ybounds is not None:
         ax.set_ylim(ybounds)
     else:
@@ -68,7 +71,7 @@ def plotPODResEnergy(
     ax.set_xlim([0, ubound])
 
     if legend_labels is not None:
-        ax.legend(legend_labels, loc=legend_loc, framealpha=1)
+        ax.legend(legend_labels, loc=legend_loc, framealpha=1,fontsize=legend_font_size)
 
     plt.grid(visible=True, which='major', color='k')
     ax.yaxis.set_major_formatter(FixedFormatter(["0.001%","0.01%","0.1%","1%","10%","100%","1000%"]))

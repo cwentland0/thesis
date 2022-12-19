@@ -13,9 +13,9 @@ xvals_list = [
 ]
 plot_colors = ['g', 'r', 'b']
 
-ybounds = [5e-5, 1]
+ybounds = [1e-3, 1e-1]
 xticks = None
-xlabel = "Number of Modes"
+xlabel = r"$N_p$"
 
 plot_legend = True
 legend_labels = [
@@ -23,7 +23,8 @@ legend_labels = [
     "LSPG",
     "MP-LSVT",
 ]
-legend_loc = "lower left"
+legend_loc = "upper left"
+legend_fontsize = 14
 
 plot_var = "Average"
 out_dir = "/home/chris/Research/Papers/thesis/thesis_doc/Chapters/CavityAndCVRC/Images/cavity/unsampled"
@@ -103,6 +104,7 @@ plotErrorAvgVs(
     plot_legend=plot_legend,
     legend_labels=legend_labels,
     legend_loc=legend_loc,
+    legend_fontsize=legend_fontsize,
 )
 
 ##### dt = 2.5e-6 #####
@@ -166,6 +168,7 @@ plotErrorAvgVs(
     plot_legend=plot_legend,
     legend_labels=legend_labels,
     legend_loc=legend_loc,
+    legend_fontsize=legend_fontsize,
 )
 
 ##### dt = 5e-6 #####
@@ -228,6 +231,7 @@ plotErrorAvgVs(
     plot_legend=plot_legend,
     legend_labels=legend_labels,
     legend_loc=legend_loc,
+    legend_fontsize=legend_fontsize,
 )
 
 ##### dt = 1e-5 #####
@@ -290,4 +294,5 @@ plotErrorAvgVs(
     plot_legend=plot_legend,
     legend_labels=legend_labels,
     legend_loc=legend_loc,
+    legend_fontsize=legend_fontsize,
 )

@@ -4,7 +4,7 @@ sys.path.append("/home/chris/Research/Papers/thesis/thesis_doc/scripts")
 from plotSlices import plotContourOrSlices
 
 data_dir = "/home/chris/Research/Papers/thesis/thesis_doc/data/cvrc/FOM/SZLFiles"
-snap_iter = 56000
+snap_iter = 55000
 output_dir = "/home/chris/Research/Papers/thesis/thesis_doc/Chapters/CavityAndCVRC/Images/cvrc"
 meshfile = "/home/chris/Research/Papers/thesis/thesis_doc/data/cvrc/FOM/SZLFiles/gemsma_grid.szplt"
 

@@ -2,7 +2,7 @@
 $!VarSet |LFBD| = '/home/chris/Research/Papers/thesis/thesis_doc/scripts/9elem'
 $!VarSet |LFDSRN1| = 'Tecplot Subzone Data Loader'
 $!VarSet |LFDSVL1| = ''
-$!VarSet |LFDSFN1| = '"STANDARDSYNTAX" "1.0" "FILELIST_DATAFILES" "2" "/home/chris/Research/Papers/thesis/thesis_doc/data/9elem/SZLFiles/gemsma_grid.szplt" "/home/chris/Research/Papers/thesis/thesis_doc/data/9elem/SZLFiles/gemsma_cmb_215000.szplt"'
+$!VarSet |LFDSFN1| = '"STANDARDSYNTAX" "1.0" "FILELIST_DATAFILES" "2" "/home/chris/Research/Papers/thesis/thesis_doc/data/9elem/FOM/SZLFiles/gemsma_grid.szplt" "/home/chris/Research/Papers/thesis/thesis_doc/data/9elem/FOM/SZLFiles/gemsma_cmb_215000.szplt"'
 $!SetStyleBase Factory
 $!CreateColorMap 
   Name = 'Sequential - Viridis'
@@ -254,6 +254,7 @@ $!GlobalRGB
 $!GlobalContour  1
   Var = 4
   ColorMapName = 'Sequential - Viridis'
+  DefNumLevels = 14
   Legend
     {
     XYPos
@@ -297,6 +298,7 @@ $!ContourLevels New
 $!GlobalContour  2
   Var = 8
   ColorMapName = 'Sequential - Viridis'
+  DefNumLevels = 16
   Legend
     {
     Show = Yes
@@ -336,6 +338,7 @@ $!ContourLevels New
 $!GlobalContour  3
   Var = 9
   ColorMapName = 'Sequential - Viridis'
+  DefNumLevels = 17
   Legend
     {
     Show = Yes
@@ -376,6 +379,7 @@ $!ContourLevels New
 $!GlobalContour  4
   Var = 10
   ColorMapName = 'Sequential - Viridis'
+  DefNumLevels = 14
   Legend
     {
     Show = Yes
@@ -413,6 +417,7 @@ $!ContourLevels New
 $!GlobalContour  5
   Var = 11
   ColorMapName = 'Sequential - Viridis'
+  DefNumLevels = 11
   Legend
     {
     Show = Yes
@@ -447,6 +452,7 @@ $!ContourLevels New
 $!GlobalContour  6
   Var = 12
   ColorMapName = 'Sequential - Viridis'
+  DefNumLevels = 18
   Legend
     {
     Show = Yes
@@ -488,6 +494,7 @@ $!ContourLevels New
 $!GlobalContour  7
   Var = 13
   ColorMapName = 'Sequential - Viridis'
+  DefNumLevels = 19
   Legend
     {
     Show = Yes
@@ -530,6 +537,7 @@ $!ContourLevels New
 $!GlobalContour  8
   Var = 14
   ColorMapName = 'Sequential - Viridis'
+  DefNumLevels = 12
   Legend
     {
     Show = Yes
@@ -1194,15 +1202,15 @@ $!StreamtraceLayers
 $!AttachText 
   AnchorPos
     {
-    X = 44.07167879277819
-    Y = 96.46680942184153
+    X = 88.58779574243786
+    Y = 60.59957173447537
     }
   TextShape
     {
     FontFamily = 'Times'
     Height = 19
     }
-  Text = 'Oxidizer In'
+  Text = 'Probe'
 $!AttachText 
   AnchorPos
     {
@@ -1229,6 +1237,29 @@ $!AttachText
     }
   Anchor = MidCenter
   Text = 'Pressure Outlet'
+$!AttachText 
+  AnchorPos
+    {
+    X = 44.07167879277819
+    Y = 96.46680942184153
+    }
+  TextShape
+    {
+    FontFamily = 'Times'
+    Height = 19
+    }
+  Text = 'Oxidizer In'
+$!AttachGeom 
+  GeomType = Circle
+  AnchorPos
+    {
+    X = 0.1287617408962681
+    Y = 0.04239823966416698
+    }
+  IsFilled = Yes
+  FillColor = Red
+  RawData
+0.00300000002608 
 $!FrameControl ActivateByNumber
   Frame = 1
 $!RemoveVar |LFBD|

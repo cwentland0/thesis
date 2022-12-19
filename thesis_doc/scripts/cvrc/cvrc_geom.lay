@@ -2,7 +2,7 @@
 $!VarSet |LFBD| = '/home/chris/Research/Papers/thesis/thesis_doc/scripts/cvrc'
 $!VarSet |LFDSRN1| = 'Tecplot Subzone Data Loader'
 $!VarSet |LFDSVL1| = ''
-$!VarSet |LFDSFN1| = '"STANDARDSYNTAX" "1.0" "FILELIST_DATAFILES" "2" "/home/chris/Research/Papers/thesis/thesis_doc/data/cvrc/FOM/SZLFiles/gemsma_grid.szplt" "/home/chris/Research/Papers/thesis/thesis_doc/data/cvrc/FOM/SZLFiles/gemsma_cmb_56000.szplt"'
+$!VarSet |LFDSFN1| = '"STANDARDSYNTAX" "1.0" "FILELIST_DATAFILES" "2" "/home/chris/Research/Papers/thesis/thesis_doc/data/cvrc/FOM/SZLFiles/gemsma_grid.szplt" "/home/chris/Research/Papers/thesis/thesis_doc/data/cvrc/FOM/SZLFiles/gemsma_cmb_55000.szplt"'
 $!SetStyleBase Factory
 $!CreateColorMap 
   Name = 'Sequential - Viridis'

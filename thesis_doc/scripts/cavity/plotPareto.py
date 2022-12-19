@@ -35,17 +35,18 @@ line_styles = ['-', '-', '-', '-', 'none']
 marker_sizes = [6, 6, 6, 6, 12]
 
 xbounds = [0.1, 300]
-ybounds = [5e-5, 1.05]
+ybounds = [1e-3, 1.05]
 xlabel = None
 
 legend_labels = [
-    "GappyPOD+R",
-    "GappyPOD+E",
-    "GappyPOD+D1",
-    "GappyPOD+D2",
+    "Random",
+    "Eigenvector",
+    "GNAT, V1",
+    "GNAT, V2",
     "Unsampled",
 ]
 legend_loc = "upper left"
+legend_fontsize = 14
 
 deim_modes = 250
 
@@ -129,7 +130,7 @@ iter_skip_list = [
     [1],
 ]
 
-out_name = "sampled_dt2.5e-6"
+out_name = "sampled_dt2p5e-6"
 
 plotErrorAvgVs(
     plot_type,
@@ -158,6 +159,7 @@ plotErrorAvgVs(
     plot_legend=plot_legend,
     legend_labels=legend_labels,
     legend_loc=legend_loc,
+    legend_fontsize=legend_fontsize,
     marker_types=marker_types,
     marker_sizes=marker_sizes,
     line_styles=line_styles,
@@ -272,6 +274,7 @@ plotErrorAvgVs(
     marker_types=marker_types,
     marker_sizes=marker_sizes,
     line_styles=line_styles,
+    legend_fontsize=legend_fontsize,
 )
 
 #### dt = 1e-5 #####
@@ -383,4 +386,5 @@ plotErrorAvgVs(
     marker_types=marker_types,
     marker_sizes=marker_sizes,
     line_styles=line_styles,
+    legend_fontsize=legend_fontsize,
 )

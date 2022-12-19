@@ -104,6 +104,7 @@ def extractCommsFromASCIIMesh(meshDir, meshName, numParts):
     assert(recvNum == sendNum)
     return sendNum
 
+
 # get integrated error values
 def extractIntError(caseDir, iterStart, iterEnd, iterSkip, varNames, vsRaw=True, mags=False):
 
@@ -120,6 +121,13 @@ def extractIntError(caseDir, iterStart, iterEnd, iterSkip, varNames, vsRaw=True,
     if (type(varNames) == str):
         varNames = [varNames]
 
+    errVals = extractValues(fileIn, varNames)
+
+    return errVals
+
+
+def extractValues(fileIn, varNames):
+
     # load data from file
     errDataMat = np.loadtxt(fileIn, dtype={'names':('labels','values'),'formats':('|S30',np.float)})
 
@@ -132,5 +140,60 @@ def extractIntError(caseDir, iterStart, iterEnd, iterSkip, varNames, vsRaw=True,
 
     return errVals
 
+# get partition data from timings.dat
+def extractSamplingTimeData(file_in, samp_type):
 
+    metric_time = np.zeros(4, dtype=np.float64)
+    unique_time = np.zeros(4, dtype=np.float64)
+    append_time = np.zeros(4, dtype=np.float64)
 
+    if samp_type in ["eigenvec", "greedy_ben", "greedy_carlberg"]:
+        metric_string = "Metric calculation timings"
+        unique_string = "Find unique timings"
+        append_string = "Append rows timings"
+    elif samp_type == "random":
+        metric_string = "Oversampling timings"
+        unique_string = "DOES NOT EXIST DNE"
+        append_string = "DOES NOT EXIST DNE"
+    else:
+        raise ValueError("Invalid samp_type passed: " + samp_type)
+
+    metric_start = False
+    unique_start = False
+    append_start = False
+    data_count = 0
+
+    with open(file_in) as f:
+        for lineNum, line in enumerate(f, 1):
+            line_split = line.split()
+
+            if metric_string in line:
+                metric_start = True
+            elif unique_string in line:
+                unique_start = True
+            elif append_string in line:
+                append_start = True
+
+            if metric_start or unique_start or append_start:
+
+                if data_count < 2:
+                    data_count += 1
+                    continue
+
+                if metric_start:
+                    metric_time[data_count-2] = line_split[-1]
+                elif unique_start:
+                    unique_time[data_count-2] = line_split[-1]
+                elif append_start:
+                    append_time[data_count-2] = line_split[-1]
+
+                data_count += 1
+                if data_count == 6:
+                    metric_start = 0
+                    unique_start = 0
+                    append_start = 0
+                    data_count = 0
+            else:
+                data_count = 0
+
+    return metric_time, unique_time, append_time
