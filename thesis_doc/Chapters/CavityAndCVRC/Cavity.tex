@@ -13,7 +13,7 @@ The computational domain is modeled as a rectangular cavity set in a flat wall, 
 	\else
     	\includegraphics[width=0.9\linewidth]{Chapters/CavityAndCVRC/Images/cavity/geom.png}
 	\fi
-    \caption{\label{fig:cavityGeom} 2D transonic cavity flow domain.}
+    \caption{\label{fig:cavityGeom} Cavity flow domain.}
 \end{figure}
 
 The working gas is air, modeled as a calorically-perfect gas with the properties given in Table~\ref{tab:airProps}. Transport and thermodynamic properties are computed using the simplified analytical forms described in Section~\ref{subsec:gasModels}. The free-stream velocity is 208.7816 m/s in the +$x$-direction, the pressure is 25 Pa, and the temperature is 300 K. The working gas is air, modeled as a calorically-perfect gas (CPG) with the properties given in Table~\ref{tab:airProps}. The resulting Mach number of this flow regime is approximately 0.6, and the Reynolds number is approximately 6,500.
@@ -91,7 +91,7 @@ The POD trial bases are computed from the 10,001 snapshots of the conservative a
 	\else
 		\includegraphics[width=0.8\linewidth]{Chapters/CavityAndCVRC/Images/cavity/cavity_pod_energy_10ms.png}
 	\fi
-	\caption{\label{fig:cavityPODEnergy}POD residual energy decay for 2D cavity flow conservative and primitive state datasets.}
+	\caption{\label{fig:cavityPODEnergy}POD residual energy for cavity flow conservative and primitive state datasets.}
 \end{figure}
 
 \begin{figure}
@@ -134,5 +134,88 @@ The POD trial bases are computed from the 10,001 snapshots of the conservative a
 		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/unsampled/unsampled_dt1e-5_Average_errorRaw.png}
 		\subcaption{$\dt = 10 \times \dtFOM$}
 	\end{minipage}
-	\caption{\label{fig:cavityUnsampledROMErrVsModes}2D cavity unsampled ROM time-average error, various $\dt$}
+	\caption{\label{fig:cavityUnsampledROMErrVsModes}Cavity unsampled ROM time-average error, various $\dt$}
+\end{figure}
+
+\subsection{Hyper-reduced PROMs}
+
+\begin{figure}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/sampled_dt2p5e-6_Average_errorRaw_pareto.png}
+		\subcaption{$\dt = 2.5 \times \dtFOM$}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/sampled_dt5e-6_Average_errorRaw_pareto.png}
+		\subcaption{$\dt = 5 \times \dtFOM$}
+	\end{minipage}
+
+	\centering
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/sampled_dt1e-5_Average_errorRaw_pareto.png}
+		\subcaption{$\dt = 10 \times \dtFOM$}
+	\end{minipage}
+	\caption{\label{fig:cavitySampledROMErrVsTime}Cavity HPROM time-average error vs. CPU-time speedup, various $\dt$}
+\end{figure}
+
+\begin{figure}
+	\begin{minipage}{0.46\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_random_dt2p5e-6.png}
+		\subcaption{Random}
+	\end{minipage}
+	\begin{minipage}{0.53\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_eigenvec_dt2p5e-6.png}
+		\subcaption{Eigenvector}
+	\end{minipage}
+
+	\begin{minipage}{0.46\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_gnat1_dt2p5e-6.png}
+		\subcaption{GNAT, V1}
+	\end{minipage}
+	\begin{minipage}{0.53\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_gnat2_dt2p5e-6.png}
+		\subcaption{GNAT, V2}
+	\end{minipage}
+	\caption{Cavity HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 2.5 \times \dtFOM$, various sampling algorithms}
+\end{figure}
+
+\begin{figure}
+	\begin{minipage}{0.46\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_random_dt5e-6.png}
+		\subcaption{Random}
+	\end{minipage}
+	\begin{minipage}{0.53\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_eigenvec_dt5e-6.png}
+		\subcaption{Eigenvector}
+	\end{minipage}
+
+	\begin{minipage}{0.46\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_gnat1_dt5e-6.png}
+		\subcaption{GNAT, V1}
+	\end{minipage}
+	\begin{minipage}{0.53\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_gnat2_dt5e-6.png}
+		\subcaption{GNAT, V2}
+	\end{minipage}
+	\caption{Cavity HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 5 \times \dtFOM$, various sampling algorithms}
+\end{figure}
+
+\begin{figure}
+	\begin{minipage}{0.46\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_random_dt1e-5.png}
+		\subcaption{Random}
+	\end{minipage}
+	\begin{minipage}{0.53\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_eigenvec_dt1e-5.png}
+		\subcaption{Eigenvector}
+	\end{minipage}
+
+	\begin{minipage}{0.46\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_gnat1_dt1e-5.png}
+		\subcaption{GNAT, V1}
+	\end{minipage}
+	\begin{minipage}{0.53\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_gnat2_dt1e-5.png}
+		\subcaption{GNAT, V2}
+	\end{minipage}
+	\caption{Cavity HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 10 \times \dtFOM$, various sampling algorithms}
 \end{figure}
