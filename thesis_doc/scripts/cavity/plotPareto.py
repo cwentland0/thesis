@@ -34,6 +34,10 @@ marker_types = ['o', 'o', 'o', 'o', 7]
 line_styles = ['-', '-', '-', '-', 'none']
 marker_sizes = [6, 6, 6, 6, 12]
 
+point_marker_idxs = [2, 4]
+point_marker_styles = ["D", "X"]
+point_marker_size = 8
+
 xbounds = [0.1, 300]
 ybounds = [1e-3, 1.05]
 xlabel = None
@@ -56,6 +60,7 @@ out_dir = "/home/chris/Research/Papers/thesis/thesis_doc/Chapters/CavityAndCVRC/
 ##### dt = 2.5e-6 #####
 
 plot_legend = True
+plot_point_markers = False
 base_dir = "/home/chris/Research/Papers/thesis/thesis_doc/data/cavity/ROMs/primitive/100ms_to_110ms_samp1_dt2p5e-6/mplsvt-real/implicit/k150/solutionModes/conservative"
 
 data_dirs = [
@@ -163,10 +168,15 @@ plotErrorAvgVs(
     marker_types=marker_types,
     marker_sizes=marker_sizes,
     line_styles=line_styles,
+    plot_point_markers=plot_point_markers,
+    point_marker_idxs=point_marker_idxs,
+    point_marker_styles=point_marker_styles,
+    point_marker_size=point_marker_size,
 )
 
 ##### dt = 5e-6 #####
 
+plot_point_markers = True
 plot_legend = False
 base_dir = "/home/chris/Research/Papers/thesis/thesis_doc/data/cavity/ROMs/primitive/100ms_to_110ms_samp1_dt5e-6/mplsvt-real/implicit/k150/solutionModes/conservative"
 
@@ -275,11 +285,16 @@ plotErrorAvgVs(
     marker_sizes=marker_sizes,
     line_styles=line_styles,
     legend_fontsize=legend_fontsize,
+    plot_point_markers=plot_point_markers,
+    point_marker_idxs=point_marker_idxs,
+    point_marker_styles=point_marker_styles,
+    point_marker_size=point_marker_size,
 )
 
 #### dt = 1e-5 #####
 
 plot_legend = False
+plot_point_markers = False
 base_dir = "/home/chris/Research/Papers/thesis/thesis_doc/data/cavity/ROMs/primitive/100ms_to_110ms_samp1_dt1e-5/mplsvt-real/implicit/k150/solutionModes/conservative"
 
 data_dirs = [
@@ -387,4 +402,8 @@ plotErrorAvgVs(
     marker_sizes=marker_sizes,
     line_styles=line_styles,
     legend_fontsize=legend_fontsize,
+    plot_point_markers=plot_point_markers,
+    point_marker_idxs=point_marker_idxs,
+    point_marker_styles=point_marker_styles,
+    point_marker_size=point_marker_size,
 )

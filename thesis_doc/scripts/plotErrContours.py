@@ -31,7 +31,19 @@ def plotErrContours(
     xscale="linear",
     yscale="lienar",
     figsize=(6.4, 4.8),
+    plot_point_markers=False,
+    point_marker_coords=None,
+    point_marker_colors=None,
+    point_marker_styles=None,
 ):
+
+    if plot_point_markers:
+        assert point_marker_coords is not None
+        assert point_marker_colors is not None
+        assert point_marker_styles is not None
+        assert len(point_marker_coords) == len(point_marker_colors)
+        assert len(point_marker_coords) == len(point_marker_styles)
+
 
     if draw_colorbar is not None:
         if (cb_ticks is not None) and (cb_ticklabels is not None):
@@ -55,7 +67,10 @@ def plotErrContours(
 
     fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(111)
-    cm = ax.pcolormesh(xvals_list, yvals_list, plot_vals.T, shading='nearest', norm=mpl.colors.LogNorm(vmin=zbounds[0], vmax=zbounds[1]))
+    cm = ax.pcolormesh(xvals_list, yvals_list, plot_vals.T,
+        shading='nearest',
+        norm=mpl.colors.LogNorm(vmin=zbounds[0], vmax=zbounds[1]),
+        edgecolors="k", linewidth=0.5)
 
     if xlabel is not None:
         ax.set_xlabel(xlabel)
@@ -76,6 +91,13 @@ def plotErrContours(
             else:
                 cb.set_ticks(cb_ticks, minor=False)
             cb.minorticks_on()
+
+    if plot_point_markers:
+        for point_idx, point_coords in enumerate(point_marker_coords):
+            ax.plot(point_coords[0], point_coords[1],
+                color=point_marker_colors[point_idx],
+                marker=point_marker_styles[point_idx],
+                markersize=8)
 
     plt.tight_layout()
     outfile = os.path.join(out_dir, out_name + ".png")

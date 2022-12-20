@@ -8,15 +8,11 @@ The computational domain is modeled as a rectangular cavity set in a flat wall, 
 
 \begin{figure}
     \centering
-	\ifdefined\DRAFT
-		\includegraphics[width=0.9\linewidth]{example-image-a}
-	\else
-    	\includegraphics[width=0.9\linewidth]{Chapters/CavityAndCVRC/Images/cavity/geom.png}
-	\fi
-    \caption{\label{fig:cavityGeom} Cavity flow domain.}
+	\includegraphics[width=0.9\linewidth]{Chapters/CavityAndCVRC/Images/cavity/geom.png}
+    \caption{\label{fig:cavityGeom}Cavity flow domain.}
 \end{figure}
 
-The working gas is air, modeled as a calorically-perfect gas with the properties given in Table~\ref{tab:airProps}. Transport and thermodynamic properties are computed using the simplified analytical forms described in Section~\ref{subsec:gasModels}. The free-stream velocity is 208.7816 m/s in the +$x$-direction, the pressure is 25 Pa, and the temperature is 300 K. The working gas is air, modeled as a calorically-perfect gas (CPG) with the properties given in Table~\ref{tab:airProps}. The resulting Mach number of this flow regime is approximately 0.6, and the Reynolds number is approximately 6,500.
+The working fluid is air, modeled as a calorically-perfect gas with the properties given in Table~\ref{tab:airProps}. Transport and thermodynamic properties are computed using the simplified analytical forms described in Section~\ref{subsec:gasModels}. The free-stream velocity is 208.7816 m/s in the +$x$-direction, the pressure is 25 Pa, and the temperature is 300 K. The resulting Mach number of this flow regime is approximately 0.6, and the Reynolds number based on the cavity length is approximately 6,500.
 
 \begin{table}
 	\centering
@@ -30,91 +26,63 @@ The working gas is air, modeled as a calorically-perfect gas with the properties
 	\caption{\label{tab:airProps}CPG properties of air for cavity flow case.}
 \end{table}
 
-The FOM is initialized with free stream conditions outside the cavity, and the inside of the cavity is initialized with free stream pressure and temperature, but zero velocity. The physical time step for the FOM simulation is $\dt = 1 \;\mu$s. Initial transients are allowed to dissipate and statistically-steady flow is established over 100 ms. After this point, the simulation is continued for 10 ms, during which the state is saved to disk at every physical time step, resulting in 10,001 snapshots (including $\stateVec\left(\timeVar = 100 \; \text{ms}\right)$). All ROM simulations are restarted from $\timeVar = 100 \; \text{ms}$. Several instantaneous flow field examples are shown in Figs.~\ref{fig:cavityPressExample}--\ref{fig:cavityVExampleZoom}. We draw particular attention to the oscillatory pressure field displayed in Fig.~\ref{fig:cavityPressExample}: this emission of pressure waves from the trailing edge of the cavity is the result of the shear layer (originating from leading edge) impinging on the trailing edge. The shear layer rollup (implied by the $y$-velocity field in Fig.~\ref{fig:cavityVExampleZoom}) due to the Helmholtz instability and the pressure perturbation that travels upstream results in several resonant tones. Pressure measurements at the aft wall over the 10 ms data collection period is shown in Fig.~\ref{fig:cavityFOMProbe}.
+The FOM is initialized with free stream conditions outside the cavity, and the inside of the cavity is initialized with free stream pressure and temperature, and zero velocity. The physical time step for the FOM simulation is $\dtFOM = 1 \;\mu$s. Initial transients are allowed to dissipate and statistically-steady flow is established over 100 ms. After this point, the simulation is continued for 10 ms, during which the state is saved to disk at every physical time step, resulting in 10,001 snapshots (including $\stateVec\left(\timeVar = 100 \; \text{ms}\right)$). All ROM simulations are restarted from $\timeVar = 100 \; \text{ms}$. Several instantaneous flow field examples are shown in Figs.~\ref{fig:cavityPressExample}--\ref{fig:cavityVExampleZoom}. We draw particular attention to the oscillatory pressure field displayed in Fig.~\ref{fig:cavityPressExample}: this emission of pressure waves from the trailing edge of the cavity is the result of the shear layer (originating from leading edge) impinging on the trailing edge. The shear layer rollup (implied by the $y$-velocity field in Fig.~\ref{fig:cavityVExampleZoom}) due to the Helmholtz instability and the pressure perturbation that travels upstream results in several resonant tones. Pressure measurements at the aft wall over the 10 ms data collection period is shown in Fig.~\ref{fig:cavityFOMProbe}.
 
 \begin{figure}
 	\centering
-	\ifdefined\DRAFT
-		\includegraphics[width=0.9\linewidth]{example-image-a}
-	\else
-		\includegraphics[width=0.9\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/pressure_example_full.png}
-	\fi
-	\caption{\label{fig:cavityPressExample}Pressure field at $\timeVar =$ 104 ms.}
+	\includegraphics[width=0.9\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/pressure_example_full.png}
+	\caption{\label{fig:cavityPressExample}Cavity pressure field at $\timeVar =$ 104 ms.}
 \end{figure}
 
 \begin{figure}
 	\begin{minipage}{0.48\linewidth}
-		\ifdefined\DRAFT
-			\includegraphics[width=0.99\linewidth]{example-image-a}
-		\else
-			\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/pressure_example_zoom.png}
-		\fi
-		\caption{\label{fig:cavityPressExampleZoom}Pressure field at $\timeVar =$ 104 ms, zoomed cavity view.}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/pressure_example_zoom.png}
+		\caption{\label{fig:cavityPressExampleZoom}Cavity pressure field at $\timeVar =$ 104 ms, zoomed view.}
 	\end{minipage} \hspace{0.5em}
 	\begin{minipage}{0.48\linewidth}
-		\ifdefined\DRAFT
-			\includegraphics[width=0.99\linewidth]{example-image-a}
-		\else
-			\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/y_vel_example_zoom.png}
-		\fi
-		\caption{\label{fig:cavityVExampleZoom}$y$-velocity field at $\timeVar =$ 104 ms, zoomed cavity view.}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/y_vel_example_zoom.png}
+		\caption{\label{fig:cavityVExampleZoom}Cavity $y$-velocity field at $\timeVar =$ 104 ms, zoomed view.}
 	\end{minipage}
 \end{figure}
 
-For this flow regime and cavity geometry, the formula of Rossiter~\cite{Rossiter1964} (with $\alpha = 0.25$, $\kappa = 0.57$) predicts the first three acoustic modes to be $f = \{725.2, \; 1,692.1, \; 2,659.1\}$ Hz. As a rough confirmation of model suitability, 100 ms ($\timeVar \in [100, \; 200]$ ms) of pressure data is collected from the aft wall point monitor. The signal is filtered using a low-pass fifth-order Butterworth filter with a critical frequency of 20 kHz, and we compute the power spectral density by Welch's method with a window of 25 ms and 75\% window overlap. The resulting sound pressure level (SLP) is plotted in Fig.~\ref{fig:rossiterModeProof}, where the first three predicted Rossiter frequencies are marked in red. Although slightly overpredicting the first mode and underpredicting the third mode, we feel this is a reasonable match in comparing an empirical fit model and a two-dimensional numerical simulation.
+For this flow regime and cavity geometry, the formula of Rossiter~\cite{Rossiter1964} (with $\alpha = 0.25$, $\kappa = 0.57$) predicts the first three acoustic modes to be $f = \{725.2, \; 1,692.1, \; 2,659.1\}$ Hz. As a rough confirmation of model suitability, 100 ms ($\timeVar \in [100, \; 200]$ ms) of pressure data is collected from the aft wall point monitor. The signal is filtered using a low-pass fifth-order Butterworth filter with a critical frequency of 20 kHz, and we compute the power spectral density by Welch's method with a window of 25 ms and 75\% window overlap. The resulting sound pressure level is plotted in Fig.~\ref{fig:rossiterModeProof}, where the first three predicted Rossiter frequencies are marked in red. Although slightly overpredicting the first mode and underpredicting the third mode, we feel this is a reasonable match in comparing an empirical fit model and a two-dimensional numerical simulation.
 
 \begin{figure}
 	\begin{minipage}{0.48\linewidth}
-		\ifdefined\DRAFT
-			\includegraphics[width=0.99\linewidth]{example-image-a}
-		\else
-			\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/pressure_probe_fom_10ms.png}
-		\fi
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/pressure_probe_fom_10ms.png}
 		\caption{\label{fig:cavityFOMProbe}Pressure probe measurements from aft wall ($\timeVar \in [100, \; 110]$ ms).}
 	\end{minipage} \hspace{0.5em}
 	\begin{minipage}{0.48\linewidth}
-		\ifdefined\DRAFT
-			\includegraphics[width=0.99\linewidth]{example-image-a}
-		\else
-			\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/psd_fom_100ms.png}
-		\fi
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/psd_fom_100ms.png}
 		\caption{\label{fig:rossiterModeProof}Sound pressure level of aft wall pressure signal ($\timeVar \in [100, \; 200]$ ms). The first three Rossiter frequencies are marked in red.}
 	\end{minipage}
 \end{figure}
 
-The POD trial bases are computed from the 10,001 snapshots of the conservative and primitive variables. The POD residual energy decay is displayed in Fig.~\ref{fig:cavityPODEnergy}. Achieving 1\%, 0.1\%, and 0.01\% of the conservative state POD residual energy requires 20, 73, and 155 modes respectively. For the primitive state, this increases to 26, 92, and 180 modes respectively. Although this is a fairly simple problem without any reaction phenomena, this slow POD residual energy decay exhibits how traveling waves and large fluctuations in the unsteady flow field can require a large number of trial bases to approximate accurately. Indeed, the primitive and conservative variable projection error plots in Fig.~\ref{fig:cavityProjErr} indicate that over 125 modes are required to decrease the projection error of the  and velocity and momentum magnitudes below 0.1\% relative error.
+The POD trial bases are computed from the 10,001 snapshots of the conservative and primitive variables. The POD residual energy decay is displayed in Fig.~\ref{fig:cavityPODEnergy}. Achieving 1\%, 0.1\%, and 0.01\% of the conservative state POD residual energy requires 20, 73, and 155 modes respectively. For the primitive state, this increases to 26, 92, and 180 modes respectively. Although this is a fairly simple problem without any reaction phenomena, this slow POD residual energy decay exhibits how traveling waves and large fluctuations in the unsteady flow field can require a large number of trial bases to approximate accurately. Indeed, the primitive and conservative variable projection error plots in Fig.~\ref{fig:cavityProjErr} indicate that over 125 modes are required to decrease the projection error of velocity and momentum magnitudes below 0.1\% relative error.
 
 \begin{figure}
 	\centering
-	\ifdefined\DRAFT
-		\includegraphics[width=0.8\linewidth]{example-image-a}
-	\else
-		\includegraphics[width=0.8\linewidth]{Chapters/CavityAndCVRC/Images/cavity/cavity_pod_energy_10ms.png}
-	\fi
-	\caption{\label{fig:cavityPODEnergy}POD residual energy for cavity flow conservative and primitive state datasets.}
+	\includegraphics[width=0.75\linewidth]{Chapters/CavityAndCVRC/Images/cavity/cavity_pod_energy_10ms.png}
+	\caption{\label{fig:cavityPODEnergy}Cavity POD residual energy for conservative and primitive state datasets.}
 \end{figure}
 
 \begin{figure}
-	\begin{minipage}{0.48\linewidth}
-		\ifdefined\DRAFT
-			\includegraphics[width=0.99\linewidth]{example-image-a}
-		\else
-			\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/projection_error_primitive.png}
-		\fi
-		\subcaption{Primitive variables.}
-	\end{minipage} \hspace{0.5em}
-	\begin{minipage}{0.48\linewidth}
-		\ifdefined\DRAFT
-			\includegraphics[width=0.99\linewidth]{example-image-a}
-		\else
-			\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/projection_error_conservative.png}
-		\fi
-		\subcaption{Conservative variables.}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/projection_error_primitive.png}
+		\subcaption{Primitive variables}
 	\end{minipage}
-	\caption{\label{fig:cavityProjErr}Time-average POD projection error.}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/projection_error_conservative.png}
+		\subcaption{Conservative variables}
+	\end{minipage}
+	\caption{\label{fig:cavityProjErr}Cavity time-average POD projection error.}
 \end{figure}
 
 \subsection{Unsampled PROMs}
+
+We begin by examining the performance of unsampled Galerkin, LSPG, and MP-LSVT ROMs. As mentioned previously, the application of projection-based ROMs alone does not result in computational cost reduction, but still serves as a good performance baseline. If the unsampled ROM performs poorly, the hyper-reduced ROM can hardly be expected to perform well.
+
+A trial basis dimension study and time step size study is conducted. The trial basis dimension $\numConsModes$/$\numPrimModes$ is swept from 25 modes to 200 modes at 25-mode intervals. Four time step sizes are examined: $\Delta \timeVar \in \{ 1, \; 2.5, \; 5, \; 10 \} \; \mu \text{s}$, or 1, 2.5, 5, and 10 times that of the FOM simulation. As has been documented by previous work~\cite{Carlberg2017,Huang2022,Wentland2021}, increasing the ROM time step often achieves computational speedup with negligible increase in error relative to PROMs for which $\dt = \dtFOM$, up to a point. Average error results for each evaluated time step are displayed in Fig.~\ref{fig:cavityUnsampledROMErrVsModes}. Several indicative pressure probe measurements are displayed in Fig.~\ref{fig:cavityUnsampledROMProbes}. Supplementary field contour images are provided in Appendix~\ref{app:cavitySupp} to better understand the effects of the PROM method and trial basis resolution on relevant flow fields.
 
 \begin{figure}
 	\begin{minipage}{0.49\linewidth}
@@ -128,55 +96,78 @@ The POD trial bases are computed from the 10,001 snapshots of the conservative a
 
 	\begin{minipage}{0.49\linewidth}
 		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/unsampled/unsampled_dt5e-6_Average_errorRaw.png}
-		\subcaption{$\dt = 5 \times \dtFOM$}
+		\subcaption{\label{fig:cavityUnsampledROMErrVsModesDt5en6}$\dt = 5 \times \dtFOM$}
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
 		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/unsampled/unsampled_dt1e-5_Average_errorRaw.png}
 		\subcaption{$\dt = 10 \times \dtFOM$}
 	\end{minipage}
-	\caption{\label{fig:cavityUnsampledROMErrVsModes}Cavity unsampled ROM time-average error, various $\dt$}
+	\caption{\label{fig:cavityUnsampledROMErrVsModes}Cavity unsampled ROM time-average error, various $\dt$.}
 \end{figure}
+
+\begin{figure}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/unsampled/pressure_probe_unsampled_modes.png}
+		\subcaption{\label{fig:cavityUnsampledROMProbesModes}MP-LSVT method, various $\numPrimModes$.}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/unsampled/pressure_probe_unsampled_methods.png}
+		\subcaption{\label{fig:cavityUnsampledROMProbesMethods}$\numConsModes,\numPrimModes$ = 150, various methods.}
+	\end{minipage}
+	\caption{\label{fig:cavityUnsampledROMProbes}Cavity unsampled PROM probe measurements, $\dt = 5 \times \dtFOM$.}
+\end{figure}
+
+Unremarkably, the LSPG and MP-LSVT PROMs outperform the Galerkin PROMs at all mode counts and time steps. Further, the LSPG and MP-LSVT PROMs generally exhibit non-increasing accuracy with trial basis enrichment, while error often \textit{increases} with trial basis enrichment for the Galerkin PROMs. For all time steps and trial basis dimensions evaluated, the LSPG and MP-LSVT PROMs perform similarly. This is not unexpected, as this is a non-reacting simulation which does not involve stiff source terms, extremely disparate spatio-temporal scales, or poor conditioning from which traditional LSPG PROMs might suffer. As mentioned previously, increasing the PROM time step may result in ``free'' computational cost savings. Indeed, increasing the ROM time step to $\dt = 2.5 \times \dtFOM$ generates virtually no error increase for the LSPG and MP-LSVT PROMs, and even improves the performance of the Galerkin PROMs. However, at higher time step sizes, the accuracy of all PROMs for roughly $\numConsModes$, $\numPrimModes > 50$ deteriorate drastically. In fact, for $\dt = 10 \times \dtFOM$, accuracy improvement via trial basis enrichment saturates at $\numConsModes$, $\numPrimModes = 50$, never dropping below 0.5\%.
+
+The pressure probe monitors in Fig.~\ref{fig:cavityUnsampledROMProbes} display largely unsurprising results. As seen in Fig~\ref{fig:cavityUnsampledROMProbesModes}, a very low trial basis dimension ($\numPrimModes = 25$), the solution quickly deviates and fails to reconstruct the FOM data faithfully. Large over- and under-shoot in the unsteady pressure signal are observed, and by the end of the simulation period the signal has devolved into small, unorganized fluctuations. Increasing the resolution to $\numPrimModes = 50$ improves the signal reconstruction, although small under- and over-shoot is observed by $\timeVar = 103$ ms. This small discrepancy is only marginally improved by increasing the trial basis dimension to $\numPrimModes = 75$, in agreement with the converging average error shown in Fig.~\ref{fig:cavityUnsampledROMErrVsModesDt5en6}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{Chapters/CavityAndCVRC/Images/cavity/unsampled/unsampled_modeStudy_time_calcAndMPI.png}
+    \caption{\label{fig:cavityUnsampledCost}MP-LSVT unsampled PROM computational cost, relative to FOM cost, various $\dt$.}
+\end{figure}
+
+We now examine the computational cost of the unsampled MP-LSVT ROMs. Results are nearly identical for equivalent Galerkin and LSPG PROMS. As discussed previously, projection-based ROMs \textit{alone} should not produce any significant computational cost savings, and in fact should increase cost due to lifting the state to the full-dimension and projecting the non-liner function onto the test space. Figure~\ref{fig:cavityUnsampledCost} quantifies just how much this change affects the run-time of the unsampled PROM. We see that, using the same time step size as that of the FOM, the unsampled ROM is always more expensive than the FOM (below 1 on the $y$-axis) no matter the trial basis dimension. This highlights the necessity of hyper-reduction: projection-based order reduction of the governing system alone, even for extremely low trial/test basis dimensions, does not improve PROM computational cost. For $\dt = 2.5 \times \dtFOM$, the unsampled PROM only achieves speedup for $\numPrimModes < 100$. This trend continues to improve the speedup for $\dt = 5 \times \dtFOM, \; 10 \times \dtFOM$, though we know from prior results that PROM accuracy quickly deteriorates at high time steps. For $\numPrimModes = 100$ and $\dt = 10 \times \dtFOM$, the unsampled PROM is only capable of achieving three times speedup, which is hardly impressive given that we are only reconstructing the training period. To realize significant cost savings, hyper-reduction must be applied.
 
 \subsection{Hyper-reduced PROMs}
+%
+For the sake of brevity, we will only examine hyper-reduced MP-LSVT PROMs. As will be seen in Section~\ref{sec:cvrc}, Galerkin and LSPG ROMs appear unsuitable for practical reacting flows, and will not be discussed thereafter. All results presented in this section utilize a trial basis dimension of $\numPrimModes = 150$. All gappy POD regressor bases are constructed from POD modes of the conservative field dataset, i.e., $\deimBasis = \consTrial \inRTwo{\numDOF}{\numResModes}$, as detailed in Section~\ref{subsec:stateApproxDEIM}
 
 \begin{figure}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/sampled_dt2p5e-6_Average_errorRaw_pareto.png}
-		\subcaption{$\dt = 2.5 \times \dtFOM$}
-	\end{minipage}
-	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/sampled_dt5e-6_Average_errorRaw_pareto.png}
-		\subcaption{$\dt = 5 \times \dtFOM$}
-	\end{minipage}
-
-	\centering
-	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/sampled_dt1e-5_Average_errorRaw_pareto.png}
-		\subcaption{$\dt = 10 \times \dtFOM$}
-	\end{minipage}
-	\caption{\label{fig:cavitySampledROMErrVsTime}Cavity HPROM time-average error vs. CPU-time speedup, various $\dt$}
-\end{figure}
-
-\begin{figure}
-	\begin{minipage}{0.46\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_random_dt2p5e-6.png}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/deim/iBlank_random_zoom.png}
 		\subcaption{Random}
 	\end{minipage}
-	\begin{minipage}{0.53\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_eigenvec_dt2p5e-6.png}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/deim/iBlank_eigenvec_zoom.png}
 		\subcaption{Eigenvector}
 	\end{minipage}
 
-	\begin{minipage}{0.46\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_gnat1_dt2p5e-6.png}
-		\subcaption{GNAT, V1}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/deim/iBlank_greedy_carlberg_zoom.png}
+		\subcaption{GNAT V1}
 	\end{minipage}
-	\begin{minipage}{0.53\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_gnat2_dt2p5e-6.png}
-		\subcaption{GNAT, V2}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/deim/iBlank_greedy_ben_zoom.png}
+		\subcaption{GNAT V2}
 	\end{minipage}
-	\caption{Cavity HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 2.5 \times \dtFOM$, various sampling algorithms}
+	\caption{\label{fig:cavityiBlank}Cavity sample mesh examples, $\numResModes= 250$, $\numSamps = 2.5\% \times \numDOF$}
 \end{figure}
+
+\begin{table}
+	\centering
+	\begin{tabular}{ llllllllll }
+	\toprule
+	Sampling Rate (\%) & 0.5 & 0.75 & 1 & 1.75 & 2.5 & 3.75 & 5.0 & 7.5 & 10 \\
+	\midrule
+	Cores & 2 & 2 & 2 & 2 & 3 & 5 & 6 & 9 & 13 \\
+	Cells/core (approx.) & 312 & 469 & 625 & 1,093 & 1,042 & 938 & 1,042 & 1,042 & 962 \\
+	\bottomrule
+	\end{tabular}
+	\caption{\label{tab:cavitySampProcs}Partitioning for cavity HPROM sample meshes.}
+\end{table}
+
+We examine the accuracy and computational performance of PROMs for sampling rates of $\numSamps \in \{0.5, \; 0.75, \; 1.0, \; 1.75, \; 2.5, \; 3.75, \; 5.0, \; 7.5, \; 10\}\% \times \numDOF$, and gappy POD regressor dimensions of $\numResModes \in \{150, \; 200, \; 250, \; 300\}$. Views of indicative sample meshes constructed using the four sampling algorithms detailed in Section~\ref{subsec:sampAlgos} are shown in Fig.~\ref{fig:cavityiBlank}. As in Section~\ref{sec:sampleMesh}, blue cells indicate directly-sampled cells, red cells indicate flux cells, and yellow cells indicate gradient/vertex cells. The three greedy sampling algorithms generate sample meshes which are quite similar in some ways: the vast majority of sampled cells are located in the shear layer originating from the cavity leading edge and meandering downstream, as well as in the strong recirculation region in the downstream half of the cavity. The most glaring difference appears to be that the eigenvector-based algorithm also selects a number of points in the free-stream flow. We note that this region, although dominated by the free-stream conditions, experiences strong pressure oscillations emitted from the cavity trailing edge. Interestingly, the GNAT V1 algorithm selects sample cells in extremely tight clusters, while GNAT V2 generates a relatively more diffuse sample mesh, and the eigenvector-based algorithm's sample mesh is even more diffuse. Further, the eigenvector-based sampling selects a significant number of points on the leading edge of the cavity and in the upstream half of the cavity. We will see shortly how apparently minor discrepancies can have a drastic effect on HPROM performance. For all online HPROM results, each sample mesh is partitioned for parallel computations according to the sampling rate, as given in Table~\ref{tab:cavitySampProcs}, regardless of the sampling algorithm utilized. The number of cores is altered for each sampling rate to ensure the load balancing is approximately equivalent to that of the FOM, or roughly 1,000 cells per core. We note that this is impossible for $\numSamps \le 1\% \times \numDOF$, and two cores are used for such cases.
 
 \begin{figure}
 	\begin{minipage}{0.46\linewidth}
@@ -196,26 +187,41 @@ The POD trial bases are computed from the 10,001 snapshots of the conservative a
 		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_gnat2_dt5e-6.png}
 		\subcaption{GNAT, V2}
 	\end{minipage}
-	\caption{Cavity HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 5 \times \dtFOM$, various sampling algorithms}
+	\caption{\label{fig:cavitySampledROMErrContour}Cavity HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 5 \times \dtFOM$, various sampling algorithms.}
 \end{figure}
+
+The accuracy of the online HPROMs on sample meshes generated by each sampling algorithm stand in stark contrast. Time-average $\ell^2$ error contour plots for $\dt = 5 \times \dtFOM$ are given in Fig.~\ref{fig:cavitySampledROMErrContour},comparing accuracy at each combination of sampling rate $\numSamps$ and gappy POD regressor basis dimension $\numResModes$. White squares indicate simulations which exploded. Across all sampling algorithms, we observe the unsurprising result that increasing $\numSamps$ and $\numResModes$ tends to improve HPROM performance. However, it is quite plain that eigenvector-based sampling consistently generates more stable and accurate HPROMs than any other sampling algorithm, only failing at extremely low sampling rates. Interestingly, random sampling tends to outperform both GNAT sampling algorithms, though it only produces stable simulations for $\numSamps > 2.5\% \times \numDOF$. In fact, GNAT V1 produces consistently stable simulations only for $\numSamps = 10\% \times \numDOF$, and even those are highly inaccurate. The GNAT V2 algorithm is capable of producing stable simulations at lower sampling rates, but also incurs relatively high error in the solution.
 
 \begin{figure}
-	\begin{minipage}{0.46\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_random_dt1e-5.png}
-		\subcaption{Random}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/sampled_dt2p5e-6_Average_errorRaw_pareto.png}
+		\subcaption{$\dt = 2.5 \times \dtFOM$}
 	\end{minipage}
-	\begin{minipage}{0.53\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_eigenvec_dt1e-5.png}
-		\subcaption{Eigenvector}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/sampled_dt5e-6_Average_errorRaw_pareto.png}
+		\subcaption{$\dt = 5 \times \dtFOM$}
 	\end{minipage}
-
-	\begin{minipage}{0.46\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_gnat1_dt1e-5.png}
-		\subcaption{GNAT, V1}
-	\end{minipage}
-	\begin{minipage}{0.53\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_gnat2_dt1e-5.png}
-		\subcaption{GNAT, V2}
-	\end{minipage}
-	\caption{Cavity HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 10 \times \dtFOM$, various sampling algorithms}
+	% \begin{minipage}{0.49\linewidth}
+	% 	\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/sampled_dt1e-5_Average_errorRaw_pareto.png}
+	% 	\subcaption{$\dt = 10 \times \dtFOM$}
+	% \end{minipage}
+	\caption{\label{fig:cavitySampledROMErrVsTime}Cavity HPROM error vs. CPU-time speedup, $\numPrimModes = 150$, $\numResModes = 250$, various $\dt$.}
 \end{figure}
+
+Of course, computational cost savings is the prime objective of hyper-reduction, and an accurate HPROM does not guarantee a fast HPROM. As one might expect, increasing $\numSamps$ and $\numResModes$ increases HPROM computational cost, as will be explored more thoroughly in Section~\ref{sec:cvrc}. Figure~\ref{fig:cavitySampledROMErrVsTime} displays the time-average error with respect to the speedup ratio at each sampling rates for all sampling algorithms. We see that the eigenvector-based sampling enables stable, accurate HPROMs which are able to achieve over 200 times computational cost savings, while the equivalent unsampled ROMs are either equally or more expensive than the FOM. Similarly, random sampling is capable of producing accurate ($<1\%$ error), though only at higher sampling rates and achieving relatively lower speedup ratios. The GNAT sampling algorithms generally fail to produce meaningful cost savings without incurring instability or high error.
+
+\begin{figure}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/pressure_probe_deim_2p5.png}
+		\subcaption{\label{fig:cavitySampledROMProbe2p5}$\numSamps = 2.5\% \times \numDOF$}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/pressure_probe_deim_1.png}
+		\subcaption{\label{fig:cavitySampledROMProbe1p}$\numSamps = 1\% \times \numDOF$}
+	\end{minipage}
+	\caption{\label{fig:cavitySampledROMProbes}Cavity MP-LSVT HPROM probe measurements, $\numPrimModes = 150$, $\numResModes = 250$, $\dt = 5 \times \dtFOM$.}
+\end{figure}
+
+To better visualize these accuracy discrepancies, Fig.~\ref{fig:cavitySampledROMProbes} displays pressure probe monitors for each sampling algorithm for two different sampling rates. The corresponding average error for Fig.~\ref{fig:cavitySampledROMProbe2p5} are marked with an ``X'' in Figs.~\ref{fig:cavitySampledROMErrContour} and~\ref{fig:cavitySampledROMErrVsTime}, and those for Fig.~\ref{fig:cavitySampledROMProbe1p} are similarly marked by a diamond. In general, all sampling algorithms are able to produce stable and accurate ROMs for the simulation period $\timeVar \in [100, \; 102]$ ms. However, those HPROMs generated by the GNAT sampling algorithms quickly deviate from the FOM, exhibiting wild swings in the unsteady pressure signal. Although random sampling generates an unstable HPROM for $\numSamps = 1\% \times \numDOF$, it produces a fairly accurate simulation for $\numSamps = 2.5\% \times \numDOF$, only exhibiting minor under- and over-shoot towards the end of the simulation period. Eigenvector-based sampling produces accurate reconstruction of the unsteady pressure signal, particularly for $\numSamps = 2.5\% \times \numDOF$, though it does exhibit some discrepancies at later times for $\numSamps = 1\% \times \numDOF$. Additional illustrative field plots for the above HPROMs have been excluded here for the sake of conciseness, but can be found in Appendix~\ref{app:cavitySupp}.
+
+Although the above results indicate that it is possible to achieve excellent computational cost savings with HPROMs, they also hint at the challenge of guaranteeing that they are accurate and robust. The drastic effects that the sample mesh and gappy POD regression have on HPROM performance invites more thorough exploration for larger, more challenging systems.

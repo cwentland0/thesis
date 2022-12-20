@@ -27,7 +27,7 @@ In the case $\consScale = \resScale = \identMat$, this simplifies further to
 %
 Note that the matrix inverse term is not equal to the identity matrix, as it did in the unsampled Galerkin PROM in Eq.~\ref{eq:galerkinROMODELinearSimple}, as the matrix $\sampMat \consTrial$ has no guarantee of orthonormality. However, the matrix $\left[ \left[\sampMat \consTrial \right]^\top \sampMat \consTrial \right]^{-1} \left[\sampMat \consTrial \right]^\top \inRTwo{\numConsModes}{\numSamps}$ (or the scaled equivalent for Eq.~\ref{eq:mpeGalerkinLinear}) may be precomputed in the offline stage.
 
-The operation $\sampMat \rhsFunc{\consVecRom, \; \timeVar}$ is the key to cost reduction via the MPE method, whereby only $\numSamps$ elements of the non-linear function $\rhsFunc{\cdot, \; \timeVar}$ must be evaluated. Similar operations underpin all sparse sampling hyper-reduction methods for PROMs of non-linear systems. In the case $\numSamps \ll \numDOF$, the cost of evaluating the non-linear terms may be drastically reduced. Further, only those mesh elements which are required to compute $\sampMat \rhsFunc{\consVecRom, \; \timeVar}$ must be allocated, potentially greatly reducing the memory consumption of the hyper-reduced PROM relative to the FOM or unsampled PROM. This \textit{sample mesh} concept will be discussed at greater length in Section~\ref{subsec:sampleMesh}.
+The operation $\sampMat \rhsFunc{\consVecRom, \; \timeVar}$ is the key to cost reduction via the MPE method, whereby only $\numSamps$ elements of the non-linear function $\rhsFunc{\cdot, \; \timeVar}$ must be evaluated. Similar operations underpin all sparse sampling hyper-reduction methods for PROMs of non-linear systems. In the case $\numSamps \ll \numDOF$, the cost of evaluating the non-linear terms may be drastically reduced. Further, only those mesh elements which are required to compute $\sampMat \rhsFunc{\consVecRom, \; \timeVar}$ must be allocated, potentially greatly reducing the memory consumption of the hyper-reduced PROM relative to the FOM or unsampled PROM. This \textit{sample mesh} concept will be discussed at greater length in Section~\ref{sec:sampleMesh}.
 
 We mention that a similar method was proposed by Bos \textit{et al.}~\cite{Bos2004} in the context of systems governed by an explicit state space update $\consVec^{\timeIdx} = \rhsFunc{\consVec^{\timeIdx - 1}, \; \timeVar}$. Their method was proposed at the same time as Astrid~\cite{Astrid2004} and deserves similar credit as it was formulated for general non-linear systems. However, their derivation lacks generality to arbitrary PDEs, and is only equivalent to that of MPE in the specific case of the solution of Eq~\ref{eq:mpeGalerkinLinear} via an explicit time integrator.
 
@@ -172,7 +172,7 @@ Substitution into Eq.~\ref{eq:benResidual} and projection by the tangent trial s
     \consVecCoef^{\timeIdx-1} - \left[\jacobDecodeCons^\top \resScaleInv \jacobDecodeCons\right]^{-1} \jacobDecodeCons^\top \resScaleInv \rhsResApproxFunc{\consVecRom^{\timeIdx}} = \zeroVec.
 \end{equation}
 %
-As mentioned previously, the above formulation is fairly non-standard and can be quite confusing for PROM practitioners. However, as will be discussed in Sections~\ref{subsec:regBasis}, this formulation lends itself to a simplification in which the regression basis $\deimBasis$ can be equated to the solution trial basis $\consTrial$ or $\primTrial$. Its use in adaptive bases and sampling is also outlined in Section~\ref{sec:adaptation}.
+As mentioned previously, the above formulation is fairly non-standard and can be quite confusing for PROM practitioners. However, as will be discussed in Sections~\ref{sec:regBasis}, this formulation lends itself to a simplification in which the regression basis $\deimBasis$ can be equated to the solution trial basis $\consTrial$ or $\primTrial$. Its use in adaptive bases and sampling is also outlined in Section~\ref{sec:adaptation}.
 
 \subsection{GNAT for LSPG and MP-LSVT ROMs}
 %
@@ -233,7 +233,7 @@ Only $[ \sampMat \deimBasis ]^{+} \inRTwo{\numResModes}{\numSamps}$ is pre-compu
 
 As with collocation, we see that computing the sampled residual $\sampMat \resFunc{\cdot}$ only requires that the residual be evaluated at $\numSamps$ degrees of freedom. Further, in Eqs.~\ref{eq:lspgHRTest} and~\ref{eq:mplsvtHRTest} we see that only the corresponding $\numSamps$ rows of the residual Jacobians $\jacobCons $ and $\jacobPrim$ need to be computed. Thus, the hyper-reduced PROM is truly independent of the FOM dimension $\numDOF$. When $\numSamps \ll \numDOF$ and evaluation of the non-linear terms accounts for a majority of the computational burden, this sparse sampling has the potential to drastically reduce the cost of the hyper-reduced PROM relative to the FOM. Our work has recorded four orders of magnitude cost reduction for a three-dimensional model rocket combustor~\cite{Wentland2021}. Up to five orders of magnitude cost reduction has been recorded~\cite{Grimberg2021}, consuming a few core-hours to compute a hyper-reduced LSPG PROM where the equivalent FOM simulation consumed over two thousand core-weeks. Such cost savings bring projection-based ROMs into the realm of possibility for many-query applications.
 
-\section{Regression Basis Calculation}\label{subsec:regBasis}
+\section{Regression Basis Calculation}\label{sec:regBasis}
 %
 We now address the question of how the regression basis $\deimBasis$ is computed. Although the process generally mirrors that of computing the solution trial bases $\consTrial$ or $\primTrial$, there are several approaches for computing $\deimBasis$ which are suggested by the literature and deserve explanation.
 
@@ -353,7 +353,7 @@ In this work, we construct the corresponding one-dimensional vector by flattenin
 %
 For a given mesh element index $j \in \{1,\; \hdots,\; \numCells\}$, all DOF indices in $\stateVec$ for the associated state variables can be retrieved as the set $\dummyIdx \in \{j + (k-1) \numCells \; \vert \; 1 \le k \le \numVars \}$.
 
-As will be discussed in more detail in Section~\ref{subsec:sampleMesh}, sampling individual degrees of freedom of a non-linear function usually requires that additional, auxiliary degrees of freedom also be sampled in order to correctly compute the approximated non-linear function. The union of the sampling operator and these auxiliary degrees of freedom can thus be defined as $\sampMatFull \inRTwo{\numSampsFull}{\numDOF}$, and the sampled non-linear function is computed as $\sampMat \rhsFunc{\stateVec, \; \timeVar} = \rhsFunc{\sampMatFull \stateVec, \; \timeVar}$. This understanding that additional degrees of freedom must be included in the calculation can influence how greedy sampling metrics are calculated. Three distinct approaches are described below.
+As will be discussed in more detail in Section~\ref{sec:sampleMesh}, sampling individual degrees of freedom of a non-linear function usually requires that additional, auxiliary degrees of freedom also be sampled in order to correctly compute the approximated non-linear function. The union of the sampling operator and these auxiliary degrees of freedom can thus be defined as $\sampMatFull \inRTwo{\numSampsFull}{\numDOF}$, and the sampled non-linear function is computed as $\sampMat \rhsFunc{\stateVec, \; \timeVar} = \rhsFunc{\sampMatFull \stateVec, \; \timeVar}$. This understanding that additional degrees of freedom must be included in the calculation can influence how greedy sampling metrics are calculated. Three distinct approaches are described below.
 
 \begin{enumerate}
 	\item \textit{Agnostic}: The agnostic approach is the simplest sampling criterion, whereby the greedy metric is computed for every unsampled DOF, and only one DOF index is added to the sample set at every greedy iteration. That one DOF is then excluded from all future greedy metric evaluations. Only after $\numSamps$ DOFs have been selected for $\sampSet$ are the auxiliary DOFs appended to the full sample set $\sampSetFull$.
@@ -369,7 +369,7 @@ To the best of the author's knowledge, much of the literature does not discuss s
 
 As an aside, prior work~\cite{Carlberg2013} has noted that it is important to sample at least one mesh element at each inlet and outlet boundary to facilitate the communication of information from outside of the domain to the other sampled cells. Although this consideration is logical, it is not applied in this work. As will be seen later, this omission does not appear to affect the accuracy and robustness of the hyper-reduced ROMs presented. Whether this is more generally true or a pleasant coincidence is unknown.
 
-\subsection{Sampling Algorithms}
+\subsection{Sampling Algorithms}\label{subsec:sampAlgos}
 %
 We now turn to specific algorithms for selecting samples for hyper-reduction. In this thesis, we study random sampling, DEIM-like sampling, eigenvector-based sampling, and determinant-based sampling, which are each detailed in turn.
 
@@ -439,7 +439,7 @@ For all sampling algorithms, the first $\numResModes$ sampled degrees of freedom
     \end{algorithmic}
 \end{algorithm}
 
-\section{The Sample Mesh}\label{subsec:sampleMesh}
+\section{The Sample Mesh}\label{sec:sampleMesh}
 
 As mentioned in Section~\ref{subsec:sampleSelect}, sampling individual degrees of freedom of a non-linear function is not equivalent to sampling the state variable arguments associated with those degrees of freedom, e.g., $\sampMat \resFunc{\consVec} \neq \resFunc{\sampMat \consVec}$. Specifically, the evaluation of the non-linear function at a specific degree of freedom often requires access to all state variables at that point in space. For example, solving the continuity equation of the Navier--Stokes equations at a single discrete point in space requires access to both the density and the velocity field. Further, the state at entirely different points in space may also need to be sampled, e.g., to compute fluxes or gradients.
 

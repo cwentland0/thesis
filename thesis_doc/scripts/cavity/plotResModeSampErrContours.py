@@ -6,7 +6,7 @@ from plotErrContours import plotErrContours
 zbounds = [3e-3, 3e-2]
 yscale = "log"
 cb_ticks = [0.003, 0.03]
-cb_ticklabels = ["0.03", "0.3"]
+cb_ticklabels = ["0.003", "0.03"]
 
 xvals_list = [150, 200, 250, 300]
 yvals_list = [0.5, 0.75, 1, 1.75, 2.5, 3.75, 5, 7.5, 10]
@@ -65,11 +65,19 @@ data_dirs = [
 # dtStr = "dt2p5e-6"
 # err_file_name = "l2_rel_sum_err_vs_raw_mag_40016_44000_16.dat"
 
-# dtStr = "dt5e-6"
-# err_file_name = "l2_rel_sum_err_vs_raw_mag_20008_22000_8.dat"
+dtStr = "dt5e-6"
+err_file_name = "l2_rel_sum_err_vs_raw_mag_20008_22000_8.dat"
 
-dtStr = "dt1e-5"
-err_file_name = "l2_rel_sum_err_vs_raw_mag_10004_11000_4.dat"
+# dtStr = "dt1e-5"
+# err_file_name = "l2_rel_sum_err_vs_raw_mag_10004_11000_4.dat"
+
+plot_point_markers = True
+point_marker_coords = [
+    [250, 1],
+    [250, 2.5],
+]
+point_marker_colors = ["k", "k"]
+point_marker_styles = ["D", "X"]
 
 ##### Random #####
 
@@ -98,6 +106,10 @@ plotErrContours(
     yscale=yscale,
     xlabel=xlabel,
     ylabel=ylabel,
+    plot_point_markers=plot_point_markers,
+    point_marker_coords=point_marker_coords,
+    point_marker_colors=point_marker_colors,
+    point_marker_styles=point_marker_styles,
 )
 
 ##### Eigenvec #####
@@ -127,6 +139,10 @@ plotErrContours(
     yscale=yscale,
     xlabel=xlabel,
     ylabel=ylabel,
+    plot_point_markers=plot_point_markers,
+    point_marker_coords=point_marker_coords,
+    point_marker_colors=point_marker_colors,
+    point_marker_styles=point_marker_styles,
 )
 
 ##### GNAT Carlberg #####
@@ -156,6 +172,10 @@ plotErrContours(
     yscale=yscale,
     xlabel=xlabel,
     ylabel=ylabel,
+    plot_point_markers=plot_point_markers,
+    point_marker_coords=point_marker_coords,
+    point_marker_colors=point_marker_colors,
+    point_marker_styles=point_marker_styles,
 )
 
 ##### GNAT Ben #####
@@ -185,4 +205,8 @@ plotErrContours(
     yscale=yscale,
     xlabel=xlabel,
     ylabel=ylabel,
+    plot_point_markers=plot_point_markers,
+    point_marker_coords=point_marker_coords,
+    point_marker_colors=point_marker_colors,
+    point_marker_styles=point_marker_styles,
 )

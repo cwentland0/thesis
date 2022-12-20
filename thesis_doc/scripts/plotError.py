@@ -47,7 +47,16 @@ def plotErrorAvgVs(
     marker_types=['o']*50,
     line_styles=['-']*50,
     marker_sizes=[6]*50,
+    plot_point_markers=False,
+    point_marker_idxs=None,
+    point_marker_styles=None,
+    point_marker_size=6,
 ):
+
+    if plot_point_markers:
+        assert point_marker_idxs is not None
+        assert point_marker_styles is not None
+        assert len(point_marker_idxs) == len(point_marker_styles)
 
     if plot_legend:
         assert legend_labels is not None
@@ -60,19 +69,22 @@ def plotErrorAvgVs(
 
     # some logical checks
     numLines = len(data_dirs)
-    assert(len(iter_start_list) == numLines)
-    assert(len(iter_end_list) == numLines)
-    assert(len(iter_end_list) == numLines)
+    if (plot_type != 1):
+        assert(len(iter_start_list) == numLines)
+        assert(len(iter_end_list) == numLines)
+        assert(len(iter_end_list) == numLines)
     if plot_type > 0:
         assert cores_list is not None
         assert len(cores_list) == numLines
     assert(len(xvals_list) == numLines)
+    xvals_list = [np.array(xvals_entry) for xvals_entry in xvals_list]
 
     num_points_list = [len(x) for x in data_dirs]
     for lineIdx, line in enumerate(data_dirs):
-        assert(len(iter_start_list[lineIdx]) == num_points_list[lineIdx])
-        assert(len(iter_end_list[lineIdx]) == num_points_list[lineIdx])
-        assert(len(iter_skip_list[lineIdx]) == num_points_list[lineIdx])
+        if (plot_type != 1):
+            assert(len(iter_start_list[lineIdx]) == num_points_list[lineIdx])
+            assert(len(iter_end_list[lineIdx]) == num_points_list[lineIdx])
+            assert(len(iter_skip_list[lineIdx]) == num_points_list[lineIdx])
         if (plot_type > 0):
             assert(len(cores_list[lineIdx]) == num_points_list[lineIdx])
         assert(len(xvals_list[lineIdx]) == num_points_list[lineIdx])
@@ -208,13 +220,24 @@ def plotErrorAvgVs(
                 yVals = avgTimeVals
 
             # deal with large errors and NaN
-            yVals[yVals > 1.0] = 1.0
+            if (plot_type != 1):
+                yVals[yVals > 1.0] = 1.0
             nan_mask = np.isfinite(yVals)
 
             # no bars
-            artistTemp, = axTime.plot(xVals[nan_mask], yVals[nan_mask], color=plot_colors[lineIdx],
+            artistTemp, = axTime.plot(xVals[nan_mask], yVals[nan_mask],
+                color=plot_colors[lineIdx],
                 marker=marker_types[lineIdx], linestyle=line_styles[lineIdx], markersize=marker_sizes[lineIdx])
             artist_list.append(artistTemp)
+
+            if plot_point_markers:
+                if (xVals.shape[0] > 1):
+                    for idx, marker_idx in enumerate(point_marker_idxs):
+                        axTime.plot(xVals[marker_idx], yVals[marker_idx],
+                            color=plot_colors[lineIdx],
+                            marker=point_marker_styles[idx],
+                            markeredgecolor="k",
+                            markersize=point_marker_size)
 
             if plot_walltime:
                 if (num_points_list[lineIdx] == 1):
