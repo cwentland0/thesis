@@ -48,10 +48,6 @@ def plotPartitionStats(
     for line_idx, line in enumerate(data_dirs):
         assert(len(xvals_list[line_idx]) == num_points_list[line_idx])
 
-    out_dir = os.path.join(base_dir, "Images")
-    if (not os.path.isdir(out_dir)):
-        os.mkdir(out_dir)
-
     outStatsFile = os.path.join(out_dir, out_name + "_partition_stats.png")
     outIBlankFile = os.path.join(out_dir, out_name + "_partition_iblank.png")
     outCommFile = os.path.join(out_dir, out_name + "_partition_comms.png")
@@ -85,13 +81,12 @@ def plotPartitionStats(
             print(set_dir)
 
             # load partition data
-            partitionFilePath = os.path.join(set_dir, "mesh", "partitionOutput.out")
+            partitionFilePath = os.path.join(set_dir, "mesh_" + str(num_parts_spec), "partitionOutput.out")
             partitionDataIn = extractPartitionData(partitionFilePath)
             plotIBlankVals[set_idx,:] = partitionDataIn[0] 
             plotStatsVals[set_idx,:] = partitionDataIn[1]
-            # numGraphEdges = partitionDataIn[2]
             
-            meshDir = os.path.join(set_dir, "mesh")
+            meshDir = os.path.join(set_dir, "mesh_" + str(num_parts_spec))
             plotCommVals[set_idx] = extractCommsFromASCIIMesh(meshDir, mesh_name, num_parts_spec)
 
         # scale cell counts by total mesh cell numbers			
@@ -122,7 +117,7 @@ def plotPartitionStats(
         axStats.set_xscale(xscale)
         axStats.xaxis.set_major_formatter(PercentFormatter(xmax=100.0,decimals=2))
         if scale_cells:
-            axStats.set_ylabel("Cells per Partition, % of Full Mesh")
+            axStats.set_ylabel("Cells per Partition, \% of Full Mesh")
             axStats.yaxis.set_major_formatter(PercentFormatter(xmax=1.0,decimals=2))
         else:
             axStats.set_ylabel("Cells per Partition")
@@ -189,6 +184,8 @@ def plotPartitionStats(
         axComm.legend(artistsComm, legend_labels, loc=legend_loc, framealpha=0.8, prop={'size':legend_fontsize})
             
     # tighten and save figures
+    print("Saving images in " + out_dir)
+    
     plt.figure(figStats.number)
     plt.tight_layout()
     plt.savefig(outStatsFile)

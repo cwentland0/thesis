@@ -3,7 +3,7 @@ from math import sqrt
 
 import numpy as np
 import tecplot as tec
-from tecplot.constant import PlotType, SliceSurface, TextBox, Units, AnchorAlignment
+from tecplot.constant import PlotType, SliceSurface, TextBox, Units, AnchorAlignment, ContourType
 
 def calcHats(p1, h, m):
 
@@ -57,8 +57,11 @@ def plotContourOrSlices(
         file_header=None,
         scale_val=1.0,
         theta=0.0,
+        iblank_val=None,
     ):
 
+    if iter_skip == 999:
+        assert iblank_val is not None
 
     file_list = []
     if meshfile is not None:
@@ -76,7 +79,10 @@ def plotContourOrSlices(
         print("Processing snapshot "+str(iter_num))
 
         # load dataset
-        file_name = os.path.join(case_dir, "gemsma_cmb_"+str(iter_num)+".szplt")
+        if iter_skip == 999:
+            file_name = os.path.join(case_dir, "dfd_cell.plt")
+        else:
+            file_name = os.path.join(case_dir, "gemsma_cmb_" + str(iter_num) + ".szplt")
         file_list_in = file_list + [file_name]
         if (file_list_in[-1][-6:] == ".szplt"):
             dataset = tec.data.load_tecplot_szl(file_list_in, read_data_option=2)
@@ -102,7 +108,8 @@ def plotContourOrSlices(
         else:
             tPlot = tFrame.plot(PlotType.Cartesian3D)
 
-        tPlot.show_contour = True
+        if num_dims == 2:
+            tPlot.show_contour = True
         if num_dims == 3:
             tPlot.show_slices = True
             tSlice = tPlot.slice(0)
@@ -178,6 +185,25 @@ def plotContourOrSlices(
         else:
             tLegend.show = False
 
+        
+        # iBlank
+        if iter_skip == 999:
+            if iblank_val > 0:
+                tContour.color_cutoff.include_min = True
+                tContour.color_cutoff.min = 0.5
+                if iblank_val < 3:
+                    tContour.color_cutoff.include_max = True
+                    if iblank_val == 1:
+                        tContour.color_cutoff.max = 1.5
+                    elif iblank_val == 2:
+                        tContour.color_cutoff.max = 2.5
+            if num_dims == 2:
+                tPlot.view.fit_data(consider_blanking=True)
+                tPlot.fieldmap(0).contour.contour_type = ContourType.PrimaryValue
+            else:
+                tPlot.view.fit_surfaces(consider_blanking=True)
+                tSlice.contour.contour_type = ContourType.PrimaryValue
+        
         # miscellaneous
         if num_dims == 2:
             tPlot.axes.viewport.left = 5
@@ -192,6 +218,7 @@ def plotContourOrSlices(
             if zoom_lims is None:
                 raise ValueError("Did not pass zoom_lims")
             tPlot.view.zoom(zoom_lims[0][0], zoom_lims[1][0], zoom_lims[0][1], zoom_lims[1][1])
+
 
         if add_line:
             if line_coords is None:

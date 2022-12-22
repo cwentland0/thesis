@@ -57,8 +57,8 @@ def extractPartitionData(fileIn):
                 partitionIBlankCounts[1] = int(lineSplit[-1])
             elif "Number gradient sampled cells" in line:
                 partitionIBlankCounts[2] = int(lineSplit[-1])
-            elif "Number subsampling graph edges" in line:
-                numGraphEdges = int(lineSplit[-1])
+            #elif "Number subsampling graph edges" in line:
+            #    numGraphEdges = int(lineSplit[-1])
             elif "total communications" in line:
                 numComms = int(lineSplit[-1])
             elif "Partition" in line:
@@ -79,7 +79,7 @@ def extractPartitionData(fileIn):
 
     partitionSizes = partitionSizes[:-1]
 
-    return partitionIBlankCounts, partitionStats, numGraphEdges, numComms
+    return partitionIBlankCounts, partitionStats, numComms
 
 # get number of communications directly from ASCII mesh files
 def extractCommsFromASCIIMesh(meshDir, meshName, numParts):

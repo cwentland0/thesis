@@ -23,6 +23,7 @@ def plotProbes(
     plot_colors,
     outdir,
     press_factor=1.0,
+    hr_factor=1.0,
     time_fac=1.0,
     xbounds=None,
     xticks=None,
@@ -33,6 +34,7 @@ def plotProbes(
     train_bound=None,
     plot_legend=False,
     legendloc="best",
+    legend_fontsize=12,
     outfile=None,
 ):
 
@@ -52,6 +54,17 @@ def plotProbes(
         press_scale = "MPa"
     else:
         raise ValueError("Invalid press_factor: " + str(press_factor))
+
+    if hr_factor == 1.0:
+        hr_scale = "W"
+    elif hr_factor == 1e3:
+        hr_scale = "kW"
+    elif hr_factor == 1e6:
+        hr_scale = "MW"
+    elif hr_factor == 1e9:
+        hr_scale = "GW"
+    else:
+        raise ValueError("Invalid press_factor: " + str(hr_factor))
 
     if xbounds is not None:
         xbounds = [xbounds[i]*time_fac for i in range(2)]
@@ -87,6 +100,8 @@ def plotProbes(
 
         if var_name == 'Static_Pressure':
             data_arr[:, var_idx] = data_arr[:, var_idx] / press_factor
+        elif var_name == 'Heat_Release':
+            data_arr[:, var_idx] = data_arr[:, var_idx] / hr_factor
 
         data_arr[:, 0] = data_arr[:, 0] * time_fac
 
@@ -108,10 +123,14 @@ def plotProbes(
     ax.set_xlabel(r't (' +time_units + ')')
     if var_name == "Static_Pressure":
         ax.set_ylabel('Pressure (' +press_scale +')')
-    if var_name == "Temperature":
+    elif var_name == "Temperature":
         ax.set_ylabel('Temperature (K)')
-    if var_name == "U":
+    elif var_name == "U":
         ax.set_ylabel('Axial Velocity (m/s)')
+    elif var_name == "Density":
+        ax.set_ylabel(r'Density (kg/m$^3$)')
+    elif var_name == "Heat_Release":
+        ax.set_ylabel(r'Heat Release (' + str(hr_scale) + '/m$^3$)')
 
 
     ax.set_xlim([minT, maxT])
@@ -137,7 +156,7 @@ def plotProbes(
         ax.set_xlim([xbounds[0], xbounds[1]])
 
     if plot_legend:
-        ax.legend(legend_labels, loc=legendloc, framealpha=1)
+        ax.legend(legend_labels, loc=legendloc, framealpha=0.8,  prop={'size':legend_fontsize})
 
     plt.tight_layout()
     if outfile is None:
