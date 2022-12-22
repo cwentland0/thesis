@@ -16,7 +16,7 @@ plot_colors = ['k', 'g', 'r', 'b']
 
 ybounds = [8e-3, 1e-1]
 xticks = None
-xlabel = "Number of Modes"
+xlabel = r"N_p"
 
 plot_legend = True
 legend_labels = [

@@ -10,95 +10,174 @@ The truncated CVRC case presented here generally follows that investigated by Ha
 
 \begin{figure}
 	\centering
-	\ifdefined\DRAFT
-		\includegraphics[width=0.8\linewidth]{example-image-a}
-	\else
-    	\includegraphics[width=0.8\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/geom.png}
-	\fi
+	\includegraphics[width=0.8\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/geom_hrProbe.png}
     \caption{\label{fig:cvrcGeom}
-	Truncated CVRC geometry with $x-y$ plane slice at $\timeVar = 5.6$ ms.}
+	Truncated CVRC geometry with $x-z$ plane slice at $\timeVar = 5.5$ ms.}
 \end{figure}
 
 Combustion is modeled using the FPV approach~\cite{Pierce2001} detailed in Section~\ref{sec:fpv}. As detailed previously, a library of steady diffusion flame solutions is pre-computed off-line, generating a lookup table mapping from the mixture fraction $Z$ and the progress variable $C$ to individual species mass fractions, i.e., $Y_i = Y_i(Z,C)$. For this case, the steady flame solutions are solved using the FlameMaster software~\cite{flamemaster} with the GRI-Mech 1.2 methane combustion mechanism~\cite{griMech}. The GRI-Mech 1.2 mechanism contains 32 chemical species and 177 reactions. All gases are treated as thermally perfect gases, and thermodynamic quantities (specific heats, enthalpy, and entropy) as well as transport properties (mass diffusivity, viscosity, and thermal conductivity) are computed from polynomial functions of temperature developed by McBride et al.~\cite{McBride1993} and described in Section~\ref{subsec:gasModels}.
 
-The FOM simulation is computed with a physical time step of $\dt = 0.1 \; \mu$s. The fluid domain is initialized with a pressure of 1 MPa, and the combustion chamber is filled with hot products at 2,000 K to initiate combustion. Initial transients exit the domain before data collection begins at 5 ms of simulation time. Data snapshots are collected over a 0.5 ms window, sampled every five time steps, corresponding to roughly one flow-through period in the combustion chamber. This results in 1,001 snapshots (including the initial condition at $\timeVar =$ 5 ms) of the conservative and primitive states. Representative snapshot slices of various flow fields are displayed in Fig.~\ref{fig:cvrcFOMSlices}, using the same $x-y$ plane slice shown in Fig.~\ref{fig:cvrcGeom}.
-
 \begin{figure}
 	\begin{minipage}{0.99\linewidth}
-		\ifdefined\DRAFT
-			\includegraphics[width=0.99\linewidth,trim={0.0cm 3cm 0.0cm 3cm},clip]{example-image-a}
-		\else
-			\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_pressure_z.png}}
-			\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_pressure_x.png}}
-		\fi
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_pressure_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_pressure_x.png}}
 	\end{minipage}
 	\begin{minipage}{0.99\linewidth}
-		\ifdefined\DRAFT
-			\includegraphics[width=0.99\linewidth,trim={0.0cm 3cm 0.0cm 3cm},clip]{example-image-a}
-		\else
-			\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_temperature_z.png}}
-			\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_temperature_x.png}}
-		\fi
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_temperature_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_temperature_x.png}}
 	\end{minipage}
 	\begin{minipage}{0.99\linewidth}
-		\ifdefined\DRAFT
-			\includegraphics[width=0.99\linewidth,trim={0.0cm 3cm 0.0cm 3cm},clip]{example-image-a}
-		\else
-			\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_xVel_z.png}}
-			\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_xVel_x.png}}
-		\fi
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_xVel_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_xVel_x.png}}
 	\end{minipage}
 	\begin{minipage}{0.99\linewidth}
-		\ifdefined\DRAFT
-			\includegraphics[width=0.99\linewidth,trim={0.0cm 3cm 0.0cm 3cm},clip]{example-image-a}
-		\else
-			\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_mixFrac_z.png}}
-			\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_mixFrac_x.png}}
-		\fi
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_mixFrac_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_mixFrac_x.png}}
 	\end{minipage}
 	\caption{\label{fig:cvrcFOMSlices}From top to bottom: pressure, temperature, axial velocity, and fuel mixture fraction slices at $\timeVar = 5.5$ ms.}
 \end{figure}
 
-Figure~\ref{fig:cvrcPODEnergy} displays the POD residual energy for the model rocket combustor data. Achieving 1\%, 0.1\%, and 0.01\% residual energy for the conservative dataset requires 51, 123, and 245 basis modes, respectively. For the primitive dataset, these levels require 44, 134, and 267 modes respectively. This decay is remarkably slower than that observed for 2D open cavity flow (Fig.~\ref{fig:cavityPODEnergy}), and is another of the difficult with which linear trial spaces capture the highly non-linear flow physics which characterize rocket combustion. This is further emphasized in the projection error plots shown in Figs.~\ref{fig:cvrcProjErrPrim} and~\ref{fig:cvrcProjErrCons}, where we see that radial velocity (the average of $y$- and $z$-velocity errors) induces nearly 30\% error even with 250 modes. Additionally, transported scalars exhibit high levels of error, though this improves more rapidly with trial space enrichment.
+The FOM simulation is computed with a physical time step of $\dtFOM = 0.1 \; \mu$s. The fluid domain is initialized with a pressure of 1 MPa, and the combustion chamber is filled with hot products at 2,000 K to initiate combustion. Initial transients exit the domain before data collection begins at 5 ms of simulation time. Data snapshots are collected over a 0.5 ms window, sampled every five time steps, corresponding to roughly one flow-through period in the combustion chamber. This results in 1,001 snapshots (including the initial condition at $\timeVar =$ 5 ms) of the conservative and primitive states. Representative snapshot slices of various flow fields are displayed in Fig.~\ref{fig:cvrcFOMSlices}. Pressure point monitor measurements are collected from the dump plane corner at approximately $x = \left(0, \; 0, \; 2.25\right)$ cm, and unsteady heat release point monitor measurements are collected from the reacting mixing layer at approximately $x = \left(5, \; 0, \; 1.5\right)$ cm.
 
 \begin{figure}
 	\centering
-	\ifdefined\DRAFT
-		\includegraphics[width=0.8\linewidth]{example-image-a}
-	\else
-		\includegraphics[width=0.8\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/cvrc_pod_energy_0p5ms.png}
-	\fi
+	\includegraphics[width=0.8\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/cvrc_pod_energy_0p5ms.png}
 	\caption{\label{fig:cvrcPODEnergy}POD residual energy decay for truncated CVRC conservative and primitive state datasets.}
 \end{figure}
 
 \begin{figure}
 	\begin{minipage}{0.48\linewidth}
-		\ifdefined\DRAFT
-			\includegraphics[width=0.99\linewidth]{example-image-a}
-		\else
-			\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cvrc/projection_error_primitive.png}
-		\fi
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cvrc/projection_error_primitive.png}
 		\caption{\label{fig:cvrcProjErrPrim}Primitive variables time-average projection error.}
 	\end{minipage} \hspace{0.5em}
 	\begin{minipage}{0.48\linewidth}
-		\ifdefined\DRAFT
-			\includegraphics[width=0.99\linewidth]{example-image-a}
-		\else
-			\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cvrc/projection_error_conservative.png}
-		\fi
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cvrc/projection_error_conservative.png}
 		\caption{\label{fig:cvrcProjErrCons}Conservative variables time-average projection error.}
 	\end{minipage}
 \end{figure}
 
+Figure~\ref{fig:cvrcPODEnergy} displays the POD residual energy for the model rocket combustor data. Achieving 1\%, 0.1\%, and 0.01\% residual energy for the conservative dataset requires 51, 123, and 245 basis modes, respectively. For the primitive dataset, these levels require 44, 134, and 267 modes respectively. This decay is significantly slower than that observed for 2D open cavity flow (Fig.~\ref{fig:cavityPODEnergy}), and is indicative of the difficulty with which linear trial spaces capture the highly non-linear flow physics which characterize rocket combustion. This is further emphasized in the projection error plots shown in Figs.~\ref{fig:cvrcProjErrPrim} and~\ref{fig:cvrcProjErrCons}, where we see that the fuel mixture fraction and progress variable fields induce much higher error levels at a given trial basis dimension than the primary flow fields.
 
 \subsection{Unsampled PROMs}
 
+We again examine the performance of the unsampled PROMs before proceeding to HPROMs. We restrict discussion to MP-LSVT PROMs, and explain the exclusion of Galerkin and LSPG PROMs at the end of this section. A trial basis dimension and time step study is again conducted. The trial basis dimension is again $\numPrimModes$ evaluated at 25-mode intervals from 25 modes to 200 modes. Four time step sizes are examined: $\Delta \timeVar \in \{ 0.1, \; 0.25, \; 0.5, \; 1 \} \; \mu \text{s}$, or 1, 2.5, 5, and 10 times that of the FOM simulation.
+
 \begin{figure}
 	\centering
-	\includegraphics[width=0.5\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/unsampled/unsampled_avg_mode_Average_errorRaw.png}
+	\includegraphics[width=0.7\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/unsampled/unsampled_avg_mode_Average_errorRaw.png}
+	\caption{\label{fig:cavityUnsampledROMErrVsModes}CVRC unsampled PROM time-average error, various $\dt$.}
+\end{figure}
+
+The time-average error results are displayed in Fig.~\ref{fig:cavityUnsampledROMErrVsModes}. Note that, in general, the error levels induced for this case are significantly higher than those observed in the cavity flow case. Whereas the unsampled cavity MP-LSVT PROMs easily achieved less than 1\% relative $\ell^2$ error for all time steps for $\numPrimModes \ge 50$, this is only achieved here for $\dt = \dtFOM$, $\numPrimModes = 200$. This is yet another indicator of the difficulty in accurately modeling reacting flows. However, we observe the similar trend that moderate increases in the ROM time step result in negligible increase in PROM error, while larger time steps greatly diminish the PROM's accuracy and quickly saturates accuracy improvements with trial basis enrichment. For $\dt = 10 \times \dtFOM$, unlike the cavity whose time-average error saturated at approximately 0.8\%, error saturates at roughly 4\% for this case.
+
+\begin{figure}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/unsampled/pressure_probe_unsampled_modes.png}
+		\subcaption{\label{fig:cvrcUnsampledROMProbesPress}Dump plane pressure.}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/unsampled/heat_probe_unsampled_modes.png}
+		\subcaption{\label{fig:cvrcUnsampledROMProbesHeat}Shear layer heat release.}
+	\end{minipage}
+	\caption{\label{fig:cvrcUnsampledROMProbes}CVRC probe measurements, $\dt = 5 \times \dtFOM$, various $\numPrimModes$}
+\end{figure}
+
+The effect of trial basis enrichment is visualized in Fig.~\ref{fig:cvrcUnsampledROMProbes}. Interestingly, the pressure signal the dump plane corner, shown in Fig.~\ref{fig:cvrcUnsampledROMProbesPress}, is relatively easy to capture, although significant smearing of small scale fluctuations can be observed for $\numPrimModes = 25$, and less so for $\numPrimModes = 50$. For a trial basis dimension of $\numPrimModes = 100$, even very small scale fluctuations are captured well. Comparisons for the reacting mixing layer heat release, however, are more telling. Figure~\ref{fig:cvrcUnsampledROMProbesHeat} indicates that $\numPrimModes = 25$ results in dramatic over- and under-prediction of heat release across the entire simulation period. Increasing the trial basis resolution to $\numPrimModes = 50$ improves this error, but does not eliminate it. Again, $\numPrimModes = 100$ results in excellent time-accurate reconstruction of the unsteady heat release in the reacting mixing layer.
+
+\begin{figure}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/unsampled/pressure_probe_unsampled_lspg.png}
+		\subcaption{\label{fig:cvrcLSPGProbe}Probe measurements.}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/unsampled/condition_number.png}
+		\subcaption{\label{fig:cvrcLSPGCond}Condition number, $\numConsModes,\numPrimModes = 100$}
+	\end{minipage}
+	\caption{CVRC unsampled MP-LSVT and LSPG PROM comparisons.}
+\end{figure}
+
+We now address the absence of any analysis for LSPG PROMs above and throughout the remained of this section. As documented by Huang \textit{et al.} for a 2D single-element rocket combustor~\cite{Huang2022}, linearized Galerkin and LSPG PROMs exhibit increased stiffness in the resulting linear temporal evolution system, compared to that generated by the equivalent MP-LSVT PROM. The result is drastically degraded stability and accuracy, such that all investigated Galerkin PROMs were unstable and LSPG PROMs exhibited more than double the error measured for MP-LSVT PROMs with the same trial basis dimension. For the truncated CVRC case investigated here, we observed that \textit{all} LSPG PROMs computed unstable solutions, even with significant basis enrichment. Figure~\ref{fig:cvrcLSPGProbe} indicates the effect of this instability, with a rapid explosion in pressure measurements at roughly $\timeVar = 5.025$ ms for $\numConsModes \in \{100, \; 200\}$. The MP-LSVT PROM with $\numPrimModes = 100$ is both stable and noticeably more accurate than the equivalent LSPG PROM. Investigating further, Fig.~\ref{fig:cvrcLSPGCond} displays the evolution of the condition number of the the LSPG and MP-LSVT Newton iteration, i.e. $\kappa \left(\left[\testBasis^{\newtonIdx}\right]^\top \testBasis^{\newtonIdx}\right)$. This roughly measures the stiffness of the PROM linear solve, and reveals that while both methods experience similar ill conditioning at first, the conditioning of the MP-LSVT PROM gradually lessens while that of the LSPG PROM gradually increases and eventually explodes.
+
+\subsection{Mesh Sampling and Load Balancing}
+
+We now turn to the pre-processing stage of developing hyper-reduced PROMs for this case. Although a brief overview was given in Section~\ref{sec:cavity}, we give more attention here to some of the nuances related to load balancing and MPI communications for parallel computations.
+
+\begin{table}
+	\centering
+	\begin{tabular}{ lllllll }
+	\toprule
+	Sampling Rate (\%) & 0.025 & 0.0375 & 0.05 & 0.075 & 0.1 & 0.175 \\
+	\midrule
+	Cores & 2 & 2 & 2 & 2 & 3 & 5 \\
+	Cells/core (approx.) & 330 & 495 & 660 & 989 & 880 & 923 \\
+	\bottomrule
+	\toprule
+	Sampling Rate (\%) & 0.25 & 0.375 & 0.5 & 0.75 & 1 &  \\
+	\midrule
+	Cores & 7 & 10 & 13 & 20 & 26 & \\
+	Cells/core (approx.) & 942 & 989 & 1,015 & 989 & 1,015 & \\
+	\bottomrule
+	\end{tabular}
+	\caption{\label{tab:cvrcSampProcs}Partitioning for CVRC HPROM sample meshes.}
+\end{table}
+
+As with the cavity flow case, we will study the four sampling algorithms described in Section~\ref{subsec:sampAlgos}, and again conduct our analysis for a range of sampling rates and gappy POD regressor basis dimensions. The sampling rates investigated and the parallel partitioning for each sample mesh (regardless of the sampling algorithm used) are summarized in Table~\ref{tab:cvrcSampProcs}, and are again adjusted to ensure that the load balance is approximately equal to 1,000 cells per core.
+
+\begin{figure}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/iblank/random_iblank_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/iblank/random_iblank_x.png}}
+	\end{minipage}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/iblank/eigenvec_iblank_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/iblank/eigenvec_iblank_x.png}}
+	\end{minipage}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/iblank/greedy_carlberg_iblank_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/iblank/greedy_carlberg_iblank_x.png}}
+	\end{minipage}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/iblank/greedy_ben_iblank_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/iblank/greedy_ben_iblank_x.png}}
+	\end{minipage}
+	\caption{\label{fig:cvrcIBlankSlices}Example sample meshes for $\numSamps = 0.25\% \times \numDOF$, $\numResModes = 300$ for various sampling algorithms. From top to bottom: random, eigenvector-based, GNAT V1, and GNAT V2.}
+\end{figure}
+
+\begin{figure}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/iblank/random_iblank_iso.png}
+		\subcaption{Random}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/iblank/eigenvec_iblank_iso.png}
+		\subcaption{Eigenvector}
+	\end{minipage}
+
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/iblank/greedy_carlberg_iblank_iso.png}
+		\subcaption{GNAT V1}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/iblank/greedy_ben_iblank_iso.png}
+		\subcaption{GNAT V2}
+	\end{minipage}
+	\caption{\label{fig:cvrcIBlankIso}Directly-sampled cell isosurfaces, $\numSamps = 0.25\% \times \numDOF$, $\numResModes = 300$, various sampling algorithms.}
+\end{figure}
+
+We again visually inspect how each sampling algorithm
+
+\begin{figure}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/deim/samp_timing_wrt_samprate.png}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/deim/samp_timing_wrt_modes.png}
+	\end{minipage}
 \end{figure}
 
 \subsection{Hyper-reduced PROMs}
+
+
 
 \begin{figure}
 	\begin{minipage}{0.49\linewidth}
@@ -179,4 +258,53 @@ Figure~\ref{fig:cvrcPODEnergy} displays the POD residual energy for the model ro
 		\subcaption{GNAT, V2}
 	\end{minipage}
 	\caption{CVRC HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 10 \times \dtFOM$, various sampling algorithms}
+\end{figure}
+
+
+\begin{figure}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_pressure_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_pressure_x.png}}
+	\end{minipage}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.5em 0.2em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/contours/random/random_pressure_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/contours/random/random_pressure_x.png}}
+	\end{minipage}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.5em 0.2em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/contours/eigenvec/eigenvec_pressure_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/contours/eigenvec/eigenvec_pressure_x.png}}
+	\end{minipage}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.5em 0.2em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/contours/greedy_carlberg/greedy_carlberg_pressure_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/contours/greedy_carlberg/greedy_carlberg_pressure_x.png}}
+	\end{minipage}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.5em 0.2em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/contours/greedy_ben/greedy_ben_pressure_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/contours/greedy_ben/greedy_ben_pressure_x.png}}
+	\end{minipage}
+	\caption{\label{fig:cvrcDEIMPressSlices}CVRC HPROM pressure slices, $\timeVar = 5.5$ ms, $\numSamps$ = 0.25\%, $\numResModes = 300$, $\dt = 5 \times \dtFOM$. From top to bottom: FOM, random, eigenvector, GNAT V1, and GNAT V2 sampling.}
+\end{figure}
+
+\begin{figure}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_temperature_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/example_temperature_x.png}}
+	\end{minipage}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.5em 0.2em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/contours/random/random_temperature_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/contours/random/random_temperature_x.png}}
+	\end{minipage}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.5em 0.2em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/contours/eigenvec/eigenvec_temperature_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/contours/eigenvec/eigenvec_temperature_x.png}}
+	\end{minipage}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.5em 0.2em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/contours/greedy_carlberg/greedy_carlberg_temperature_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/contours/greedy_carlberg/greedy_carlberg_temperature_x.png}}
+	\end{minipage}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.5em 0.2em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/contours/greedy_ben/greedy_ben_temperature_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/CavityAndCVRC/Images/cvrc/deim/contours/greedy_ben/greedy_ben_temperature_x.png}}
+	\end{minipage}
+	\caption{\label{fig:cvrcDEIMTempSlices}CVRC HPROM temperature slices, $\timeVar = 5.5$ ms, $\numSamps$ = 0.25\%, $\numResModes = 300$, $\dt = 5 \times \dtFOM$. From top to bottom: FOM, random, eigenvector, GNAT V1, and GNAT V2 sampling.}
 \end{figure}
