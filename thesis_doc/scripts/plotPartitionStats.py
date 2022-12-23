@@ -201,3 +201,101 @@ def plotPartitionStats(
 
     print("Finished!")
 
+def plotPartComparison(
+    base_dir,
+    mode_types,
+    samp_percs,
+    num_modes,
+    num_parts,
+    mesh_name,
+    plot_colors,
+    num_parts_list,
+    xlabel,
+    out_dir,
+    out_name,
+    line_styles=['-']*50,
+    xscale="linear",
+    yscale="log",
+    xbounds=None,
+    ybounds=None,
+    xticks=None,
+    legend_labels=None,
+    legend_loc="best",
+    legend_fontsize=12,
+):
+
+    # some logical checks
+    num_mode_types = len(mode_types)
+    numSampPercs = len(samp_percs)
+    numLines = num_mode_types * numSampPercs
+    assert(len(num_parts_list) == numLines)
+
+    numPointsList = [len(x) for x in num_parts_list]
+
+    out_file = os.path.join(out_dir, out_name+".png")
+
+    # set up figures/axes
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    artists = []
+
+    # loop over lines in plot
+    lineIdx = 0
+    for modeTypeIdx, modeType in enumerate(mode_types):
+
+        for sampPercIdx, samp_perc in enumerate(samp_percs):
+
+            # number of communications
+            plotCommVals = np.zeros((numPointsList[lineIdx]), dtype=np.float64)
+        
+            # loop over data points in line
+            for partsIdx, numParts in enumerate(num_parts_list[lineIdx]):
+        
+                meshDir = os.path.join(
+                    base_dir,
+                    modeType, 
+                    "modes" + str(num_modes) + "_samp" + str(samp_perc),
+                    "mesh_" + str(num_parts))
+        
+                print(meshDir)
+        
+                # load partition data
+                plotCommVals[partsIdx] = extractCommsFromASCIIMesh(meshDir, mesh_name, numParts)
+        
+            # plot comms
+            artistTemp, = ax.plot(
+                num_parts_list[lineIdx],
+                plotCommVals,
+                color=plot_colors[modeTypeIdx],
+                marker="o",
+                linestyle=line_styles[sampPercIdx])
+
+            if (sampPercIdx == 0): artists.append(artistTemp)
+            
+            lineIdx += 1
+
+
+    ax.set_ylabel("Number of MPI Communications")
+    ax.set_xlabel(xlabel)
+    if (yscale == "log"):
+        ax.set_yscale("symlog")
+    else:
+        ax.set_yscale("linear")
+    ax.set_xscale(xscale)
+    if xbounds is not None:
+        ax.set_xlim(xbounds)
+    if ybounds is not None:
+        ax.set_ylim(ybounds)
+    if xticks is not None:
+        ax.xaxis.set_ticks(xticks)
+        
+    # plot legends
+    if legend_labels is not None: 
+        ax.legend(artists, legend_labels, loc=legend_loc, framealpha=0.8, prop={'size':legend_fontsize})
+            
+
+    plt.figure(fig.number)
+    plt.tight_layout()
+    print("Saving image to " + out_file)
+    plt.savefig(out_file)
