@@ -13,7 +13,7 @@ Similar to the conservative variable formulation, $\primVecCent \inROne{\numDOF}
 %
 \begin{align}
     \encoderFunc{\primVec} &\defEq \nnLayer_{\encoderVar,\primVar} \left(\primScaleInv\left[\primVec - \primVecCent\right], \nnParams^{\encoderVar}\right), \\
-    \decoderFunc{\primVecCoef} &\defEq \primVecCent + \primScale \nnLayer_{\decoderVar,\primVar} \left(\primVecCoef, \nnParams^{\decoderVar}\right). \label{eq:decoderFuncPrim}
+    \decoderFunc{\primVecCoef} &\defEq \primVecCent + \primScale \trialPrimFunc{\primVecCoef, \nnParams^{\decoderVar}}. \label{eq:decoderFuncPrim}
 \end{align}
 %
 In either case, the trial basis or autoencoder are computed from snapshots of the target state collected from a small number of high-fidelity simulations. These are aggregated as
@@ -67,10 +67,10 @@ where the ROM residual Jacobian is now computed with respect to the target laten
 %
 \begin{align}
     \jacobResCoefPrim^{\newtonIdx} &\defEq \pde{\resFunc{\primVecCoef^{\newtonIdx}}}{\primVecRom} \pde{\primVecRom^{\newtonIdx}}{\primVecCoef}, \\
-    &= \jacobResPrim^{\newtonIdx} \jacobDecodePrim^{\newtonIdx},
+    &= \jacobResPrim^{\newtonIdx} \primScale \jacobTrialPrim^{\newtonIdx},
 \end{align}
 %
-where $\jacobResPrim^\newtonIdx \defEq \funcMap{\partial \resFunc{\primVecCoef^\newtonIdx} / \partial \primVecRom}{\ROne{\numPrimModes}}{\RTwo{\numDOF}{\numDOF}}$ and $\jacobDecodePrim^\newtonIdx \defEq \funcMap{\partial \decoderFunc{\primVecCoef} / \partial \primVecCoef}{\ROne{\numPrimModes}}{\RTwo{\numDOF}{\numPrimModes}}$.
+where $\jacobResPrim^\newtonIdx \defEq \funcMap{\partial \resFunc{\primVecCoef^\newtonIdx} / \partial \primVecRom}{\ROne{\numPrimModes}}{\RTwo{\numDOF}{\numDOF}}$ and $\jacobTrialPrim^\newtonIdx \defEq \funcMap{\partial \trialPrimFunc{\primVecCoef} / \partial \primVecCoef}{\ROne{\numPrimModes}}{\RTwo{\numDOF}{\numPrimModes}}$.
 
 The solution of Eq.~\ref{eq:mplsvtLSLin} via the normal equations again leads to a Petrov--Galerkin projection of the form,
 %

@@ -1,4 +1,5 @@
 \newcommand{\MC}{\mathcal}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
 
 % misc
 \newcommand{\identMat}{\ensuremath{\mathbf{I}}}
@@ -31,6 +32,7 @@
 \newcommand{\reacIdx}{\ensuremath{r}}
 \newcommand{\varIdx}{\ensuremath{v}}
 \newcommand{\greedyIdx}{\ensuremath{m}}
+\newcommand{\sampIdx}{\ensuremath{s}}
 
 % dimensions
 \newcommand{\numDOF}{\ensuremath{N}}
@@ -150,10 +152,43 @@
 \newcommand{\rhsDataMat}{\ensuremath{\mathbf{\MakeUppercase{\rhsVar}}}}
 \newcommand{\resDataMat}{\ensuremath{\mathbf{\MakeUppercase{\resVar}}}}
 
+% non-linear functions
+\newcommand{\encoderVar}{\ensuremath{h}}
+\newcommand{\encoder}{\ensuremath{\mathbf{\encoderVar}}}
+\newcommand{\encoderFunc}[1]{\ensuremath{\encoder \left(#1\right)}}
+\newcommand{\decoderVar}{\ensuremath{g}}
+\newcommand{\decoder}{\ensuremath{\mathbf{\decoderVar}}}
+\newcommand{\decoderFunc}[1]{\ensuremath{\decoder \left(#1\right)}}
+\newcommand{\nnInput}{\ensuremath{\mathbf{x}}}
+\newcommand{\nnInputApprox}{\ensuremath{\mathbf{\widetilde{x}}}}
+\newcommand{\nnInputCoef}{\ensuremath{\mathbf{\widehat{x}}}}
+\newcommand{\nnOutput}{\ensuremath{\mathbf{y}}}
+% \newcommand{\nnLayerVar}{g}
+% \newcommand{\nnLayer}{\ensuremath{\mathbf{\nnLayerVar}}}
+\newcommand{\nnLayerVar}{\ensuremath{\varphi}}
+\newcommand{\nnLayer}{\ensuremath{\boldsymbol{\nnLayerVar}}}
+\newcommand{\trialConsMap}{\nnLayer_{\decoderVar, \consVar}}
+\newcommand{\trialConsFunc}[1]{\trialConsMap\left(#1\right)}
+\newcommand{\trialPrimMap}{\nnLayer_{\decoderVar, \primVar}}
+\newcommand{\trialPrimFunc}[1]{\trialPrimMap \left(#1\right)}
+\newcommand{\nnLayerIdx}[1]{\ensuremath{\nnLayer^{#1}}}
+\newcommand{\nnLayerFunc}[1]{\ensuremath{\nnLayer\left({#1}\right)}}
+\newcommand{\nnLayerFuncIdx}[2]{\ensuremath{\nnLayer^{#2}\left({#1}\right)}}
+\newcommand{\nnAct}{\ensuremath{\boldsymbol{\sigma}}}
+\newcommand{\actFunc}[1]{\ensuremath{\nnAct\left(#1\right)}}
+\newcommand{\nnParams}{\ensuremath{\boldsymbol{\Theta}}}
+\newcommand{\nnWeights}{\ensuremath{\mathbf{W}}}
+\newcommand{\nnBias}{\ensuremath{\mathbf{b}}}
+\newcommand{\nnCost}{\ensuremath{c}}
+\newcommand{\nnCostFunc}[1]{\ensuremath{\nnCost\left(#1\right)}}
+
+
 % Jacobians
 \newcommand{\jacobMat}{\ensuremath{\mathbf{J}}}
-\newcommand{\jacobDecodeCons}{\ensuremath{\jacobMat_{\decoderVar,\consVar}}}
-\newcommand{\jacobDecodePrim}{\ensuremath{\jacobMat_{\decoderVar,\primVar}}}
+\newcommand{\jacobTrialCons}{\ensuremath{\jacobMat_{\nnLayerVar,\consVar}}}
+\newcommand{\jacobTrialPrim}{\ensuremath{\jacobMat_{\nnLayerVar,\primVar}}}
+\newcommand{\jacobDecodeCons}{\ensuremath{\consScale \jacobTrialCons}}
+\newcommand{\jacobDecodePrim}{\ensuremath{\primScale \jacobTrialPrim}}
 \newcommand{\jacobMatCoef}{\ensuremath{\mathbf{\widehat{J}}}}
 \newcommand{\jacobResCons}{\ensuremath{\jacobMat_{\resVar,\consVar}}}
 \newcommand{\jacobResPrim}{\ensuremath{\jacobMat_{\resVar,\primVar}}}
@@ -161,6 +196,8 @@
 \newcommand{\jacobResCoefPrim}{\ensuremath{\jacobMatCoef_{\resVar,\primVar}}}
 \newcommand{\jacobCons}{\ensuremath{\jacobMat_{\consVar}}}
 \newcommand{\jacobPrim}{\ensuremath{\jacobMat_{\primVar}}}
+\newcommand{\jacobTrialConsFunc}[1]{\ensuremath{\jacobTrialCons \left(#1\right)}}
+\newcommand{\jacobTrialPrimFunc}[1]{\ensuremath{\jacobTrialPrim \left(#1\right)}}
 \newcommand{\jacobDecodeConsFunc}[1]{\ensuremath{\jacobDecodeCons \left(#1\right)}}
 \newcommand{\jacobDecodePrimFunc}[1]{\ensuremath{\jacobDecodePrim \left(#1\right)}}
 \newcommand{\jacobApproxFunc}[1]{\ensuremath{\widetilde{\jacobMat}}\left(#1\right)}
@@ -237,29 +274,6 @@
 \newcommand{\trialSpace}{\ensuremath{\widetilde{\MC{\MakeUppercase{\basisVar}}}}}
 \newcommand{\consTrialSpace}{\ensuremath{\trialSpace_{\consVar}}}
 \newcommand{\primTrialSpace}{\ensuremath{\trialSpace_{\primVar}}}
-
-% non-linear functions
-\newcommand{\encoderVar}{\ensuremath{h}}
-\newcommand{\encoder}{\ensuremath{\mathbf{\encoderVar}}}
-\newcommand{\encoderFunc}[1]{\ensuremath{\encoder \left(#1\right)}}
-\newcommand{\decoderVar}{\ensuremath{g}}
-\newcommand{\decoder}{\ensuremath{\mathbf{\decoderVar}}}
-\newcommand{\decoderFunc}[1]{\ensuremath{\decoder \left(#1\right)}}
-\newcommand{\nnInput}{\ensuremath{\mathbf{x}}}
-\newcommand{\nnInputApprox}{\ensuremath{\mathbf{\widetilde{x}}}}
-\newcommand{\nnInputCoef}{\ensuremath{\mathbf{\widehat{x}}}}
-\newcommand{\nnOutput}{\ensuremath{\mathbf{y}}}
-\newcommand{\nnLayer}{\ensuremath{f}}
-\newcommand{\nnLayerIdx}[1]{\ensuremath{\nnLayer^{#1}}}
-\newcommand{\nnLayerFunc}[1]{\ensuremath{\nnLayer\left({#1}\right)}}
-\newcommand{\nnLayerFuncIdx}[2]{\ensuremath{\nnLayer^{#2}\left({#1}\right)}}
-\newcommand{\nnAct}{\ensuremath{\boldsymbol{\sigma}}}
-\newcommand{\actFunc}[1]{\ensuremath{\nnAct\left(#1\right)}}
-\newcommand{\nnParams}{\ensuremath{\boldsymbol{\Theta}}}
-\newcommand{\nnWeights}{\ensuremath{\mathbf{W}}}
-\newcommand{\nnBias}{\ensuremath{\mathbf{b}}}
-\newcommand{\nnCost}{\ensuremath{c}}
-\newcommand{\nnCostFunc}[1]{\ensuremath{\nnCost\left(#1\right)}}
 
 % scaling matrices
 % \newcommand{\consScaleVar}{p}

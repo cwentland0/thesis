@@ -4,19 +4,19 @@
 Hyper-reduction via missing point estimation (MPE) was introduced by Astrid and coworkers, first for ROMs of a linear time-varying 2D heat conduction problem~\cite{Astrid2004} and later for a non-linear model of a glass melt feeder~\cite{Astrid2008}. It aims to reduce the computational expense of non-linear ROMs by sampling the governing semi-discrete ODE, followed by Galerkin projection of the ODE via the sampled trial basis. The first step can be written by applying the sampling operator to the full-order ROM ODE (Eq.~\ref{eq:romFullODEMod})
 %
 \begin{equation}
-    \sampMat \resScaleInv \left[\jacobDecodeCons \ode{\consVecCoef}{\timeVar} - \sampMat \rhsFunc{\consVecRom, \; \timeVar}\right] = \zeroVec
+    \sampMat \resScaleInv \left[\jacobDecodeCons \ode{\consVecCoef}{\timeVar} - \rhsFunc{\consVecRom, \; \timeVar}\right] = \zeroVec
 \end{equation}
 %
-Projection by $\sampMat \jacobDecodeCons$ and rearranging terms leads to the equation
+Projection by $\sampMat \jacobTrialCons$ and rearranging terms leads to the equation
 %
 \begin{equation}
-	\ode{\consVecCoef}{\timeVar} = \left[ \left[\sampMat \jacobDecodeCons\right]^\top \sampMat \resScaleInv \jacobDecodeCons\right]^{-1} \left[\sampMat \jacobDecodeCons\right]^\top \sampMat \resScaleInv \rhsFunc{\consVecRom, \; \timeVar}
+	\ode{\consVecCoef}{\timeVar} = \left[ \left[\sampMat \jacobTrialCons\right]^\top \sampMat \resScaleInv \jacobDecodeCons\right]^{-1} \left[\sampMat \jacobTrialCons\right]^\top \sampMat \resScaleInv \rhsFunc{\consVecRom, \; \timeVar}
 \end{equation}
 %
-In this work, we only perform hyper-reduction for linear trial spaces, so substituting $\jacobDecodeCons = \consScale \consTrial$ leads to the form
+In this work, we only perform hyper-reduction for linear trial spaces, so substituting $\jacobTrialCons = \consTrial$ leads to the form
 %
 \begin{equation}\label{eq:mpeGalerkinLinear}
-	\ode{\consVecCoef}{\timeVar} = \left[ \left[\sampMat \consScale \consTrial \right]^\top \sampMat \resScaleInv \consScale \consTrial \right]^{-1} \left[\sampMat \consScale \consTrial \right]^\top \sampMat \resScaleInv \rhsFunc{\consVecRom, \; \timeVar}
+	\ode{\consVecCoef}{\timeVar} = \left[ \left[\sampMat \consTrial \right]^\top \sampMat \resScaleInv \consScale \consTrial \right]^{-1} \left[\sampMat \consTrial \right]^\top \sampMat \resScaleInv \rhsFunc{\consVecRom, \; \timeVar}
 \end{equation}
 %
 In the case $\consScale = \resScale = \identMat$, this simplifies further to
@@ -92,7 +92,7 @@ Again, we see that only $\numSamps$ rows of the non-linear residual $\sampMat \r
 
 \section{DEIM and GNAT}\label{subsec:gappyPOD}
 %
-Both hyper-reduction methods presented so far, MPE and collocation, have enabled cost reduction of PROMs simply by sampling the original governing ROM equations and computing the solution normally. However, as shown by Carlberg \text{et al.}~\cite{Carlberg2013}, these methods often generate inaccurate or unstable solutions for convection-dominated fluid flow systems. Alternatively, several methods have been proposed which compute data-driven, approximate reconstructions of non-linear terms based on a small number of samples of the functions. As such, these approaches attempt to incorporate the action of the full-field function, instead of discarding unsampled elements entirely as in MPE or collocation. Because of this, they are sometimes referred to as \textit{function reconstruction} methods.
+Both hyper-reduction methods presented so far, MPE and collocation, have enabled cost reduction of PROMs simply by sampling the original governing PROM equations and computing the solution normally. However, as shown by Carlberg \text{et al.}~\cite{Carlberg2013}, these methods often generate inaccurate or unstable solutions for convection-dominated fluid flow systems. Alternatively, several methods have been proposed which compute data-driven, approximate reconstructions of non-linear terms based on a small number of samples of the functions. As such, these approaches attempt to incorporate the action of the full-field function, instead of discarding unsampled elements entirely as in MPE or collocation. Because of this, they are sometimes referred to as \textit{function reconstruction} methods.
 
 Two well-established function reconstruction methods are the discrete empirical interpolation method (DEIM) and gappy proper orthogonal decomposition (gappy POD). The two are closely related, but were originally developed for different applications. DEIM, introduced by Chaturantabut and Sorensen~\cite{Chaturantabut2010}, is a discrete formulation of the empirical interpolation method (EIM)~\cite{Barrault2004}. It introduces an approximation of non-linear functions of the form,
 %
@@ -100,7 +100,7 @@ Two well-established function reconstruction methods are the discrete empirical 
     \resFunc{\dummyVec} \approx \resApproxFunc{\dummyVec} \defEq \deimBasis \left[ \sampMat \deimBasis \right]^{-1} \sampMat \resFunc{\dummyVec},
 \end{equation}
 %
-where we use the residual function $\resVec$ for the sake of notational simplicity, but note that this method extends to approximation of any non-linear function. The matrix $\deimBasis \defEq [\deimBasisVec_1, \; \deimBasisVec_2, \; \hdots, \; \deimBasisVec_{\numResModes}] \inRTwo{\numDOF}{\numResModes}$ is an orthonormal basis, usually generated by POD from FOM snapshots of the non-linear function $\resVec$. It is assumed that the matrix $\sampMat \deimBasis \inRTwo{\numSamps}{\numResModes}$ has full rank. Again, in computing $\resApproxVec$, we see that the non-linear function $\resVec$ must only be sampled at $\numSamps$ degrees of freedom, instead of its full dimension $\numDOF$.
+where we use the residual function $\resVec$ for the sake of notational simplicity, but note that this method extends to approximation of any non-linear function. Indeed, the original work by Chaturantabut and Sorensen~\cite{Chaturantabut2010} computed approximations of the non-linear function $\rhsFunc{\cdot, \; \timeVar}$ for Galerkin PROMs, as will be discussed in Section~\ref{subsec:gappyGalerkin}. The matrix $\deimBasis \defEq [\deimBasisVec_1, \; \deimBasisVec_2, \; \hdots \;, \; \deimBasisVec_{\numResModes}] \inRTwo{\numDOF}{\numResModes}$ is an orthonormal basis, usually generated by POD from FOM snapshots of the non-linear function $\resVec$. It is assumed that the matrix $\sampMat \deimBasis \inRTwo{\numSamps}{\numResModes}$ has full rank. Again, in computing $\resApproxVec$, we see that the non-linear function $\resVec$ must only be sampled at $\numSamps$ degrees of freedom, instead of its full dimension $\numDOF$.
 
 Note that the number of DEIM basis modes is equal to the number of sampled degrees of freedom, i.e., $\numSamps = \numResModes$. By this formulation, the non-linear function is interpolated exactly at $\numSamps < \numDOF$ degrees of freedom and interpolated approximately at all other degrees of freedom. The error in this approximation is bounded~\cite{Chaturantabut2010} by the inequality
 %
@@ -110,7 +110,7 @@ Note that the number of DEIM basis modes is equal to the number of sampled degre
 %
 where the first norm term on the right-hand side is a measure of the \textit{sampling error}, and the second norm term is the \textit{projection error}. As will be discussed shortly, various methods of selecting the sampling degrees of freedom often attempt to minimize these sources of error.
 
-Again, DEIM is restricted to the case where $\numSamps = \numResModes$. For practical engineering systems, $\numResModes \ll \numDOF$ generally, and such extreme sparse sampling may result in high interpolation error at the unsampled degrees of freedom. Furthermore, Peherstorfer et al.~\cite{Peherstorfer2020} show that increasing $\numResModes$ can lead to an unstable increase in the interpolation error if $\numSamps = \numResModes$. Gappy POD was originally developed long before the advent of DEIM to approximate full field data from a few sparse samples~\cite{Everson1995}, and has seen extensive use in sparse sensor placement~\cite{willcoxGappyPOD,ManoharSparseSensor} and extensions of missing point estimation~\cite{Zimmermann2016}. As such, gappy POD has also been used to approximate non-linear functions in dynamical systems. The method takes a very similar approach to DEIM, but relaxes the restriction on the number of sampled degrees of freedom, allowing $\numSamps \ge \numResModes$. The approximation becomes a least-squares regression of the form
+Again, DEIM is restricted to the case where $\numSamps = \numResModes$. For practical engineering systems, $\numResModes \ll \numDOF$ generally, and such extreme sparse sampling may result in high interpolation error at the unsampled degrees of freedom. Furthermore, Peherstorfer \textit{et al.}~\cite{Peherstorfer2020} show that increasing $\numResModes$ can lead to an unstable increase in the interpolation error if $\numSamps = \numResModes$. The gappy proper orthogonal decomposition (gappy POD) offers a solution to these issues. Gappy POD was originally developed long before the advent of DEIM to approximate full field data from a few sparse samples~\cite{Everson1995}, and has seen extensive use in sparse sensor placement~\cite{willcoxGappyPOD,ManoharSparseSensor} and extensions of missing point estimation~\cite{Zimmermann2016}. As such, gappy POD has also been used to approximate non-linear functions in dynamical systems. The method takes a very similar approach to DEIM, but relaxes the restriction on the number of sampled degrees of freedom, allowing $\numSamps \ge \numResModes$. The approximation becomes a least-squares regression of the form
 %
 \begin{equation}\label{eq:gappyPODRHSApprox}
     \resFunc{\dummyVec} \approx \resApproxFunc{\dummyVec} \defEq \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resFunc{\dummyVec},
@@ -126,21 +126,21 @@ For the remainder of this thesis, we will restrict discussion of hyper-reduction
 
 The approximation of non-linear functions by Eq.~\ref{eq:gappyPODRHSApprox} can be applied to PROM formulations to vastly reduce the computational cost of evaluating non-linear terms arising from the discretization of the governing equations. Hyper-reduction of Galerkin ROMs by gappy POD is described first, followed by hyper-reduction of LSPG and MP-LSVT ROMs.
 
-\subsection{Gappy POD for Galerkin ROMs}
+\subsection{Gappy POD for Galerkin ROMs}\label{subsec:gappyGalerkin}
 %
 For Galerkin projection ROMs, the traditional method of gappy POD approximates the non-linear terms $\rhsFunc{\cdot, \; \timeVar}$ as
 %
 \begin{equation}
-	\rhsApproxFunc{\consVec, \; \timeVar} \defEq \deimBasis \left[ \sampMat \deimBasis \right]^+ \sampMat \rhsFunc{\consVec, \; \timeVar}.
+	\resScaleInv \rhsApproxFunc{\consVec, \; \timeVar} \defEq \deimBasis \left[ \sampMat \deimBasis \right]^+ \sampMat \resScaleInv \rhsFunc{\consVec, \; \timeVar}.
 \end{equation}
 %
 Substituting this approximation into the linear subspace Galerkin PROM (Eq.~\ref{eq:galerkinROMODELinear}) results in the hyper-reduced PROM
 %
 \begin{equation}\label{eq:galerkinROMHR}
-    \ode{\consVecCoef}{\timeVar} = \left[\consTrial^\top \consScale \resScaleInv \consScale \consTrial\right]^{-1} \consTrial^\top \consScale \resScaleInv \deimBasis \left[ \sampMat \deimBasis \right]^+ \sampMat \rhsFunc{\consVecRom, \; \timeVar}.
+    \ode{\consVecCoef}{\timeVar} = \left[\consTrial^\top \resScaleInv \consScale \consTrial\right]^{-1} \consTrial^\top \deimBasis \left[ \sampMat \deimBasis \right]^+ \sampMat \resScaleInv \rhsFunc{\consVecRom, \; \timeVar}.
 \end{equation}
 %
-The low-dimensional matrix $\left[\consTrial^\top \consScale \resScaleInv \consScale \consTrial\right]^{-1} \consTrial^\top \consScale \resScaleInv \deimBasis \left[ \sampMat \deimBasis \right]^+ \inRTwo{\numConsModes}{\numSamps}$ can be pre-computed in the offline stage and loaded from disk prior to evaluating the unsteady PROM. Further simplifying, if $\consScale = \resScale = \identMat$, the formulation is reduced to
+The low-dimensional matrix $\left[\consTrial^\top \resScaleInv \consScale \consTrial\right]^{-1} \consTrial^\top \deimBasis \left[ \sampMat \deimBasis \right]^+ \inRTwo{\numConsModes}{\numSamps}$ can be pre-computed in the offline stage and loaded from disk prior to evaluating the unsteady PROM. Further simplifying, if $\consScale = \resScale = \identMat$, the formulation is reduced to
 %
 \begin{equation}
     \ode{\consVecCoef}{\timeVar} = \consTrial^\top \deimBasis \left[ \sampMat \deimBasis \right]^+ \sampMat \rhsFunc{\consVecRom, \; \timeVar},
@@ -163,13 +163,13 @@ where all terms of the time integrator, except for $\consVec^{\timeIdx - 1}$, ha
 The approximate non-linear term is then approximated as
 %
 \begin{equation}
-	\rhsResFunc{\consVec} \approx \rhsResApproxFunc{\consVec} \defEq \deimBasis \left[\sampMat \deimBasis \right]^+ \sampMat \rhsResFunc{\consVec}.
+	\resScaleInv \rhsResFunc{\consVec} \approx \rhsResApproxFunc{\consVec} \defEq \deimBasis \left[\sampMat \deimBasis \right]^+ \sampMat \resScaleInv \rhsResFunc{\consVec}.
 \end{equation}
 %
 Substitution into Eq.~\ref{eq:benResidual} and projection by the tangent trial space leads to an alternative hyper-reduced Galerkin PROM of the form
 %
 \begin{equation}
-    \consVecCoef^{\timeIdx-1} - \left[\jacobDecodeCons^\top \resScaleInv \jacobDecodeCons\right]^{-1} \jacobDecodeCons^\top \resScaleInv \rhsResApproxFunc{\consVecRom^{\timeIdx}} = \zeroVec.
+    \consVecCoef^{\timeIdx-1} - \left[\jacobTrialCons^\top \resScaleInv \jacobDecodeCons\right]^{-1} \jacobDecodeCons^\top \rhsResApproxFunc{\consVecRom^{\timeIdx}} = \zeroVec.
 \end{equation}
 %
 As mentioned previously, the above formulation is fairly non-standard and can be quite confusing for PROM practitioners. However, as will be discussed in Sections~\ref{sec:regBasis}, this formulation lends itself to a simplification in which the regression basis $\deimBasis$ can be equated to the solution trial basis $\consTrial$ or $\primTrial$. Its use in adaptive bases and sampling is also outlined in Section~\ref{sec:adaptation}.
@@ -242,7 +242,7 @@ We now address the question of how the regression basis $\deimBasis$ is computed
 In the case of gappy POD Galerkin ROMs, we have already explicitly outlined the two approximations of non-linear terms in the ROM ODE/O$\Delta$E, which we restate here. The traditional method of gappy POD for Galerkin projection ROMs~\cite{Chaturantabut2010} computes a regression for the non-linear function $\rhsFunc{\cdot, \; \timeVar}$ of the form
 %
 \begin{equation}
-	\rhsFunc{\consVec, \; \timeVar} \approx \rhsApproxFunc{\consVec, \timeVar} \defEq \deimBasis \left[\sampMat \deimBasis \right]^+ \sampMat \rhsFunc{\consVec, \; \timeVar}
+	\resScaleInv \rhsFunc{\consVec, \; \timeVar} \approx \rhsApproxFunc{\consVec, \timeVar} \defEq \deimBasis \left[\sampMat \deimBasis \right]^+ \sampMat \resScaleInv \rhsFunc{\consVec, \; \timeVar}
 \end{equation}
 %
 In this case, as with computing the solution trial bases, snapshots of the unsteady non-linear term field $\rhsFunc{\consVec, \; \timeVar}$ are collected from FOM simulations. Unlike the process for the solution trial bases, we do not define a reference state about which snapshots are centered. However, disparate scales of the non-linear terms must be accounted for, and we suggest using the same scaling format as that used for scaling the fully-discrete residual, $\resScaleInv$. The snapshot matrix is thus aggregated as
@@ -261,7 +261,7 @@ The method of Peherstorfer~\cite{Peherstorfer2020Adaptive}, as previously discus
 	\consVec^{\timeIdx-1} - \rhsResFunc{\consVec^{\timeIdx},\; \timeVar^{\timeIdx}} = \zeroVec
 \end{equation}
 %
-Although this formulation may seem non-intuitive, it is only a grouping of terms arising from the implicit time integration of the governing ODE. Interestingly, treating the lumped non-linear term $\rhsResFunc{\cdot}$ as the non-linear function to be approximated makes the connection
+Although this formulation may seem non-intuitive, it is only a grouping of terms arising from the implicit time integration of the governing ODE. Interestingly, treating the lumped non-linear term $\rhsResFunc{\cdot, \; \timeVar}$ as the non-linear function to be approximated makes the connection
 %
 \begin{equation}\label{eq:benResidualApprox}
 	\consVec^{\timeIdx-1} \approx \rhsResApproxFunc{\consVec, \; \timeVar} \defEq \deimBasis \left[\sampMat \deimBasis \right]^+ \sampMat \rhsResFunc{\consVec, \; \timeVar}
@@ -319,9 +319,9 @@ For hyper-reduction of LSPG PROMs by GNAT, recall that the Gauss--Newton least-s
 %
 where the gappy POD regression via the bases $\deimBasisRes \inRTwo{\numDOF}{\numResModes}$ and $\deimBasisJacob \inRTwo{\numDOF}{\numJacobModes}$ seek approximate reconstructions of the residual vector $\resFunc{\consVecCoef^{\newtonIdx}}$ and the residual Jacobian $\jacobResCoefCons^{\newtonIdx} = \jacobResCons^{\newtonIdx} \consScale \consTrial$, respectively.
 
-The most obvious (albeit naive) approach for constructing $\deimBasisRes$ and $\deimBasisJacob$ is to compute POD bases from snapshots of $\resFunc{\consVecCoef}$ and $\jacobResCons^{\newtonIdx} \consScale \consTrial$. However, this approach begs two important questions. First, the residual and its Jacobian are defined for each Newton iteration; should snapshots from all iterations be saved, or one, or a few? Second, saving $\numConsModes$ snapshots for a given Newton iteration evaluation of $\jacobResCons^{\newtonIdx} \consScale \consTrial$ quickly causes storage consumption and offline POD basis calculation costs grow drastically. Is this added cost worthwhile?
+The most obvious (albeit naive) approach for constructing $\deimBasisRes$ and $\deimBasisJacob$ is to compute POD bases from snapshots of $\resFunc{\consVecCoef}$ and $\jacobResCons^{\newtonIdx} \consScale \consTrial$. However, this approach begs two important questions. First, the residual and its Jacobian are defined for each Newton iteration; should snapshots from all iterations be saved, or one, or a few? Second, saving $\numConsModes$ snapshots for a given Newton iteration evaluation of $\jacobResCons^{\newtonIdx} \consScale \consTrial$ quickly causes storage consumption and offline POD basis calculation costs to grow drastically. Is this added cost worthwhile?
 
-In the original work on LSPG and GNAT by Carlberg \textit{et al.}~\cite{Carlberg2010}, several methods are offered as possible approaches. Their ``Method 3'' indicates the most expensive extreme: compute $\deimBasisJacob$ from snapshots of $\resFunc{\consVecCoef^{\newtonIdx}}$ and $\jacobResCons^{\newtonIdx} \consScale \consTrial$ for \textit{every} Newton iteration, resulting in $\numConsModes + 1$ snapshots for every Newton iteration. This approach is quickly discarded as computationally infeasible, and no work since appears to use this method. As a step down, their ``Method 2'' computes $\deimBasisJacob$ from snapshots of the action of the residual Jacobian on the Gauss--Newton search direction, i.e. $\jacobResCons^{\newtonIdx} \consScale \consTrial \delta \consVecCoef^{\newtonIdx}$. This reduces the number of snapshots saved per Newton iteration to two, and is show to perform well in the original work by Carlberg \textit{et al.}~\cite{Carlberg2010} and later work by Bai and Wang~\cite{Bai2022}. The final and least computationally expensive method simply sets $\deimBasisJacob = \deimBasisRes$, where $\deimBasisRes$ is computed from Newton iteration snapshots of the residual vector $\resFunc{\cdot}$. This method is employed in later work by Carlberg \textit{et al.}~\cite{Carlberg2013,Carlberg2017}, and is implied to be used by Lauzon \textit{et al.}~\cite{Lauzon2022}.
+In the original work on LSPG and GNAT by Carlberg \textit{et al.}~\cite{Carlberg2010}, several approaches are suggested. Their ``Method 3'' indicates the most expensive extreme: compute $\deimBasisJacob$ from snapshots of $\resFunc{\consVecCoef^{\newtonIdx}}$ and $\jacobResCons^{\newtonIdx} \consScale \consTrial$ for \textit{every} Newton iteration, resulting in $\numConsModes + 1$ snapshots for every Newton iteration. This approach is quickly discarded as computationally infeasible, and no work since appears to use this method. As a step down, their ``Method 2'' computes $\deimBasisJacob$ from snapshots of the action of the residual Jacobian on the Gauss--Newton search direction, i.e. $\jacobResCons^{\newtonIdx} \consScale \consTrial \delta \consVecCoef^{\newtonIdx}$. This reduces the number of snapshots saved per Newton iteration to two, and is show to perform well in the original work by Carlberg \textit{et al.}~\cite{Carlberg2010} and later work by Bai and Wang~\cite{Bai2022}. The final and least computationally expensive method simply sets $\deimBasisJacob = \deimBasisRes$, where $\deimBasisRes$ is computed from Newton iteration snapshots of the residual vector $\resFunc{\cdot}$. This method is employed in later work by Carlberg \textit{et al.}~\cite{Carlberg2013,Carlberg2017}, and is implied to be used by Lauzon \textit{et al.}~\cite{Lauzon2022}.
 
 We note that the collection of snapshots for every Newton subiteration can quickly become computationally burdensome, often increasing storage requirements by more than ten times. Other works suggest that only a single snapshot should be saved, as in the work by Grimberg \textit{et al.}~\cite{Grimberg2021}. They choose to collect the residual of the first Newton iteration for a given time step, arguing that the residuals for a well-converged Gauss--Newton solve quickly approach machine precision and result in poorly-conditioned POD approximations. The first Newton iteration represents the largest magnitude residuals observed for a given time step, and encourages more accurate gappy POD approximations. Similar notions are explored by Tezaur \textit{et al.}~\cite{Tezaur2022} in the context of PROMs of steady-state aerodynamics problems, whereby they find that the approximation is most accurate when computed from residual Jacobians of converged solutions or pre-convergence residuals, while those computed from residuals of the converged solution perform relatively poorly.
 
@@ -329,11 +329,11 @@ In this work, we will not examine GNAT PROMs using POD bases computed from the r
 
 \section{Sample Selection}\label{subsec:sampleSelect}
 
-As described above, the computation of the non-linear function regression basis $\deimBasis$ is somewhat nuanced, but is ultimately derived from the POD of a solution, non-linear terms, or fully-discrete residual (Jacobian) snapshot matrix. Methods for selecting sampling indices, and hence the construction of the sampling operator $\sampMat$, are much more varied. The selection of $\numSamps > \numResModes$ samples which globally minimize the regression error (Eq.~\ref{eq:gappyPODErrorBound}) is a computationally-intractable problem. As such, almost all methods for selecting sampling points are \textit{greedy} methods, which iteratively select points based on some measure of local optimality at a given iteration. The ``best'' choice of greedy sampling method is an area of active research. Unfortunately, very few comparisons between sampling methods have been published, with the exception of the work by Peherstorfer \textit{et al.}~\cite{Peherstorfer2020}. Although extremely insightful, their exploration of hyper-reduced ROMs was limited to simple one-dimensional steady reaction-diffusion system. Results presented in Chapter~\ref{chap:CavityAndCVRC} seek to expand on their work by studying more complex, unsteady 2D and 3D multi-scale and multi-physics problems.
+As described above, the computation of the non-linear function regression basis $\deimBasis$ is somewhat nuanced, but is ultimately derived from the POD of a solution, non-linear terms, or fully-discrete residual (Jacobian) snapshot matrix. Methods for selecting the sampling indices defining the sample set $\sampSet$, and hence the construction of the sampling operator $\sampMat$, are much more varied. The selection of $\numSamps > \numResModes$ samples which globally minimize the regression error (Eq.~\ref{eq:gappyPODErrorBound}) is a computationally-intractable problem. As such, almost all methods for selecting sampling points are \textit{greedy} methods, which iteratively select points based on some measure of local optimality at a given iteration. The ``best'' choice of greedy sampling method is an area of active research. Unfortunately, very few comparisons between sampling methods have been published, with the exception of the work by Peherstorfer \textit{et al.}~\cite{Peherstorfer2020}. Although extremely insightful, their exploration of hyper-reduced ROMs was limited to one-dimensional steady reaction-diffusion system. Results presented in Chapter~\ref{chap:CavityAndCVRC} seek to expand on their work by studying more complex, unsteady 2D and 3D multi-scale and multi-physics problems.
 
 \subsection{Sampling Criteria}
 %
-Before discussing specific sampling algorithms, we must address how sampling criteria for greedy algorithms are evaluated. In general, at each greedy iteration, the algorithm chooses the next index to include in the sample set by evaluating some metric (usually an error measure) and selecting the index which maximizes/minimizes that metric. This process is slightly nuanced for the sampling of non-linear functions describing flow physics characterized by disparate spatio-temporal scales. Up until this point, we have spoken about sampling only in terms of individual \textit{degrees of freedom} (DOFs). That is, we have considered sampling indices $\dummyIdx \in \{1,\; \hdots, \; \numDOF\}$ which have no specific connection to any variables or mesh elements. In reality, these indices are important for determining local connectivity of mesh elements and for computing numerical quantities such as fluxes and gradients. A state vector (or a function of the state vector) might be visualized as a two-dimensional array, with the leading dimension corresponding to the number of mesh elements $\numCells$ and the trailing dimension corresponding to the number of variables $\numVars$ associated with a single mesh element. This can be written as
+Before discussing specific sampling algorithms, we must address how sampling criteria for greedy algorithms are evaluated. In general, at each iteration, the algorithm chooses the next index to include in the sample set $\sampSet$ by evaluating some metric (usually an error measure) and selecting the index which maximizes/minimizes that metric. This process is slightly nuanced for the sampling of non-linear functions describing flow physics characterized by disparate spatio-temporal scales. Up until this point, we have spoken about sampling only in terms of individual \textit{degrees of freedom} (DOFs). That is, we have considered sampling indices $\sampIdx \in \{1,\; \hdots \;, \; \numDOF\}$ which have no specific connection to any variables or mesh elements. In reality, these indices are important for determining local connectivity of mesh elements and for computing numerical quantities such as fluxes and gradients. A state vector (or a function of the state vector) might be visualized as a two-dimensional array, with the leading dimension corresponding to the number of mesh elements $\numCells$ and the trailing dimension corresponding to the number of variables $\numVars$ associated with a single mesh element. This can be written as
 %
 \begin{equation}\label{eq:stateMat}
 	% right arrow, because I don't want to use equality
@@ -351,19 +351,19 @@ In this work, we construct the corresponding one-dimensional vector by flattenin
 	\stateVec \defEq \left[\stateVar_{1,1}, \; \hdots \;, \; \stateVar_{\numCells,1}, \; \stateVar_{1,2}, \; \hdots \;, \; \stateVar_{1,\numVars-1}, \; \stateVar_{1,\numVars}, \; \hdots \;, \; \stateVar_{\numCells,\numVars} \right]^\top
 \end{equation}
 %
-For a given mesh element index $j \in \{1,\; \hdots,\; \numCells\}$, all DOF indices in $\stateVec$ for the associated state variables can be retrieved as the set $\dummyIdx \in \{j + (k-1) \numCells \; \vert \; 1 \le k \le \numVars \}$.
+For a given mesh element index $j \in \{1,\; \hdots \;,\; \numCells\}$, all DOF indices in $\stateVec$ for the associated state variables can be retrieved as the set $\sampIdx \in \{j + (k-1) \numCells \; \vert \; 1 \le k \le \numVars \}$.
 
 As will be discussed in more detail in Section~\ref{sec:sampleMesh}, sampling individual degrees of freedom of a non-linear function usually requires that additional, auxiliary degrees of freedom also be sampled in order to correctly compute the approximated non-linear function. The union of the sampling operator and these auxiliary degrees of freedom can thus be defined as $\sampMatFull \inRTwo{\numSampsFull}{\numDOF}$, and the sampled non-linear function is computed as $\sampMat \rhsFunc{\stateVec, \; \timeVar} = \rhsFunc{\sampMatFull \stateVec, \; \timeVar}$. This understanding that additional degrees of freedom must be included in the calculation can influence how greedy sampling metrics are calculated. Three distinct approaches are described below.
 
 \begin{enumerate}
-	\item \textit{Agnostic}: The agnostic approach is the simplest sampling criterion, whereby the greedy metric is computed for every unsampled DOF, and only one DOF index is added to the sample set at every greedy iteration. That one DOF is then excluded from all future greedy metric evaluations. Only after $\numSamps$ DOFs have been selected for $\sampSet$ are the auxiliary DOFs appended to the full sample set $\sampSetFull$.
-	\item \textit{Post-sampling}: The post-sampling method, as with the agnostic approach, computes the greedy sampling metric at every unsampled DOF and selects one index to append to the sample set $\sampSet$. However, post-sampling also appends all DOFs associated with the mesh element corresponding to the sampled DOF. For example, if there are five variables associated with each mesh element, then five DOFs in total will be appended to the sample set at every greedy iteration. All DOFs associated with that mesh element are then excluded from future greedy metric evaluations, and the process continues until $\numSamps$ indices are included in the sample set.
-	\item \textit{Comprehensive}: The comprehensive method, as with the previous two methods, evaluates the greedy metric at all unsampled degrees of freedom, but then sums the greedy metric for all DOFs associated with a given mesh element. That is, a single greedy metric is evaluated for each mesh element. The mesh element which maximizes/minimizes the greedy metric is sampled, corresponding to appending all degrees of freedom associated with the mesh element to the sample set $\sampSet$. Again, this is repeated until all $\numSamps$ degrees of freedom are selected.
+	\item \textit{Agnostic}: The agnostic approach is the simplest sampling criterion, whereby the greedy metric is computed for every unsampled DOF, and only one DOF index is added to the sample set at every greedy iteration. That one DOF is then excluded from all future greedy metric evaluations. Only after $\numSamps$ DOFs have been selected for $\sampSet$ are the auxiliary DOFs appended to the full sample set $\sampSetFull$. This is the natural procedure for single-variable systems~\cite{Chaturantabut2010}, but is often used for multi-variate systems as well~\cite{Chaturantabut2011}.
+	\item \textit{Post-sampling}: The post-sampling method, as with the agnostic approach, computes the greedy sampling metric at every unsampled DOF and selects one index to append to the sample set $\sampSet$. However, post-sampling also appends all DOFs associated with the mesh element corresponding to the sampled DOF. For example, if there are five variables associated with each mesh element, then five DOFs in total will be appended to the sample set at every greedy iteration. All DOFs associated with that mesh element are then excluded from future greedy metric evaluations, and the process continues until $\numSamps$ indices are included in the sample set. This approach has been used successfully for several multi-variate systems~\cite{Zhou2012,Wentland2021}.
+	\item \textit{Comprehensive}: The comprehensive method, as with the previous two methods, evaluates the greedy metric at all unsampled degrees of freedom, but then sums the greedy metric for all DOFs associated with a given mesh element. That is, a single greedy metric is evaluated for each mesh element. The mesh element which maximizes/minimizes the greedy metric is sampled, corresponding to appending all degrees of freedom associated with the mesh element to the sample set $\sampSet$. Again, this is repeated until all $\numSamps$ degrees of freedom are selected. This approach has been utilized in the original work on GNAT by Carlberg and coworkers~\cite{Carlberg2013,Carlberg2017}.
 \end{enumerate}
 
-The post-sampling and comprehensive methods are motivated by the fact that for coupled fluid flow systems, all degrees of freedom associated with a cell must be included in the auxiliary sample set $\sampSetFull$ if even one degree of freedom is sampled by a greedy algorithm. In this sense, they are a sunk cost in evaluating $\sampMat \rhsFunc{\cdot, \; \timeVar}$, and assessing their contribution to the greedy sampling metric provides a more complete description.
+The post-sampling and comprehensive methods are motivated by the fact that for coupled fluid flow systems, all degrees of freedom associated with a cell must be included in the auxiliary sample set $\sampSetFull$ if even one degree of freedom is sampled by a greedy algorithm. In this sense, they are a sunk cost in evaluating $\sampMat \rhsFunc{\cdot, \; \timeVar}$, and assessing their contribution to the greedy sampling metric provides a more complete description. All results presented in this thesis utilize the \textit{comprehensive} approach.
 
-To the best of the author's knowledge, much of the literature does not discuss such nuances in evaluating the sampling criteria, as most of the theoretical work has dealt with single-variable systems which do not require these considerations. Anecdotally, it seems that much contemporary work pursues the agnostic approach. {\color{red}TALK ABOUT LITERATURE}
+% To the best of the author's knowledge, much of the literature does not discuss such nuances in evaluating the sampling criteria, as most of the theoretical work has dealt with single-variable systems which do not require these considerations. Anecdotally, it seems that much contemporary work pursues the agnostic approach. {\color{red}TALK ABOUT LITERATURE}
 
 % The present  work implements a slightly different approach. At each sampling iteration, only greedy selection metrics for individual degrees of freedom are considered. However, once a single degree of freedom is selected and the associated canonical unit vector is appended to $\sampMat$, all other degrees of freedom associated with this same mesh element are also appended to $\sampMat$. These additional degrees of freedom are then excluded from selection in subsequent sampling iterations. Thus, each iteration of a given sampling algorithm selects all degrees of freedom at a single mesh element, but does not consider the contribution of all of those degrees of freedom in the greedy selection metric. In implementing these algorithms, a sampling rate percentage $\alpha \in [0, \; 1]$ of the total mesh elements to sample is specified, and each sampling iteration selects the degrees of freedom associated with a single mesh element until the desired percentage of mesh elements is sampled. As a result, the total number of degrees of freedom sampled is $\numSamps = \alpha \times \times \numVars$. This approach is more similar to that taken by Zhou~\cite{Zhou2012}. We take care to note that this approach is not optimal, and that the mesh element-based approach described by~\cite{Carlberg2013} is logically a more principled approach to the greedy selection methodology. Future work will explore the performance differences between hyper-reduced ROMs using these two approaches.
 
@@ -371,24 +371,14 @@ As an aside, prior work~\cite{Carlberg2013} has noted that it is important to sa
 
 \subsection{Sampling Algorithms}\label{subsec:sampAlgos}
 %
-We now turn to specific algorithms for selecting samples for hyper-reduction. In this thesis, we study random sampling, DEIM-like sampling, eigenvector-based sampling, and determinant-based sampling, which are each detailed in turn.
+We now turn to specific algorithms for selecting samples for hyper-reduction. In this thesis, we study random sampling, eigenvector-based sampling, and two variants of the GNAT sampling algorithm, which are each detailed in turn.
 
 For all sampling algorithms, the first $\numResModes$ sampled degrees of freedom are selected by the QDEIM procedure proposed by Drma\v{c} and Gugercin~\cite{Drmac2016}. In the context of DEIM ROMs ($\numResModes = \numSamps$), this has been shown to exhibit tighter error bounds on the resulting interpolant over the traditional DEIM greedy sampling procedure. As such, each algorithm described here must only select $\numSamps - \numResModes$ samples. This is largely done to maintain consistency between algorithms, some of which require an initial set of sampling points and others which do not.
 
 \begin{enumerate}
 	\item \textit{Random Sampling}: By far the simplest method, random sampling randomly selects $\numSamps - \numResModes$ degrees of freedom using a random shuffle \CC\ routine. Peherstorfer \textit{et al.}~\cite{Peherstorfer2020} provide probabilistic analyses to show that randomized oversampling limits the growth in regression error as the regression dimension $\numResModes$ is increased, even in the presence of additional system noise. Although this method has been observed to generate reasonable reconstructions of unsteady flow fields from a few samples, it often leads to poor results for hyper-reduced ROMs of reacting flows~\cite{Wentland2021}. However, the simplicity of this method can be appealing, as it requires no complex computations or distributed-memory software for large datasets. The computational burden of the offline cost is thus strictly limited to the precomputation of $\left[\sampMat \deimBasis\right]^+$, which is universal to all sampling methods presented here.
 
-	\item \textit{DEIM-like Sampling}: The DEIM-like sampling strategy follows the greedy sampling method originally proposed for DEIM~\cite{Chaturantabut2010} and extended to gappy POD by several researchers~\cite{Zhou2012,Carlberg2013}. This method seeks to minimize the error in computing the regression of the basis vectors $\deimBasisVec_{\dummyIdx}$ themselves. Following a greedy approach, at each sampling iteration $\greedyIdx$ the regression error is calculated by
-	%
-	\begin{equation}
-		\errVec_{\greedyIdx} = \deimBasisVec_{\dummyIdx} - \deimBasis_{\dummyIdxTwo} \left[ \sampMat_{\greedyIdx} \deimBasis_{\dummyIdxTwo} \right]^+ \sampMat_{\greedyIdx}\deimBasisVec_{\dummyIdx},
-	\end{equation}
-	%
-	where the index $\dummyIdx$ repeatedly loops through the integer interval $\{1, \hdots, \; \numResModes\}$ (the greedy element of this approach), and $\deimBasis_{\dummyIdxTwo} \inRTwo{\numDOF}{\dummyIdxTwo}$ contains the leading $\dummyIdxTwo$ basis vectors of $\deimBasis$. The index $\dummyIdxTwo$ begins at 1 and is incremented by one at every sampling loop, until $\dummyIdxTwo = \numResModes$. At every iteration, the degree of freedom for which the absolute error $|\errVec_{\greedyIdx}|$ is greatest is sampled, and the corresponding canonical unit vector appended to $\sampMat_{\greedyIdx}$. For DEIM interpolations, Chaturantabut and Sorensen~\cite{Chaturantabut2010} showed that this algorithm limits the growth of the error bounds in Eq.~\ref{eq:deimErrorBound} at every iteration $\greedyIdx$.
-
-	The algorithm for DEIM-like sampling is provided in Alg.~\ref{alg:deimSampling}.
-
-	\item \textit{Eigenvector-based Sampling}: Eigenvector-based sampling seeks to minimize the sampling error term in Eq.~\ref{eq:gappyPODErrorBound} via a greedy approach. This method is a simplification by Peherstorfer et al.~\cite{Peherstorfer2020} of a greedy sampling procedure by Zimmermann and Willcox~\cite{Zimmermann2016} (Algorithm 4), who originally developed the method in the context of missing point estimation. Some of the motivating theory behind the modified algorithm is reproduced here with permission.
+	\item \textit{Eigenvector-based Sampling}: Eigenvector-based sampling seeks to minimize the sampling error term in Eq.~\ref{eq:gappyPODErrorBound} via a greedy approach. This method is a simplification by Peherstorfer \textit{et al.}~\cite{Peherstorfer2020} of a greedy sampling procedure by Zimmermann and Willcox~\cite{Zimmermann2016} (Algorithm 4), who originally developed the method in the context of missing point estimation. Some of the motivating theory behind the modified algorithm is reproduced here with permission.
 
 	To select the remaining $\numSamps - \numResModes$ points, the method leverages the fact that by nature of the $\ell^2$ norm, the sampling error may be rewritten as
 	%
@@ -396,7 +386,7 @@ For all sampling algorithms, the first $\numResModes$ sampled degrees of freedom
 		\left\Vert \left[ \sampMat \deimBasis \right]^+ \right\Vert_2 = \singVal_{\text{max}} \left( \left[\sampMat \deimBasis \right]^+ \right) = \frac{1}{\singVal_{\text{min}} \left( \sampMat \deimBasis \right)},
 	\end{equation}
 	%
-	where $\singVal_{\text{max}}$ and $\singVal_{\text{min}}$ indicate the maximum and minimum singular values of their arguments, respectively. Thus, at the $\greedyIdx$th sampling iteration, the row of $deimBasis$ is selected which maximizes the smallest singular value (equivalently, the smallest eigenvalue) of $\sampMat_{\greedyIdx} \deimBasis \inRTwo{\greedyIdx}{\numResModes}$ via a symmetric rank-one update. Here, $\sampMat_{\greedyIdx} \inRTwo{\numDOF}{\greedyIdx}$ is the selection matrix constructed from the $\greedyIdx$ unit vectors selected up to iteration $\greedyIdx$ by the greedy procedure. It is shown in~\cite{Peherstorfer2020} that the bounds on this update of the smallest eigenvalue, $\eigenVal_{\numResModes}$, from update step $\greedyIdx$ to $\greedyIdx+1$, is given by
+	where $\singVal_{\text{max}}$ and $\singVal_{\text{min}}$ indicate the maximum and minimum singular values of their arguments, respectively. Thus, at the $\greedyIdx$th sampling iteration, the row of $\deimBasis$ is selected which maximizes the smallest singular value (equivalently, the smallest eigenvalue) of $\sampMat_{\greedyIdx} \deimBasis \inRTwo{\greedyIdx}{\numResModes}$ via a symmetric rank-one update. Here, $\sampMat_{\greedyIdx} \inRTwo{\numDOF}{\greedyIdx}$ is the selection matrix constructed from the $\greedyIdx$ unit vectors selected up to iteration $\greedyIdx$ by the greedy procedure. It is shown in~\cite{Peherstorfer2020} that the bounds on this update of the smallest eigenvalue, $\eigenVal_{\numResModes}$, from update step $\greedyIdx$ to $\greedyIdx+1$, is given by
 	%
 	\begin{equation}\label{eq:gappyPODEStrictBounds}
 		\eigenVal_{\numResModes}^{\greedyIdx+1} \ge \eigenVal_{\numResModes}^{\greedyIdx} + \frac{1}{2} \left[ g + \left\Vert \deimBasisREvecRow \right\Vert_2^2 - \sqrt{\left[ g + \left\Vert \deimBasisREvecRow \right\Vert_2^2 \right]^2 - 4g\left[ \left[\mathbf{z}_{\numResModes}^{\greedyIdx} \right]^\top \deimBasisREvecRow \right]^2} \right],
@@ -412,31 +402,39 @@ For all sampling algorithms, the first $\numResModes$ sampled degrees of freedom
 
 	The algorithm for eigenvector-based sampling is provided in Alg.~\ref{alg:eigSampling}.
 
-	\item \textit{Determinant-based Sampling}:
+	\item \textit{GNAT Sampling, Variant 1}: The sampling strategy devised by Carlberg \textit{et al.}~\cite{Carlberg2013} is an extension of the greedy sampling method originally proposed for DEIM~\cite{Chaturantabut2010}. This method seeks to minimize the error in computing the regression of the basis vectors $\deimBasisVec_{\dummyIdx}$ themselves. Following a greedy approach, at each sampling iteration $\greedyIdx$ the regression error is calculated by
+	%
+	\begin{equation}
+		\errVec_{\greedyIdx} = \deimBasisVec_{\dummyIdx} - \deimBasis_{\dummyIdxTwo} \left[ \sampMat_{\greedyIdx} \deimBasis_{\dummyIdxTwo} \right]^+ \sampMat_{\greedyIdx}\deimBasisVec_{\dummyIdx},
+	\end{equation}
+	%
+	where the index $\dummyIdx$ repeatedly loops through the integer interval $\{1, \hdots, \; \numResModes\}$ (the greedy element of this approach), and $\deimBasis_{\dummyIdxTwo} \inRTwo{\numDOF}{\dummyIdxTwo}$ contains the leading $\dummyIdxTwo$ basis vectors of $\deimBasis$. The index $\dummyIdxTwo$ begins at 1 and is incremented by one at every sampling loop, until $\dummyIdxTwo = \numResModes$. At every iteration, the degree of freedom for which the absolute error $|\errVec_{\greedyIdx}|$ is greatest is sampled, and the corresponding canonical unit vector appended to $\sampMat_{\greedyIdx}$. For DEIM interpolations, Chaturantabut and Sorensen~\cite{Chaturantabut2010} showed that this algorithm limits the growth of the error bounds in Eq.~\ref{eq:deimErrorBound} at every iteration $\greedyIdx$.
 
-	The algorithm for determinant-based sampling is provided in Alg.~\ref{alg:detSampling}.
+	The algorithm for DEIM-like sampling is provided in Alg.~\ref{alg:gnatOneSampling}.
+
+	\item \textit{GNAT Sampling, Variant 2}:
 
 \end{enumerate}
 
 \begin{algorithm}
-	\caption{DEIM-like sampling}\label{alg:deimSampling}
+    \caption{Eigenvector-based sampling}\label{alg:eigSampling}
+    \begin{algorithmic}
+		\REQUIRE Number of desired samples $\numSamps$, seed sample set $\sampSet$, regression basis $\deimBasis$
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+	\caption{GNAT, Variant 1}\label{alg:gnatOneSampling}
 	\begin{algorithmic}
-		\STATE temp
+		\REQUIRE Number of desired samples $\numSamps$, seed sample set $\sampSet$, regression basis $\deimBasis$
 	\end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}
-    \caption{Eigenvector-based sampling}\label{alg:eigSampling}
-    \begin{algorithmic}
-		\STATE temp
-    \end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm}
-    \caption{Determinant-based sampling}\label{alg:detSampling}
-    \begin{algorithmic}
-		\STATE temp
-    \end{algorithmic}
+	\caption{GNAT, Variant 2}\label{alg:gnatTwoSampling}
+	\begin{algorithmic}
+		\REQUIRE Number of desired samples $\numSamps$, seed sample set $\sampSet$, regression basis $\deimBasis$
+	\end{algorithmic}
 \end{algorithm}
 
 \section{The Sample Mesh}\label{sec:sampleMesh}

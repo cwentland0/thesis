@@ -100,7 +100,7 @@ We now address the absence of any analysis for LSPG PROMs above and throughout t
 
 \subsection{Mesh Sampling and Load Balancing}
 
-We now turn to the pre-processing stage of developing hyper-reduced PROMs for this case. Although a brief overview was given in Section~\ref{sec:cavity}, we give more attention here to some of the nuances related to load balancing and MPI communications for parallel computations.
+We now turn to the pre-processing stage of developing hyper-reduced PROMs for the truncated CVRC. Although a brief overview of hyper-reduction computational processes was given in Section~\ref{sec:cavity}, we give more attention here to some of the nuances related to load balancing and MPI communications for parallel computations.
 
 \begin{table}
 	\centering
@@ -122,6 +122,18 @@ We now turn to the pre-processing stage of developing hyper-reduced PROMs for th
 \end{table}
 
 As with the cavity flow case, we will study the four sampling algorithms described in Section~\ref{subsec:sampAlgos}, and again conduct our analysis for a range of sampling rates and gappy POD regressor basis dimensions. The sampling rates investigated and the parallel partitioning for each sample mesh (regardless of the sampling algorithm used) are summarized in Table~\ref{tab:cvrcSampProcs}, and are again adjusted to ensure that the load balance is approximately equal to 1,000 cells per core.
+
+\begin{figure}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/deim/stats/cvrc_partition_stats.png}
+		\subcaption{Average cells per partition, \% of total mesh.}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/deim/stats/cvrc_partition_comms.png}
+		\subcaption{Total point-to-point MPI communications.}
+	\end{minipage}
+	\caption{Sample mesh partition statistics, 10 partitions, various sampling rates.}
+\end{figure}
 
 \begin{figure}
 	\begin{minipage}{0.99\linewidth}
@@ -197,26 +209,26 @@ We again visually inspect how each sampling algorithm
 	\caption{\label{fig:cvrcSampledROMErrVsTime}CVRC HPROM time-average error vs. CPU-time speedup, various $\dt$}
 \end{figure}
 
-\begin{figure}
-	\begin{minipage}{0.46\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/deim/err_contour_random_dt2p5e-7.png}
-		\subcaption{Random}
-	\end{minipage}
-	\begin{minipage}{0.53\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/deim/err_contour_eigenvec_dt2p5e-7.png}
-		\subcaption{Eigenvector}
-	\end{minipage}
+% \begin{figure}
+% 	\begin{minipage}{0.46\linewidth}
+% 		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/deim/err_contour_random_dt2p5e-7.png}
+% 		\subcaption{Random}
+% 	\end{minipage}
+% 	\begin{minipage}{0.53\linewidth}
+% 		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/deim/err_contour_eigenvec_dt2p5e-7.png}
+% 		\subcaption{Eigenvector}
+% 	\end{minipage}
 
-	\begin{minipage}{0.46\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/deim/err_contour_gnat1_dt2p5e-7.png}
-		\subcaption{GNAT, V1}
-	\end{minipage}
-	\begin{minipage}{0.53\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/deim/err_contour_gnat2_dt2p5e-7.png}
-		\subcaption{GNAT, V2}
-	\end{minipage}
-	\caption{CVRC HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 2.5 \times \dtFOM$, various sampling algorithms}
-\end{figure}
+% 	\begin{minipage}{0.46\linewidth}
+% 		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/deim/err_contour_gnat1_dt2p5e-7.png}
+% 		\subcaption{GNAT, V1}
+% 	\end{minipage}
+% 	\begin{minipage}{0.53\linewidth}
+% 		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/deim/err_contour_gnat2_dt2p5e-7.png}
+% 		\subcaption{GNAT, V2}
+% 	\end{minipage}
+% 	\caption{CVRC HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 2.5 \times \dtFOM$, various sampling algorithms}
+% \end{figure}
 
 \begin{figure}
 	\begin{minipage}{0.46\linewidth}

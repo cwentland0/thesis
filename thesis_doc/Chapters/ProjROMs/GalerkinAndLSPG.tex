@@ -6,50 +6,50 @@ Inserting the approximation $\consVec \approx \consVecRom = \decoderFunc{\consVe
     \ode{\decoderFunc{\consVecCoef}}{\timeVar} - \rhsFunc{\consVecRom, \; \timeVar} = \zeroVec, \quad \consVecRom^0 = \consFuncRom{\initTime}.
 \end{equation}
 %
-Employing the chain rule, and scaling the ODE via the diagonal matrix $\resScaleInv \inRTwo{\numDOF}{\numDOF}$ to standardize the semi-discrete residual, this system can be modified into
+Employing the chain rule, noting that the trial space translation vector and scaling matrix are constant, and scaling the ODE via the diagonal matrix $\resScaleInv \inRTwo{\numDOF}{\numDOF}$ to standardize the semi-discrete residual, this system can be modified into
 %
 \begin{equation}\label{eq:romFullODEMod}
-    \resScaleInv \left[ \jacobDecodeCons \ode{\consVecCoef}{\timeVar} - \rhsFunc{\consVecRom, \; \timeVar} \right] = \zeroVec,
+    \resScaleInv \left[ \consScale \jacobTrialCons \ode{\consVecCoef}{\timeVar} - \rhsFunc{\consVecRom, \; \timeVar} \right] = \zeroVec,
 \end{equation}
 %
-where the Jacobian $\jacobDecodeCons \defEq \funcMap{\partial \decoderFunc{\consVecCoef} / \partial \consVecCoef}{\ROne{\numConsModes}}{\RTwo{\numDOF}{\numConsModes}}$. For a linear representation, the Jacobian is simply $\jacobDecodeCons = \consScale \consTrial$. The purpose of the residual scaling will be made apparent later.
+where the Jacobian $\jacobTrialCons \defEq \funcMap{\partial \trialConsFunc{\consVecCoef} / \partial \consVecCoef}{\ROne{\numConsModes}}{\RTwo{\numDOF}{\numConsModes}}$. For a linear representation, the Jacobian is simply $\jacobTrialCons = \consTrial$. The purpose of the residual scaling will be made apparent later.
 
 This has clearly resulted in no practical dimension reduction, as Eqs~\ref{eq:romFullODE} and~\ref{eq:romFullODEMod} are still $\numDOF$-dimensional systems. To accomplish dimension reduction, we require a \textit{projection} operation, the namesake of projection-based reduced-order models. This entails choosing a \textit{test basis} $\testBasisCons \inRTwo{\numDOF}{\numConsModes}$ by which the approximate ODE is projected as
 %
 \begin{equation}\label{eq:contRomRes}
-    \testBasisCons^\top \resScaleInv \left[\jacobDecodeCons \ode{\consVecCoef}{\timeVar} - \rhsFunc{\consVecRom, \; \timeVar} \right] = \zeroVec.
+    \testBasisCons^\top \resScaleInv \left[\consScale \jacobTrialCons \ode{\consVecCoef}{\timeVar} - \rhsFunc{\consVecRom, \; \timeVar} \right] = \zeroVec.
 \end{equation}
 %
-Assuming $\testBasisCons^\top \resScaleInv \jacobDecodeCons \inRTwo{\numConsModes}{\numConsModes}$ is invertible, rearranging terms arrives at
+Assuming $\testBasisCons^\top \resScaleInv \consScale \jacobTrialCons \inRTwo{\numConsModes}{\numConsModes}$ is invertible, rearranging terms arrives at
 %
 \begin{equation}\label{eq:projRomGen}
-    \ode{\consVecCoef}{\timeVar} = \left[\testBasisCons^\top \resScaleInv \jacobDecodeCons\right]^{-1} \testBasisCons^\top \resScaleInv \rhsFunc{\consVecRom, \; \timeVar}.
+    \ode{\consVecCoef}{\timeVar} = \left[\testBasisCons^\top \resScaleInv \consScale \jacobTrialCons\right]^{-1} \testBasisCons^\top \resScaleInv \rhsFunc{\consVecRom, \; \timeVar}.
 \end{equation}
 %
-Finally, Eq.~\ref{eq:projRomGen} is a $\numConsModes$-dimensional ODE which can be marched forward in time with respect to the latent state $\consVecCoef$. As we naturally choose $\numConsModes \ll \numDOF$, this time integration process is theoretically cheaper than that of the FOM. This may not always be the case above a certain value of $\numConsModes$, as the inversion (and reduction across processes for parallel applications) of the dense matrix $\testBasisCons^\top \resScaleInv \jacobDecodeCons$ may be more computationally expensive than the solution of the FOM's sparse linear system arising from Eq.~\ref{eq:pseudoTimeLinSys}. Further, the evaluation of the non-linear terms $\rhsFunc{\cdot, \; \timeVar}$ still depends on the full-order state $\consVecRom$. These and other computational barriers will be addressed in more detail in Chapter~\ref{chap:HPROMS}.
+Finally, Eq.~\ref{eq:projRomGen} is a $\numConsModes$-dimensional ODE which can be marched forward in time with respect to the latent state $\consVecCoef$. As we naturally choose $\numConsModes \ll \numDOF$, this time integration process is theoretically cheaper than that of the FOM. This may not always be the case above a certain value of $\numConsModes$, as the inversion (and reduction across processes for parallel applications) of the dense matrix $\testBasisCons^\top \resScaleInv \consScale \jacobTrialCons$ may be more computationally expensive than the solution of the FOM's sparse linear system arising from Eq.~\ref{eq:pseudoTimeLinSys}. Further, the evaluation of the non-linear terms $\rhsFunc{\cdot, \; \timeVar}$ still depends on the full-order state $\consVecRom$. These and other computational barriers will be addressed in more detail in Chapter~\ref{chap:HPROMS}.
 
 The question now becomes how the projecting test basis is chosen. In the following sections, we detail the classical projection methods, namely Galerkin projection and least-squares Petrov--Galerkin projection. In Section~\ref{sec:mplsvt} we will derive the recent model-form preserving least-squares with variable transformation method and discuss its potential advantages over classical projection methods.
 
 \subsection{Galerkin Projection}
 
-Galerkin projection can be defined as the projection of the full-order ROM ODE onto the tangent space of the trial manifold, i.e.
+Galerkin projection can be defined as the projection of the full-order ROM ODE onto the space tangent to the unscaled trial manifold, i.e.
 %
 \begin{equation}
-    \testBasisCons\left(\consVecCoef\right) \defEq \jacobDecodeConsFunc{\consVecCoef}.
+    \testBasisCons\left(\consVecCoef\right) \defEq \jacobTrialConsFunc{\consVecCoef}.
 \end{equation}
 %
 Substituting this into Eq.~\ref{eq:projRomGen} arrives at
 %
 \begin{equation}\label{eq:galerkinROMODE}
-    \ode{\consVecCoef}{\timeVar} = \left[\jacobDecodeCons^\top \resScaleInv \jacobDecodeCons\right]^{-1} \jacobDecodeCons^\top \resScaleInv \rhsFunc{\consVecRom, \; \timeVar}.
+    \ode{\consVecCoef}{\timeVar} = \left[\jacobTrialCons^\top \resScaleInv \consScale \jacobTrialCons\right]^{-1} \jacobTrialCons^\top \resScaleInv \rhsFunc{\consVecRom, \; \timeVar}.
 \end{equation}
 %
-As detailed extensively by Lee and Carlberg~\cite{Lee2020}, when employing a non-linear manifold trial space, the solution of Eq.~\ref{eq:galerkinROMODE} with an implicit time integrator via Newton's method requires the calculation of the third-order tensor $\partial \jacobDecodeCons / \partial \consVecCoef$. This is generally computational intractable, and neglecting this term amounts to a quasi-Newton method with an approximate residual Jacobian.
+As detailed extensively by Lee and Carlberg~\cite{Lee2020}, when employing a non-linear manifold trial space, the solution of Eq.~\ref{eq:galerkinROMODE} with an implicit time integrator via Newton's method requires the calculation of the third-order tensor $\partial \jacobTrialCons / \partial \consVecCoef$. This is generally computational intractable, and neglecting this term amounts to a quasi-Newton method with an approximate residual Jacobian.
 
-For a linear representation, the test basis is simply $\testBasisCons = \consScale \consTrial$, leading to
+For a linear representation, the test basis is simply $\testBasisCons = \consTrial$, leading to
 %
 \begin{equation}\label{eq:galerkinROMODELinear}
-	\ode{\consVecCoef}{\timeVar} = \left[\consTrial^\top \consScale \resScaleInv \consScale \consTrial\right]^{-1} \consTrial^\top \consScale \resScaleInv \rhsFunc{\consVecRom, \; \timeVar}.
+	\ode{\consVecCoef}{\timeVar} = \left[\consTrial^\top \resScaleInv \consScale \consTrial\right]^{-1} \consTrial^\top \resScaleInv \rhsFunc{\consVecRom, \; \timeVar}.
 \end{equation}
 %
 In the specific case of $\consScale = \resScale = \identMat$, recalling that $\consTrial$ is orthonormal, this simplifies the ODE greatly to the more familiar Galerkin PROM form
@@ -94,10 +94,10 @@ The solution of Eq.~\ref{eq:lspgLS} is usually accomplished iteratively by linea
 where the ROM residual Jacobian is defined as $\jacobResCoefCons^\newtonIdx \defEq \funcMap{\partial \resFunc{\consVecCoef^\newtonIdx} / \partial \consVecCoef}{\ROne{\numConsModes}}{\RTwo{\numDOF}{\numConsModes}}$. The constant factor $\alpha \in \mathbb{R}_+$ is the step size, which is unity for all ROMs in this thesis; alternative methods may adapt $\alpha \defEq \alpha^{\timeIdx,\newtonIdx}$ to control iterative convergence. Further, the least-squares problem may be computed in terms of the full-order Jacobian $\jacobResCons^{\newtonIdx} \defEq \funcMap{\partial \resFunc{\consVecCoef^\newtonIdx} / \partial \consVec}{\ROne{\numConsModes}}{\RTwo{\numDOF}{\numDOF}}$ via the chain rule,
 %
 \begin{equation}
-    \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \left[\jacobResCons^{\newtonIdx} \jacobDecodeCons^{\newtonIdx} \dummyVec - \resFunc{\consVecCoef^{\newtonIdx}}\right] \right\Vert_2,
+    \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \left[\jacobResCons^{\newtonIdx} \consScale \jacobTrialCons^{\newtonIdx} \dummyVec - \resFunc{\consVecCoef^{\newtonIdx}}\right] \right\Vert_2,
 \end{equation}
 %
-where the decoder Jacobian $\jacobDecodeCons^{\newtonIdx} \defEq \partial \decoderFunc{\consVecCoef^{\newtonIdx}} / \partial \consVecCoef$ is now specified in the time-discrete setting. In the case of a linear trial space, $\jacobDecodeCons^{\newtonIdx} = \consScale \consTrial$, and this simplifies to
+where the decoder Jacobian $\jacobTrialCons^{\newtonIdx} \defEq \partial \trialConsFunc{\consVecCoef^{\newtonIdx}} / \partial \consVecCoef$ is now specified in the time-discrete setting. In the case of a linear trial space, $\jacobTrialCons^{\newtonIdx} = \consTrial$, and this simplifies to
 %
 \begin{equation}
     \delta \consVecCoef^{\newtonIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \left[\jacobResCons^{\newtonIdx} \consScale \consTrial \dummyVec - \resFunc{\consVecCoef^{\newtonIdx}}\right] \right\Vert_2.
@@ -114,16 +114,16 @@ The simplest means of computing the solution to Eq.~\ref{eq:lspgLSLin} is the fo
 This formulation reveals the meaning of ``Petrov--Galerkin'' in LSPG: a Petrov--Galerkin projection is any projection in which the test space is \textit{not} the same as the space tangent to the trial manifold (as is the case for Galerkin projection). In Eq.~\ref{eq:lspgNormal}, if we expand terms using the chain rule, we arrive at
 %
 \begin{equation}
-    \left[\resScaleInv \jacobResCons^{\newtonIdx} \jacobDecodeCons^{\newtonIdx}\right]^\top \resScaleInv \jacobResCons^{\newtonIdx} \jacobDecodeCons^{\newtonIdx} \delta \consVecCoef^{\newtonIdx} = -\left[\resScaleInv \jacobResCons^{\newtonIdx} \jacobDecodeCons^{\newtonIdx}\right]^\top \resScaleInv \resFunc{\consVecCoef^{\newtonIdx}}.
+    \left[\resScaleInv \jacobResCons^{\newtonIdx} \consScale \jacobTrialCons^{\newtonIdx}\right]^\top \resScaleInv \jacobResCons^{\newtonIdx} \consScale \jacobTrialCons^{\newtonIdx} \delta \consVecCoef^{\newtonIdx} = -\left[\resScaleInv \jacobResCons^{\newtonIdx} \consScale \jacobTrialCons^{\newtonIdx}\right]^\top \resScaleInv \resFunc{\consVecCoef^{\newtonIdx}}.
 \end{equation}
 %
 This form can be interpreted as a Petrov--Galerkin projection of the Gauss--Newton solution of Eq.~\ref{eq:contRomRes} with a test basis
 %
 \begin{equation}
-    \testBasisCons^\newtonIdx \defEq \resScaleInv \jacobResCons^\newtonIdx \jacobDecodeCons^{\newtonIdx}.
+    \testBasisCons^\newtonIdx \defEq \resScaleInv \jacobResCons^\newtonIdx \consScale \jacobTrialCons^{\newtonIdx}.
 \end{equation}
 %
-We see here that even with a linear state representation ($\jacobDecodeCons^{\newtonIdx} = \consScale \consTrial$), the test basis is time-variant, unlike Galerkin projection with a linear state representation. This poses a significant computational cost increase over Galerkin projection. For a non-linear state representation, the cost difference is less extreme, as the decoder Jacobian is dependent on the latent state, i.e. $\jacobDecodeCons^{\newtonIdx} \defEq \jacobDecodeConsFunc{\consVecCoef^\newtonIdx}$, and the test basis is time-variant for Galerkin and LSPG projection alike.
+We see here that even with a linear state representation ($\jacobTrialCons^{\newtonIdx} = \consTrial$), the test basis is time-variant, unlike Galerkin projection with a linear state representation. This poses a significant computational cost increase over Galerkin projection. For a non-linear state representation, the cost difference is less extreme, as the decoder Jacobian is dependent on the latent state, i.e. $\jacobTrialCons^{\newtonIdx} \defEq \jacobTrialConsFunc{\consVecCoef^\newtonIdx}$, and the test basis is time-variant for Galerkin and LSPG projection alike.
 
 Forming the complete normal equations is a computationally expensive process. A simple alternative involves the QR decomposition of the residual Jacobian,
 %
