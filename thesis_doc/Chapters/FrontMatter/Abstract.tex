@@ -1,14 +1,3 @@
-\vspace{-1cm}
 \chapter{Abstract}
-\vspace{-0.5cm}
 
-% Just summarize everything once it's done. Should be something like the following:
-
-% \begin{itemize}
-%     \item Simulations can be invaluable for engineering, but out of reach for many reacting systems
-%     \item Data-driven methods are improving, but still unaddressed issues of offline and online cost, generalizability
-%     \item ROMs for non-linear systems require hyper-reduction, thesis explores tradeoffs in sample selection.
-%     \item Linear ROMs are well studied, but have predictive accuracy issues. Adaptivity addresses this.
-%     \item  Non-linear ROMs can improve solution accuracy, but hard to justify offline cost, cost of evaluating Jacobians
-%     \item Exploring sensitivity of ROMs to conditioning, improvement via MP-LSVT. 
-% \end{itemize}
+Numerical simulations are a critical element of the engineering design process, accelerating development by optimizing performance, identifying failure points, and understanding anomalies. Although simulations will never entirely replace physical testing, they provide invaluable support within the engineering design ecosystem. The industrial utility of numerical models, however, is largely limited to linear systems, such as those describing solid mechanics, or elliptic/hyperbolic systems, such as those describing heat transfer or diffusion-dominated fluid flow. For non-linear, hyperbolic systems, such as those describing convection-dominated fluid flow, accurate models often require weeks-long simulations on massive supercomputers. Engineers must necessarily sacrifice model accuracy to satisfy computational budgets and turnaround expectations. In the aerospace industry, numerical models thus act largely as rough, first-order estimates which must be confirmed experimentally. This is particularly true in the design of rocket engines, where modeling high-pressure turbulent combustion incurs enormous computational costs not experienced in the study of vehicle aerodynamics. This is particularly vexing, as rocket engines suffer from a number of unsolved problems, including the reliable prevention or elimination of unpredictable and highly-destructive combustion instabilities.
