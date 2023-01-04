@@ -65,10 +65,10 @@ We again examine the performance of the unsampled PROMs before proceeding to HPR
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{Chapters/CavityAndCVRC/Images/cvrc/unsampled/unsampled_avg_mode_Average_errorRaw.png}
-	\caption{\label{fig:cavityUnsampledROMErrVsModes}CVRC unsampled PROM time-average error, various $\dt$.}
+	\caption{\label{fig:cvrcUnsampledROMErrVsModes}CVRC unsampled PROM time-average error, various $\dt$.}
 \end{figure}
 
-The time-average error results are displayed in Fig.~\ref{fig:cavityUnsampledROMErrVsModes}. Note that, in general, the error levels induced for this case are significantly higher than those observed in the cavity flow case. Whereas the unsampled cavity MP-LSVT PROMs easily achieved less than 1\% relative $\ell^2$ error for all time steps for $\numPrimModes \ge 50$, this is only achieved here for $\dt = \dtFOM$, $\numPrimModes = 200$. This is yet another indicator of the difficulty in accurately modeling reacting flows. However, we observe the similar trend that moderate increases in the ROM time step result in negligible increase in PROM error, while larger time steps greatly diminish the PROM's accuracy and quickly saturates accuracy improvements with trial basis enrichment. For $\dt = 10 \times \dtFOM$, unlike the cavity whose time-average error saturated at approximately 0.8\%, error saturates at roughly 4\% for this case.
+The time-average error results are displayed in Fig.~\ref{fig:cvrcUnsampledROMErrVsModes}. Note that, in general, the error levels induced for this case are significantly higher than those observed in the cavity flow case. Whereas the unsampled cavity MP-LSVT PROMs easily achieved less than 1\% relative $\ell^2$ error for all time steps for $\numPrimModes \ge 50$, this is only achieved here for $\dt = \dtFOM$, $\numPrimModes = 200$. This is yet another indicator of the difficulty in accurately modeling reacting flows. However, we observe the similar trend that moderate increases in the ROM time step result in negligible increase in PROM error, while larger time steps greatly diminish the PROM's accuracy and quickly saturates accuracy improvements with trial basis enrichment. For $\dt = 10 \times \dtFOM$, unlike the cavity whose time-average error saturated at approximately 0.8\%, error saturates at roughly 4\% for this case.
 
 \begin{figure}
 	\begin{minipage}{0.49\linewidth}
