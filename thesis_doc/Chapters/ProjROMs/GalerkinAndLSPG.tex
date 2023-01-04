@@ -14,7 +14,7 @@ Employing the chain rule, noting that the trial space translation vector and sca
 %
 where the Jacobian $\jacobTrialCons \defEq \funcMap{\partial \trialConsFunc{\consVecCoef} / \partial \consVecCoef}{\ROne{\numConsModes}}{\RTwo{\numDOF}{\numConsModes}}$. For a linear representation, the Jacobian is simply $\jacobTrialCons = \consTrial$. The purpose of the residual scaling will be made apparent later.
 
-This has clearly resulted in no practical dimension reduction, as Eqs~\ref{eq:romFullODE} and~\ref{eq:romFullODEMod} are still $\numDOF$-dimensional systems. To accomplish dimension reduction, we require a \textit{projection} operation, the namesake of projection-based reduced-order models. This entails choosing a \textit{test basis} $\testBasisCons \inRTwo{\numDOF}{\numConsModes}$ by which the approximate ODE is projected as
+This has clearly resulted in no practical dimension reduction, as Eqs~\ref{eq:romFullODE} and~\ref{eq:romFullODEMod} are still $\numDOF$-dimensional systems. To accomplish dimension reduction, a \textit{projection} operation, the namesake of projection-based reduced-order models, is required. This entails choosing a \textit{test basis} $\testBasisCons \inRTwo{\numDOF}{\numConsModes}$ by which the approximate ODE is projected as
 %
 \begin{equation}\label{eq:contRomRes}
     \testBasisCons^\top \resScaleInv \left[\consScale \jacobTrialCons \ode{\consVecCoef}{\timeVar} - \rhsFunc{\consVecRom, \; \timeVar} \right] = \zeroVec.
@@ -26,9 +26,9 @@ Assuming $\testBasisCons^\top \resScaleInv \consScale \jacobTrialCons \inRTwo{\n
     \ode{\consVecCoef}{\timeVar} = \left[\testBasisCons^\top \resScaleInv \consScale \jacobTrialCons\right]^{-1} \testBasisCons^\top \resScaleInv \rhsFunc{\consVecRom, \; \timeVar}.
 \end{equation}
 %
-Finally, Eq.~\ref{eq:projRomGen} is a $\numConsModes$-dimensional ODE which can be marched forward in time with respect to the latent state $\consVecCoef$. As we naturally choose $\numConsModes \ll \numDOF$, this time integration process is theoretically cheaper than that of the FOM. This may not always be the case above a certain value of $\numConsModes$, as the inversion (and reduction across processes for parallel applications) of the dense matrix $\testBasisCons^\top \resScaleInv \consScale \jacobTrialCons$ may be more computationally expensive than the solution of the FOM's sparse linear system arising from Eq.~\ref{eq:pseudoTimeLinSys}. Further, the evaluation of the non-linear terms $\rhsFunc{\cdot, \; \timeVar}$ still depends on the full-order state $\consVecRom$. These and other computational barriers will be addressed in more detail in Chapter~\ref{chap:HPROMS}.
+Finally, Eq.~\ref{eq:projRomGen} is a $\numConsModes$-dimensional ODE which can be marched forward in time with respect to the latent state $\consVecCoef$. A natural choice is $\numConsModes \ll \numDOF$, and thus this time integration process is theoretically cheaper than that of the FOM. This may not always be the case above a certain value of $\numConsModes$, as the inversion (and reduction across processes for parallel applications) of the dense matrix $\testBasisCons^\top \resScaleInv \consScale \jacobTrialCons$ may be more computationally expensive than the solution of the FOM's sparse linear system arising from Eq.~\ref{eq:pseudoTimeLinSys}. Further, the evaluation of the non-linear terms $\rhsFunc{\cdot, \; \timeVar}$ still depends on the full-order state $\consVecRom$. These and other computational barriers will be addressed in more detail in Chapter~\ref{chap:HPROMS}.
 
-The question now becomes how the projecting test basis is chosen. In the following sections, we detail the classical projection methods, namely Galerkin projection and least-squares Petrov--Galerkin projection. In Section~\ref{sec:mplsvt} we will derive the recent model-form preserving least-squares with variable transformation method and discuss its potential advantages over classical projection methods.
+The question now becomes how the projecting test basis is chosen. In the following sections, classical projection methods are detailed, namely Galerkin projection and least-squares Petrov--Galerkin projection. In Section~\ref{sec:mplsvt} the recent model-form preserving least-squares with variable transformation method is derived, and its potential advantages over classical projection methods are discussed.
 
 \subsection{Galerkin Projection}
 
@@ -74,13 +74,13 @@ where $\consVecRomDt$ is the temporal discretization operator (e.g. forward Eule
     \consVecCoef^{\timeIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resScaleInv \resFunc{\dummyVec} \right\Vert_2,
 \end{equation}
 %
-where we now see the purpose of scaling the residual by $\resScaleInv$. This has the effect of ensuring that, with careful calculation of $\resScale$, the various elements of the residual contribute similarly to the solution of the non-linear least squares problem. This is particularly important for systems which exhibit extreme scale disparities (as is often the case in high-pressure reacting systems) and solvers which cannot readily be non-dimensionalized (such as compressible combustion solvers). The residual weighting is sometimes couched in terms of a weighted norm, written alternatively as
+where the purpose of scaling the residual by $\resScaleInv$ is made apparent. This has the effect of ensuring that, with careful calculation of $\resScale$, the various elements of the residual contribute similarly to the solution of the non-linear least squares problem. This is particularly important for systems which exhibit extreme scale disparities (as is often the case in high-pressure reacting systems) and solvers which cannot readily be non-dimensionalized (such as compressible combustion solvers). The residual weighting is sometimes couched in terms of a weighted norm, written alternatively as
 %
 \begin{equation}
 	\consVecCoef^{\timeIdx} = \argmin{\dummyVec \inROne{\numConsModes}} \left\Vert \resFunc{\dummyVec} \right\Vert_{\resScaleInv},
 \end{equation}
 %
-where the weighted norm indicates $\Vert\resVec\Vert_{\resScaleInv} \defEq \sqrt{\resVec^\top \resScale^{-2} \resVec}$. A detailed exploration of the idea of alternative norms is provided by Parish and Rizzi~\cite{Parish2022}. This concept is also tangentially related to the work by Lindsay \textit{et al.}~\cite{Lindsay2022} on PROM preconditioning, which showed that even a simple Jacobi preconditioner results in drastic improvements in PROM stability and accuracy relative to ROMs of the equivalent unscaled, dimensional system. We discuss this residual weighting process in more detail in Appendix~\ref{sec:resWeight}, but eschew the weighted norm notation for the sake of clarity.
+where the weighted norm indicates $\Vert\resVec\Vert_{\resScaleInv} \defEq \sqrt{\resVec^\top \resScale^{-2} \resVec}$. A detailed exploration of the idea of alternative norms is provided by Parish and Rizzi~\cite{Parish2022}. This concept is also tangentially related to the work by Lindsay \textit{et al.}~\cite{Lindsay2022} on PROM preconditioning, which showed that even a simple Jacobi preconditioner results in drastic improvements in PROM stability and accuracy relative to ROMs of the equivalent unscaled, dimensional system. This residual weighting process is discussed in more detail in Appendix~\ref{sec:resWeight}, but eschew the weighted norm notation for the sake of clarity.
 
 The solution of Eq.~\ref{eq:lspgLS} is usually accomplished iteratively by linearizing the residual at the $\timeIdx$th time step about the solution at the $\newtonIdx$th subiteration, given by the process
 %
@@ -111,7 +111,7 @@ The simplest means of computing the solution to Eq.~\ref{eq:lspgLSLin} is the fo
     \left[\resScaleInv \jacobResCoefCons^{\newtonIdx}\right]^\top \resScaleInv \jacobResCoefCons^{\newtonIdx} \delta \consVecCoef^{\newtonIdx} = -\left[\resScaleInv \jacobResCoefCons^{\newtonIdx}\right]^\top \resScaleInv \resFunc{\consVecCoef^{\newtonIdx}}.
 \end{equation}
 %
-This formulation reveals the meaning of ``Petrov--Galerkin'' in LSPG: a Petrov--Galerkin projection is any projection in which the test space is \textit{not} the same as the space tangent to the trial manifold (as is the case for Galerkin projection). In Eq.~\ref{eq:lspgNormal}, if we expand terms using the chain rule, we arrive at
+This formulation reveals the meaning of ``Petrov--Galerkin'' in LSPG: a Petrov--Galerkin projection is any projection in which the test space is \textit{not} the same as the space tangent to the trial manifold (as is the case for Galerkin projection). In Eq.~\ref{eq:lspgNormal}, expanding terms using the chain rule arrives at
 %
 \begin{equation}
     \left[\resScaleInv \jacobResCons^{\newtonIdx} \consScale \jacobTrialCons^{\newtonIdx}\right]^\top \resScaleInv \jacobResCons^{\newtonIdx} \consScale \jacobTrialCons^{\newtonIdx} \delta \consVecCoef^{\newtonIdx} = -\left[\resScaleInv \jacobResCons^{\newtonIdx} \consScale \jacobTrialCons^{\newtonIdx}\right]^\top \resScaleInv \resFunc{\consVecCoef^{\newtonIdx}}.
@@ -123,7 +123,7 @@ This form can be interpreted as a Petrov--Galerkin projection of the Gauss--Newt
     \testBasisCons^\newtonIdx \defEq \resScaleInv \jacobResCons^\newtonIdx \consScale \jacobTrialCons^{\newtonIdx}.
 \end{equation}
 %
-We see here that even with a linear state representation ($\jacobTrialCons^{\newtonIdx} = \consTrial$), the test basis is time-variant, unlike Galerkin projection with a linear state representation. This poses a significant computational cost increase over Galerkin projection. For a non-linear state representation, the cost difference is less extreme, as the decoder Jacobian is dependent on the latent state, i.e. $\jacobTrialCons^{\newtonIdx} \defEq \jacobTrialConsFunc{\consVecCoef^\newtonIdx}$, and the test basis is time-variant for Galerkin and LSPG projection alike.
+Even with a linear state representation ($\jacobTrialCons^{\newtonIdx} = \consTrial$), the test basis is time-variant, unlike Galerkin projection with a linear state representation. This poses a significant computational cost increase over Galerkin projection. For a non-linear state representation, the cost difference is less extreme, as the decoder Jacobian is dependent on the latent state, i.e. $\jacobTrialCons^{\newtonIdx} \defEq \jacobTrialConsFunc{\consVecCoef^\newtonIdx}$, and the test basis is time-variant for Galerkin and LSPG projection alike.
 
 Forming the complete normal equations is a computationally expensive process. A simple alternative involves the QR decomposition of the residual Jacobian,
 %
@@ -131,7 +131,7 @@ Forming the complete normal equations is a computationally expensive process. A 
     \jacobResCoefCons^{\newtonIdx} = \mathbf{QR},
 \end{equation}
 %
-where $\mathbf{Q} \defEq \left[\mathbf{Q}_{\numConsModes}, \; \mathbf{Q}_{\numDOF-\numConsModes}\right] \inRTwo{\numDOF}{\numDOF}$ has orthogonal columns, composed of $\mathbf{Q}_{\numConsModes} \inRTwo{\numDOF}{\numConsModes}$ and $\mathbf{Q}_{\numDOF - \numConsModes} \inRTwo{\numDOF}{\numDOF - \numConsModes}$. The matrix $\mathbf{R} = [\mathbf{R}_{\numConsModes}, \; \zeroVec]^\top \inRTwo{\numDOF}{\numConsModes}$ is composed of upper triangular $\mathbf{R}_{\numConsModes} \inRTwo{\numConsModes}{\numConsModes}$ and a zero matrix $\zeroVec \inRTwo{\numDOF - \numConsModes}{\numConsModes}$. Note that the matrix $\mathbf{R}$ here is not the same as that used for residual scaling, but we temporarily use this notation for the sake of consistency with the literature (and general familiarity with the method). The latent state update is solved from
+where $\mathbf{Q} \defEq \left[\mathbf{Q}_{\numConsModes}, \; \mathbf{Q}_{\numDOF-\numConsModes}\right] \inRTwo{\numDOF}{\numDOF}$ has orthogonal columns, composed of $\mathbf{Q}_{\numConsModes} \inRTwo{\numDOF}{\numConsModes}$ and $\mathbf{Q}_{\numDOF - \numConsModes} \inRTwo{\numDOF}{\numDOF - \numConsModes}$. The matrix $\mathbf{R} = [\mathbf{R}_{\numConsModes}, \; \zeroVec]^\top \inRTwo{\numDOF}{\numConsModes}$ is composed of upper triangular $\mathbf{R}_{\numConsModes} \inRTwo{\numConsModes}{\numConsModes}$ and a zero matrix $\zeroVec \inRTwo{\numDOF - \numConsModes}{\numConsModes}$. Note that the matrix $\mathbf{R}$ here is not the same as that used for residual scaling, but this notation is used temporarily for the sake of consistency with the literature (and general familiarity with the method). The latent state update is solved from
 %
 \begin{equation}
     \mathbf{R}_{\numConsModes} \delta \consVecCoef^{\newtonIdx} = \left[\mathbf{Q}_{\numConsModes}\right]^\top \resFunc{\consVecCoef^{\newtonIdx}}.

@@ -1,6 +1,6 @@
 \section{Acoustically-forced Transient Flame}\label{sec:oneDFlame}
 
-We now describe the one-dimensional model of an acoustically-forced, freely-propagating premixed flame. Similar constructions have been presented in prior work by the author and collaborators~\cite{Huang2022,Wentland2019}. The spatial domain is one-dimensional, spanning the length $x \in [0.0, \; 10]$ mm, subdivided into 1,024 cells of equal length. As with GEMS, a second-order Roe flux computes the inviscid fluxes, while gradients are computed by a central finite-difference stencil and limited by the face-oriented limiter of Barth and Jespersen.
+The one-dimensional model of an acoustically-forced, freely-propagating premixed flame is now described. Similar constructions have been presented in prior work by the author and collaborators~\cite{Huang2022,Wentland2019}. The spatial domain is one-dimensional, spanning the length $x \in [0.0, \; 10]$ mm, subdivided into 1,024 cells of equal length. As with GEMS, a second-order Roe flux computes the inviscid fluxes, while gradients are computed by a central finite-difference stencil and limited by the face-oriented limiter of Barth and Jespersen.
 
 The chemical system is composed of two fictitious species, a ``reactant'' species and a ``product'' species, having the calorically-perfect gas properties given in Table~\ref{tab:oneDFlameSpecs}. In this case, the fluid has a constant viscosity, unlike results in Section~\ref{sec:cavity} which computed viscosity via Sutherland's law. Note that the only difference between the two species is their enthalpy of formation. The reactant is converted to product by a single irreversible finite-rate reaction, governed by the Arrhenius parameters $A = 2.12 \times 10^{10}$ 1/s, $b = 0$, and $E_a = 2.025 \times 10^{8}$ kJ/mol.
 
@@ -36,7 +36,7 @@ To begin, the solution is initialized with 100\% reactant at 300 K in the region
 	\caption{\label{fig:flameIC}Initial condition for propagating flame FOM simulations.}
 \end{figure}
 
-To build a dataset of parametrically-varied simulations, we introduce an artificial pressure forcing to the outlet boundary condition. This forcing is computed as a sinusoidal perturbation about the outlet mean-flow pressure, of the form
+To build a dataset of parametrically-varied simulations, an artificial pressure forcing is introduced to the outlet boundary condition. This forcing is computed as a sinusoidal perturbation about the outlet mean-flow pressure, of the form
 %
 \begin{equation}
 	\pressureBack = \pressureMean \left[1 + A \; sin\left(2 \pi f \timeVar\right)\right]

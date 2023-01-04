@@ -94,7 +94,7 @@ The sixth line of terms in Eq.~\ref{eq:gemsGovVecs} describes the scalar transpo
 
 The seventh and eighth line of terms in Eq.~\ref{eq:gemsGovVecs} describe the scalar transport of the fuel mixture fraction $\mixFrac$ and progress variable $\progVar$. These equations arise from the flamelet/progress variable (FPV) model for reacting flows~\cite{Pierce2001}, which is described in greater detail in Section~\ref{sec:fpv}. The classic FPV model replaces the energy and species transport equations with these two equations, and uses a pre-computed lookup table which maps the fuel mixture fraction and progress variable to the temperature and species mass fractions. As will be described later, the FPV model implemented in GEMS does not eliminate the energy equation, and hence conserves energy while incurring additional computational cost.
 
-As Eq.~\ref{eq:gemsGovPDE} is not closed (there are more unknowns than equations), we provide an equation of state which relates several quantities explicitly. For all results shown here, the system is treated as a mixture of ideal gases, and the ideal gas law is given by.
+As Eq.~\ref{eq:gemsGovPDE} is not closed (there are more unknowns than equations), an equation of state is provided which relates several quantities explicitly. For all results shown here, the system is treated as a mixture of ideal gases, and the ideal gas law is given by.
 %
 \begin{equation}\label{eq:idealGas}
 	\pressure = \density \gasConst \temperature,
@@ -102,7 +102,7 @@ As Eq.~\ref{eq:gemsGovPDE} is not closed (there are more unknowns than equations
 %
 where $\temperature$ is the temperature, and $\gasConst$ is the mixture specific gas constant.
 
-Throughout this thesis, we will frequently refer to the set of ``primitive variables,'' given by
+Throughout this thesis, the set of ``primitive variables'' is frequently referred to, and is given by
 %
 \begin{equation}\label{eq:gemsPrimVec}
     \primVec \defEq \left[
@@ -116,7 +116,7 @@ These quantities have special use in that they can be easily interpreted in engi
 
 \subsection{Gas Models}\label{subsec:gasModels}
 
-GEMS is equipped with several models to compute thermodynamic and transport properties of gases, each with varying levels of accuracy in different pressure and temperature ranges. As this work primarily investigates systems of multi-species mixtures, we describe the methods used for computing mixture quantities which are universal for all models detailed here. To begin, the mixture enthalpy and entropy are computed simply as
+GEMS is equipped with several models to compute thermodynamic and transport properties of gases, each with varying levels of accuracy in different pressure and temperature ranges. As this work primarily investigates systems of multi-species mixtures, the methods used for computing mixture quantities which are universal for all models are detailed here. To begin, the mixture enthalpy and entropy are computed simply as
 %
 \begin{equation}
 	\enth = \specSumAll \mfSpec \enthSpec, \quad \entropy = \specSumAll \mfSpec \entropySpec.
@@ -183,7 +183,7 @@ At high temperatures, especially in the temperature ranges of 1,000 - 3,000 K no
 	\enthSpec = \refEnthSpec + \int_{\temperature^{\standardstate}}^{\temperature} \cpSpec(\temperature) \text{d}\temperature.
 \end{eqnarray}
 %
-In this work, we use the empirical fits of McBride, Gordon, and Reno~\cite{McBride1993} to compute thermodynamic quantities which incorporate this temperature dependence. The species specific heat capacity at constant pressure, species enthalpy, and species entropy are given by the model forms
+In this work, the empirical fits of McBride, Gordon, and Reno~\cite{McBride1993} are used to compute thermodynamic quantities which incorporate this temperature dependence. The species specific heat capacity at constant pressure, species enthalpy, and species entropy are given by the model forms
 %
 \begin{equation}
 	\frac{\cpSpec}{\gasConstSpec} = \fitScalOneSpec{1} + \fitScalOneSpec{2} \temperature + \fitScalOneSpec{3} \temperature^2 + \fitScalOneSpec{4} \temperature^3 + \fitScalOneSpec{5} \temperature^4,
@@ -223,7 +223,7 @@ The binary diffusion coefficient between the $\specIdx$th and $\specIdxTwo$th sp
 	\massDiffSpecTwo = \frac{0.0266}{\pressure \left[\frac{\collisionDiamSpec + \collisionDiamSpecTwo}{2}\right]^2 \ljPotential} \sqrt{\temperature^3 \left[\frac{1}{\mwSpec} + \frac{1}{\mwSpecTwo}\right]},
 \end{equation}
 %
-where $\collisionDiamSpec$ is the collision diameter of the $\specIdx$th species in Angstroms. Self diffusion is ignored ($\massDiffSpecTwo = 0 \; \forall \; \specIdx = \specIdxTwo$). Note that the factor 0.0266 differs from that given in~\cite{propGasLiquid}, as we compute the diffusion coefficient in m$^2$/s (instead of cm$^2$/s) and pressure in pascals (instead of atmospheres). The diffusion collision integral, $\ljPotential$, is computed from the relations of Neufeld \textit{et al.}~\cite{Neufeld1972}
+where $\collisionDiamSpec$ is the collision diameter of the $\specIdx$th species in Angstroms. Self diffusion is ignored ($\massDiffSpecTwo = 0 \; \forall \; \specIdx = \specIdxTwo$). Note that the factor 0.0266 differs from that given in~\cite{propGasLiquid}, as the diffusion coefficient is computed here in m$^2$/s (instead of cm$^2$/s) and pressure is computed in pascals (instead of atmospheres). The diffusion collision integral, $\ljPotential$, is computed from the relations of Neufeld \textit{et al.}~\cite{Neufeld1972}
 %
 \begin{equation}
 	\ljPotential \defEq \frac{\fitScalFour{1}}{\text{exp} \left(\fitScalFour{2} \tempReduced\right)} + \frac{\fitScalFour{3}}{\text{exp} \left(\fitScalFour{4} \tempReduced\right)} + \frac{\fitScalFour{5}}{\text{exp} \left(\fitScalFour{6} \tempReduced\right)} + \frac{\fitScalFour{7}}{\text{exp} \left(\fitScalFour{8} \tempReduced\right)},
@@ -253,9 +253,9 @@ Again, the scalar terms $\fitScalTwoSpec{\dummyIdx}$, $\fitScalThreeSpec{\dummyI
 
 \subsection{Subgrid-scale Models}\label{subsec:subgrid}
 
-In general, simulations of practical combustion systems will always be under-resolved due to the extremely small characteristic spatio-temporal scales of reacting flows. To reduce the high cost of resolving these scales, large eddy simulations filter the governing equations into resolved (large-scale) and unresolved (small-scale) motions. The resulting set of equations can be solved for the resolved scales, with the exception of the subgrid stresses. As the subgrid stresses cannot be directly computed (they are a function of unresolved motions), they must be modeled. A broader discussion of turbulence and subgrid scale modeling can be found in~\cite{Pope2000}; we discuss only topics relevant to results presented in this thesis.
+In general, simulations of practical combustion systems will always be under-resolved due to the extremely small characteristic spatio-temporal scales of reacting flows. To reduce the high cost of resolving these scales, large eddy simulations filter the governing equations into resolved (large-scale) and unresolved (small-scale) motions. The resulting set of equations can be solved for the resolved scales, with the exception of the subgrid stresses. As the subgrid stresses cannot be directly computed (they are a function of unresolved motions), they must be modeled. A broader discussion of turbulence and subgrid scale modeling can be found in~\cite{Pope2000}.
 
-For all GEMS simulations presented here, with the exception of the nine-element combustor discussed in Chapter~\ref{chap:NineElement}, no explicit filter or subgrid scale model is used. This is not to imply that these are well-resolved DNS models, but can rather be viewed as \textit{implicit LES} (ILES) simulations. In ILES, it is assumed that the numerical dissipation generated by the spatial discretization scheme accounts for the dissipative effects of the unresolved small-scale turbulence. As a result, no subgrid scale model is required. This idea dates back to early observations on monotone convection algorithms~\cite{Boris1989}, and has since been successfully applied to a variety of turbulent flows~\cite{Porter1994,Grinstein2005,Bensow2010}. A comprehensive overview of ILES can be found in~\cite{ilesBook}. In GEMS, we apply ILES by using a second-order accurate finite volume scheme, guaranteeing monotonicity with a gradient limiter (detailed in Sec.~\ref{sec:numerics}). In unpublished studies, GEMS has been shown to produce excellent predictions of experimental flow statistics in a turbulent ship airwake.
+For all GEMS simulations presented here, with the exception of the nine-element combustor discussed in Chapter~\ref{chap:NineElement}, no explicit filter or subgrid scale model is used. This is not to imply that these are well-resolved DNS models, but can rather be viewed as \textit{implicit LES} (ILES) simulations. In ILES, it is assumed that the numerical dissipation generated by the spatial discretization scheme accounts for the dissipative effects of the unresolved small-scale turbulence. As a result, no subgrid scale model is required. This idea dates back to early observations on monotone convection algorithms~\cite{Boris1989}, and has since been successfully applied to a variety of turbulent flows~\cite{Porter1994,Grinstein2005,Bensow2010}. A comprehensive overview of ILES can be found in~\cite{ilesBook}. In GEMS, ILES is applied by using a second-order accurate finite volume scheme, guaranteeing monotonicity with a gradient limiter (detailed in Sec.~\ref{sec:numerics}). In unpublished studies, GEMS has been shown to produce excellent predictions of experimental flow statistics in a turbulent ship airwake.
 
 In simulations of the nine-element combustor in Chapter~\ref{chap:NineElement}, GEMS employs the eddy viscosity $\sigma$-model of Nicoud \textit{et al.}~\cite{Nicoud2011}. Eddy viscosity models account for the dissipative effects of unresolved turbulence by adding an eddy viscosity term, computing the viscous stress tensor as
 %

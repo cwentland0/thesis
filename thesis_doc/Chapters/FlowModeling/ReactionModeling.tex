@@ -1,6 +1,6 @@
 \section{Reaction Models}
 
-Two reaction models are used to simulate chemical reactions in this thesis: the laminar finite rate model and the flamelet/progress variable model. In both models, we describe the $\reacIdx$th chemical reaction of a mechanism with the general form
+Two reaction models are used to simulate chemical reactions in this thesis: the laminar finite rate model and the flamelet/progress variable model. In both models, the $\reacIdx$th chemical reaction of a mechanism is described with the general form
 %
 \begin{equation}
 	\specSumAll \stoichCoefSpecReac' \chi_{\specIdx} \xrightleftharpoons[]{} \specSumAll \stoichCoefSpecReac'' \chi_{\specIdx},
@@ -54,7 +54,7 @@ where $\forwardRateReac$ and $\reverseRateReac$ are the forward and reverse reac
 	\forwardRateReac = A_\reacIdx \temperature^{b_\reacIdx} \text{exp} \left( \frac{-E_{a,\reacIdx}}{\gasConstUniv \temperature} \right),
 \end{equation}
 %
-where $A_\reacIdx$ is the pre-exponential factor, $b_\reacIdx$ is the temperature exponent, and $E_{a,\reacIdx}$ is the activation energy of the $\reacIdx$th reaction. These constant factors are tabulated for each reaction in the mechanism, generally fit to match experimental results. Next, we assume that chemical reactions occur at a much smaller time scale than that of transport phenomena, and thus any chemical reactions are assumed to be in local equilibrium. The reverse reaction rate can then be computed as
+where $A_\reacIdx$ is the pre-exponential factor, $b_\reacIdx$ is the temperature exponent, and $E_{a,\reacIdx}$ is the activation energy of the $\reacIdx$th reaction. These constant factors are tabulated for each reaction in the mechanism, generally fit to match experimental results. Next, chemical reactions are assumed to progress at a much smaller time scale than that of transport phenomena, and thus any chemical reactions are assumed to be in local equilibrium. The reverse reaction rate can then be computed as
 %
 \begin{equation}
 	\reverseRateReac = \frac{\forwardRateReac}{\equilConstReac},
@@ -82,7 +82,7 @@ For an \textit{irreversible} reaction, it is assumed that the reaction only proc
 %
 While no reaction is truly irreversible, in some cases the reverse reaction is so unlikely (relative to the forward reaction) that it may be safely ignored. This greatly simplifies the calculation of the reaction rate-of-progress (Eq.~\ref{eq:rateOfProg}). The one-dimensional model premixed flame in Chapter~\ref{chap:TransientFlame} utilizes a single irreversible reaction, and some reactions of the mechanism used for the nine-element combustor in Chapter~\ref{chap:NineElement} are treated as irreversible.
 
-We also briefly note that the reaction mechanism used in simulations of the nine-element combustor studied in Chapter~\ref{chap:NineElement} includes reactions involving third-body effects in the low-pressure limit. These corrections are either of the Lindemann--Hinshelwood form~\cite{Hinshelwood1926} or Troe form~\cite{Gilbert1983}.
+Note that the reaction mechanism used in simulations of the nine-element combustor studied in Chapter~\ref{chap:NineElement} includes reactions involving third-body effects in the low-pressure limit. These corrections are either of the Lindemann--Hinshelwood form~\cite{Hinshelwood1926} or Troe form~\cite{Gilbert1983}.
 
 \subsection{Flamelet/Progress Variable Model}\label{sec:fpv}
 %
@@ -127,4 +127,4 @@ where $\numProg$ is the total number of species mass fractions which make up the
 %
 The transport equation for the progress variable is given as the eighth equation in Eq.~\ref{eq:gemsGovVecs}. In summary, the FPV model introduces two scalar transport equations, and precomputes a library of steady flamelet solutions which provide a unique mapping from these two scalars to the species mass fraction fields and progress variable rate of production. Especially when large, complex reaction mechanisms are used, this greatly reduces the computational cost of simulating non-premixed combusting flow systems.
 
-Note that, traditionally, the FPV model also provides unique mappings for the temperature, density, and transport/thermodynamic quantities as part of the flamelet tabulation (e.g., $\temperature = \temperature(\mixFrac, \; \progVar)$, $\dynVisc = \dynVisc(\mixFrac, \; \progVar)$). GEMS does not include these mappings, and instead solves the energy conservation equation directly. While this approach ensures conservation of energy, it also incurs significant computational costs due to the additional conservation equation and the direct calculation of transport and thermodynamic properties. We further note that when a filter is applied for LES, an additional transport equation must be solved for the mean mixture fraction variance ($\widetilde{\mixFrac''^2}$). The mean mixture fraction variance is also used in the flamelet library mapping (i.e. $\mfSpec = \mfSpec(\widetilde{\mixFrac}, \; \widetilde{\mixFrac''^2}, \; \widetilde{\progVar})$). Recall that all results in this thesis do not compute any explicit filtering, hence we do not account for the mean mixture fraction variance.
+Note that, traditionally, the FPV model also provides unique mappings for the temperature, density, and transport/thermodynamic quantities as part of the flamelet tabulation (e.g., $\temperature = \temperature(\mixFrac, \; \progVar)$, $\dynVisc = \dynVisc(\mixFrac, \; \progVar)$). GEMS does not include these mappings, and instead solves the energy conservation equation directly. While this approach ensures conservation of energy, it also incurs significant computational costs due to the additional conservation equation and the direct calculation of transport and thermodynamic properties. Note that when a filter is applied for LES, an additional transport equation must be solved for the mean mixture fraction variance ($\widetilde{\mixFrac''^2}$). The mean mixture fraction variance is also used in the flamelet library mapping (i.e. $\mfSpec = \mfSpec(\widetilde{\mixFrac}, \; \widetilde{\mixFrac''^2}, \; \widetilde{\progVar})$). Recall that all results in this thesis do not compute any explicit filtering, hence the mean mixture fraction variance is not accounted for here.
