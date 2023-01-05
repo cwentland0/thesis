@@ -1,15 +1,15 @@
 \section{Objectives and Contributions}
 
-As discussed above, there is a relative paucity of investigations of PROMs for extremely large-scale, highly non-linear, multi-scale and multi-physics flow problems of some engineering significance. This thesis aims to fill some of this gap, detailing the unique challenges of ROMS for reacting flow problems, exposing the limitations of the state-of-the-art projection-based ROMs, and proposing some solutions for these problems and the methods by which they can be achieved in a compute- and memory-scalable fashion. In summary, the results presented here will attempt to provide the following information:
+As discussed above, there is a relative paucity of investigations of PROMs for extremely large-scale, highly non-linear, multi-scale and multi-physics flow problems of some engineering significance. This thesis aims to fill some of this gap, detailing the unique challenges of PROMS for reacting flow problems, exposing the limitations of the state-of-the-art projection-based ROMs, and proposing some solutions for these problems and the methods by which they can be achieved in a compute- and memory-scalable fashion. In summary, the results presented here will attempt to provide the following information:
 
 \begin{enumerate}
     \item A rigorous baseline assessment of state-of-the-art linear projection-based models for several complex multi-scale systems, showing definitively that the prevailing SOA is ineffective.
     \item A study of projection-based reduced-order modeling for a 3D multi-injector rocket combustor with nearly 250 million degrees of freedom, the first study (to the author's knowledge) of a problem of this size and physical complexity.
-    \item Proof of scalability of hyper-reduction for ROMs of practical engineering systems, including two-dimensional transonic cavity flow and a three-dimensional rocket combustor.
-    \item A collected analysis of several small, but important, steps in developing effective ROMs for rocket combustors (e.g. residual weighting, limiters, centering/scaling, etc.).
+    \item Proof of scalability of hyper-reduction for PROMs of practical engineering systems, including two-dimensional transonic cavity flow and a three-dimensional rocket combustor.
+    \item A collected analysis of several small, but important, steps in developing effective PROMs for rocket combustors (e.g. residual weighting, limiters, centering/scaling, etc.).
     \item PERFORM: an open-source project with which the reduced-order modeling community can rapidly prototype and test new methods for a series of benchmark problems which are significantly more challenging and informative than the standard ROM toy problems.
     \item The first application and analysis of deep autoencoder projection and non-intrusive ROMs to advection-dominated reacting flow problems.
-    \item A thorough, end-to-end analysis of the computational cost of modern sparse sampling hyper-reduction algorithms at scale, including both the cost of computing sampling indices and the cost of computing the hyper-reduced ROM.
+    \item A thorough, end-to-end analysis of the computational cost of modern sparse sampling hyper-reduction algorithms at scale, including both the cost of computing sampling indices and the cost of computing the hyper-reduced PROM.
 \end{enumerate}
 
 It is the author's hope that this body work shows that projection-based ROMs of non-linear systems can be a practical and effective means of generating low-cost solutions to extremely challenging problems in engineering. While there remains much work to be done to make these models viable for industrial applications, they pose an encouraging route of investigation for alleviating the burdensome cost of extensive experimental campaigns and massive high-fidelity simulations in engineering design and analysis.
