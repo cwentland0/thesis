@@ -64,19 +64,19 @@ where $\consScaleVecVar{\varIdx}$, $\primScaleVecVar{\varIdx} \in \mathbb{R}$ is
 	\item $\ell^2$-norm: Scaling by the $\ell^2$-norm method is motivated by that proposed by Lumley and Poje~\cite{Lumley1997}, and is computed as
 	%
 	\begin{align}
-		\consScaleVar{\varIdx} &= \frac{1}{\numSnaps} \sum_{\timeIdx=1}^{\numSnaps} \left\Vert \consVecVar^{\timeIdx} - \consVecCentVar \right\Vert^2 \\
-		\primScaleVar{\varIdx} &= \frac{1}{\numSnaps} \sum_{\timeIdx=1}^{\numSnaps} \left\Vert \primVecVar^{\timeIdx} - \primVecCentVar \right\Vert^2
+		\consScaleVar{\varIdx} &= \frac{1}{\numSnaps \numCells} \sum_{\timeIdx=1}^{\numSnaps} \left\Vert \consVecVar^{\timeIdx} - \consVecCentVar \right\Vert^2 \\
+		\primScaleVar{\varIdx} &= \frac{1}{\numSnaps \numCells} \sum_{\timeIdx=1}^{\numSnaps} \left\Vert \primVecVar^{\timeIdx} - \primVecCentVar \right\Vert^2
 	\end{align}
 	This has the effect of ensuring that all state variable vectors have an length (in the Euclidean norm) close to unity. This is closely related to the POD, which computes the distance between the data and its projection in the $\ell^2$ norm.
 
-	\item Standardization: Data standardization is coupled with the calculation of the mean field, as described above. The scaling constants are calculated as
-	%
-	\begin{align}
-		\consScaleVar{\varIdx} &= \sqrt{\frac{1}{\numSnaps \numCells} \sum_{\timeIdx=1}^{\numSnaps} \sum_{\dummyIdx = 1}^{\numCells} \left[\consVecVar^{\timeIdx}\left(\spatialVec_{\dummyIdx}\right) - \consVecCentVar\left(\spatialVec_{\dummyIdx}\right) \right]^2} \\
-		\primScaleVar{\varIdx} &= \sqrt{\frac{1}{\numSnaps \numCells} \sum_{\timeIdx=1}^{\numSnaps} \sum_{\dummyIdx = 1}^{\numCells} \left[\primVecVar^{\timeIdx}\left(\spatialVec_{\dummyIdx}\right) - \primVecCentVar\left(\spatialVec_{\dummyIdx}\right) \right]^2}
-	\end{align}
-	%
-	which is the standard deviation for the $\varIdx$th state variable of the dataset and $\consVecCentVar$, $\primVecCentVar$ are the mean field for the $\varIdx$th state variable as calculated in Eq.~\ref{eq:meanCentCons} and~\ref{eq:meanCentPrim}. This operation has the effect of ensuring that the centered and scaled dataset for each state variable has a mean of zero and standard deviation of one.
+	% \item Standardization: Data standardization is coupled with the calculation of the mean field, as described above. The scaling constants are calculated as
+	% %
+	% \begin{align}
+	% 	\consScaleVar{\varIdx} &= \sqrt{\frac{1}{\numSnaps \numCells} \sum_{\timeIdx=1}^{\numSnaps} \sum_{\dummyIdx = 1}^{\numCells} \left[\consVecVar^{\timeIdx}\left(\spatialVec_{\dummyIdx}\right) - \consVecCentVar\left(\spatialVec_{\dummyIdx}\right) \right]^2} \\
+	% 	\primScaleVar{\varIdx} &= \sqrt{\frac{1}{\numSnaps \numCells} \sum_{\timeIdx=1}^{\numSnaps} \sum_{\dummyIdx = 1}^{\numCells} \left[\primVecVar^{\timeIdx}\left(\spatialVec_{\dummyIdx}\right) - \primVecCentVar\left(\spatialVec_{\dummyIdx}\right) \right]^2}
+	% \end{align}
+	% %
+	% which is the standard deviation for the $\varIdx$th state variable of the dataset and $\consVecCentVar$, $\primVecCentVar$ are the mean field for the $\varIdx$th state variable as calculated in Eq.~\ref{eq:meanCentCons} and~\ref{eq:meanCentPrim}. This operation has the effect of ensuring that the centered and scaled dataset for each state variable has a mean of zero and standard deviation of one.
 
 	\item Min-max: As stated for the min-max centering above, the min-max scaling and centering are strictly coupled, and the implementation of both results in scaling all variables such that they fall within the range $[0.0, \; 1.0]$. The scaling values are computed as
 	%
