@@ -8,7 +8,7 @@ The computational domain is modeled as a rectangular cavity set in a flat wall, 
 
 \begin{figure}
     \centering
-	\includegraphics[width=0.9\linewidth]{Chapters/CavityAndCVRC/Images/cavity/geom.png}
+	\includegraphics[width=0.9\linewidth]{Chapters/HPROMResults/Images/cavity/geom.png}
     \caption{\label{fig:cavityGeom}Cavity flow domain.}
 \end{figure}
 
@@ -30,17 +30,17 @@ The FOM is initialized with free stream conditions outside the cavity, and the i
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.9\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/pressure_example_full.png}
+	\includegraphics[width=0.9\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cavity/pressure_example_full.png}
 	\caption{\label{fig:cavityPressExample}Cavity pressure field at $\timeVar =$ 104 ms.}
 \end{figure}
 
 \begin{figure}
 	\begin{minipage}{0.48\linewidth}
-		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/pressure_example_zoom.png}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cavity/pressure_example_zoom.png}
 		\caption{\label{fig:cavityPressExampleZoom}Cavity pressure field at $\timeVar =$ 104 ms, zoomed view.}
 	\end{minipage} \hspace{0.5em}
 	\begin{minipage}{0.48\linewidth}
-		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/y_vel_example_zoom.png}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cavity/y_vel_example_zoom.png}
 		\caption{\label{fig:cavityVExampleZoom}Cavity $y$-velocity field at $\timeVar =$ 104 ms, zoomed view.}
 	\end{minipage}
 \end{figure}
@@ -49,11 +49,11 @@ For this flow regime and cavity geometry, the formula of Rossiter~\cite{Rossiter
 
 \begin{figure}
 	\begin{minipage}{0.48\linewidth}
-		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/pressure_probe_fom_10ms.png}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cavity/pressure_probe_fom_10ms.png}
 		\caption{\label{fig:cavityFOMProbe}Pressure probe measurements from aft wall ($\timeVar \in [100, \; 110]$ ms).}
 	\end{minipage} \hspace{0.5em}
 	\begin{minipage}{0.48\linewidth}
-		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/psd_fom_100ms.png}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cavity/psd_fom_100ms.png}
 		\caption{\label{fig:rossiterModeProof}Sound pressure level of aft wall pressure signal ($\timeVar \in [100, \; 200]$ ms). The first three Rossiter frequencies are marked in red.}
 	\end{minipage}
 \end{figure}
@@ -62,17 +62,17 @@ The POD trial bases are computed from the 10,001 snapshots of the conservative a
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.75\linewidth]{Chapters/CavityAndCVRC/Images/cavity/cavity_pod_energy_10ms.png}
+	\includegraphics[width=0.75\linewidth]{Chapters/HPROMResults/Images/cavity/cavity_pod_energy_10ms.png}
 	\caption{\label{fig:cavityPODEnergy}Cavity POD residual energy for conservative and primitive state datasets.}
 \end{figure}
 
 \begin{figure}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/projection_error_primitive.png}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cavity/projection_error_primitive.png}
 		\subcaption{Primitive variables}
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/projection_error_conservative.png}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cavity/projection_error_conservative.png}
 		\subcaption{Conservative variables}
 	\end{minipage}
 	\caption{\label{fig:cavityProjErr}Cavity time-average POD projection error.}
@@ -86,20 +86,20 @@ A trial basis dimension study and time step size study is conducted. The trial b
 
 \begin{figure}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/unsampled/unsampled_dt1e-6_Average_errorRaw.png}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cavity/unsampled/unsampled_dt1e-6_Average_errorRaw.png}
 		\subcaption{$\dt = \dtFOM$}
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/unsampled/unsampled_dt2p5e-6_Average_errorRaw.png}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cavity/unsampled/unsampled_dt2p5e-6_Average_errorRaw.png}
 		\subcaption{$\dt = 2.5 \times \dtFOM$}
 	\end{minipage}
 
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/unsampled/unsampled_dt5e-6_Average_errorRaw.png}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cavity/unsampled/unsampled_dt5e-6_Average_errorRaw.png}
 		\subcaption{\label{fig:cavityUnsampledROMErrVsModesDt5en6}$\dt = 5 \times \dtFOM$}
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/unsampled/unsampled_dt1e-5_Average_errorRaw.png}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cavity/unsampled/unsampled_dt1e-5_Average_errorRaw.png}
 		\subcaption{$\dt = 10 \times \dtFOM$}
 	\end{minipage}
 	\caption{\label{fig:cavityUnsampledROMErrVsModes}Cavity unsampled PROM time-average error, various $\dt$.}
@@ -107,11 +107,11 @@ A trial basis dimension study and time step size study is conducted. The trial b
 
 \begin{figure}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/unsampled/pressure_probe_unsampled_modes.png}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cavity/unsampled/pressure_probe_unsampled_modes.png}
 		\subcaption{\label{fig:cavityUnsampledROMProbesModes}MP-LSVT method, various $\numPrimModes$.}
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/unsampled/pressure_probe_unsampled_methods.png}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cavity/unsampled/pressure_probe_unsampled_methods.png}
 		\subcaption{\label{fig:cavityUnsampledROMProbesMethods}$\numConsModes,\numPrimModes$ = 150, various methods.}
 	\end{minipage}
 	\caption{\label{fig:cavityUnsampledROMProbes}Cavity unsampled PROM probe measurements, $\dt = 5 \times \dtFOM$.}
@@ -123,7 +123,7 @@ The pressure probe monitors in Fig.~\ref{fig:cavityUnsampledROMProbes} display l
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.7\linewidth]{Chapters/CavityAndCVRC/Images/cavity/unsampled/unsampled_modeStudy_time_calcAndMPI.png}
+    \includegraphics[width=0.7\linewidth]{Chapters/HPROMResults/Images/cavity/unsampled/unsampled_modeStudy_time_calcAndMPI.png}
     \caption{\label{fig:cavityUnsampledCost}MP-LSVT unsampled PROM computational cost, relative to FOM cost, various $\dt$.}
 \end{figure}
 
@@ -135,20 +135,20 @@ For the sake of brevity, only MP-LSVT HPROMs are examined. As will be seen in Se
 
 \begin{figure}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/deim/iBlank_random_zoom.png}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cavity/deim/iBlank_random_zoom.png}
 		\subcaption{Random}
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/deim/iBlank_eigenvec_zoom.png}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cavity/deim/iBlank_eigenvec_zoom.png}
 		\subcaption{Eigenvector}
 	\end{minipage}
 
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/deim/iBlank_greedy_carlberg_zoom.png}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cavity/deim/iBlank_greedy_carlberg_zoom.png}
 		\subcaption{GNAT V1}
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/CavityAndCVRC/Images/cavity/deim/iBlank_greedy_ben_zoom.png}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cavity/deim/iBlank_greedy_ben_zoom.png}
 		\subcaption{GNAT V2}
 	\end{minipage}
 	\caption{\label{fig:cavityiBlank}Cavity sample mesh examples, $\numResModes= 250$, $\numSamps = 2.5\% \times \numDOF$}
@@ -171,20 +171,20 @@ The accuracy and computational performance of the HPROMs is examined for samplin
 
 \begin{figure}
 	\begin{minipage}{0.46\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_random_dt5e-6.png}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cavity/deim/err_contour_random_dt5e-6.png}
 		\subcaption{Random}
 	\end{minipage}
 	\begin{minipage}{0.53\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_eigenvec_dt5e-6.png}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cavity/deim/err_contour_eigenvec_dt5e-6.png}
 		\subcaption{Eigenvector}
 	\end{minipage}
 
 	\begin{minipage}{0.46\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_gnat1_dt5e-6.png}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cavity/deim/err_contour_gnat1_dt5e-6.png}
 		\subcaption{GNAT, V1}
 	\end{minipage}
 	\begin{minipage}{0.53\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/err_contour_gnat2_dt5e-6.png}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cavity/deim/err_contour_gnat2_dt5e-6.png}
 		\subcaption{GNAT, V2}
 	\end{minipage}
 	\caption{\label{fig:cavitySampledROMErrContour}Cavity HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 5 \times \dtFOM$, various sampling algorithms.}
@@ -194,15 +194,15 @@ The accuracy of the online HPROMs on sample meshes generated by each sampling al
 
 \begin{figure}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/sampled_dt2p5e-6_Average_errorRaw_pareto.png}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cavity/deim/sampled_dt2p5e-6_Average_errorRaw_pareto.png}
 		\subcaption{$\dt = 2.5 \times \dtFOM$}
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/sampled_dt5e-6_Average_errorRaw_pareto.png}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cavity/deim/sampled_dt5e-6_Average_errorRaw_pareto.png}
 		\subcaption{$\dt = 5 \times \dtFOM$}
 	\end{minipage}
 	% \begin{minipage}{0.49\linewidth}
-	% 	\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/sampled_dt1e-5_Average_errorRaw_pareto.png}
+	% 	\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cavity/deim/sampled_dt1e-5_Average_errorRaw_pareto.png}
 	% 	\subcaption{$\dt = 10 \times \dtFOM$}
 	% \end{minipage}
 	\caption{\label{fig:cavitySampledROMErrVsTime}Cavity HPROM error vs. CPU-time speedup, $\numPrimModes = 150$, $\numResModes = 250$, various $\dt$.}
@@ -212,11 +212,11 @@ Of course, computational cost savings is the prime objective of hyper-reduction,
 
 \begin{figure}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/pressure_probe_deim_2p5.png}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cavity/deim/pressure_probe_deim_2p5.png}
 		\subcaption{\label{fig:cavitySampledROMProbe2p5}$\numSamps = 2.5\% \times \numDOF$}
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/CavityAndCVRC/Images/cavity/deim/pressure_probe_deim_1.png}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cavity/deim/pressure_probe_deim_1.png}
 		\subcaption{\label{fig:cavitySampledROMProbe1p}$\numSamps = 1\% \times \numDOF$}
 	\end{minipage}
 	\caption{\label{fig:cavitySampledROMProbes}Cavity MP-LSVT HPROM probe measurements, $\numPrimModes = 150$, $\numResModes = 250$, $\dt = 5 \times \dtFOM$.}

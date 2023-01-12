@@ -36,7 +36,7 @@ The stoichiometry of this reaction is written in Table~\ref{tab:exampleReac}.
 
 \subsection{Finite Rate Reactions}\label{sec:finiterate}
 
-The laminar finite rate chemistry model is used to compute results for the one-dimensional model premixed flame in Chapter~\ref{chap:TransientFlame} and the nine-element combustor in Chapter~\ref{chap:NineElement}. In this model, the production rate of the $\specIdx$th species (in kg/m$^3$-s) is given by the relationship
+The laminar finite rate chemistry model is used to compute results for the one-dimensional model premixed flame in Chapter~\ref{chap:TransientFlame} and the nine-element combustor in Section~\ref{sec:nineElem}. In this model, the production rate of the $\specIdx$th species (in kg/m$^3$-s) is given by the relationship
 %
 \begin{equation}\label{eq:specProd}
 	\prodRateSpec = \mwSpec \reacSumAll \left[\stoichCoefSpecReac'' - \stoichCoefSpecReac'\right] \rateofprogReac,
@@ -80,9 +80,9 @@ For an \textit{irreversible} reaction, it is assumed that the reaction only proc
 	\methyl + \oAtom \rightarrow \hAtom + \hydrogen + \carbonmonox.
 \end{equation}
 %
-While no reaction is truly irreversible, in some cases the reverse reaction is so unlikely (relative to the forward reaction) that it may be safely ignored. This greatly simplifies the calculation of the reaction rate-of-progress (Eq.~\ref{eq:rateOfProg}). The one-dimensional model premixed flame in Chapter~\ref{chap:TransientFlame} utilizes a single irreversible reaction, and some reactions of the mechanism used for the nine-element combustor in Chapter~\ref{chap:NineElement} are treated as irreversible.
+While no reaction is truly irreversible, in some cases the reverse reaction is so unlikely (relative to the forward reaction) that it may be safely ignored. This greatly simplifies the calculation of the reaction rate-of-progress (Eq.~\ref{eq:rateOfProg}). The one-dimensional model premixed flame in Chapter~\ref{chap:TransientFlame} utilizes a single irreversible reaction, and some reactions of the mechanism used for the nine-element combustor in Section~\ref{sec:nineElem} are treated as irreversible.
 
-Note that the reaction mechanism used in simulations of the nine-element combustor studied in Chapter~\ref{chap:NineElement} includes reactions involving third-body effects in the low-pressure limit. These corrections are either of the Lindemann--Hinshelwood form~\cite{Hinshelwood1926} or Troe form~\cite{Gilbert1983}.
+Note that the reaction mechanism used in simulations of the nine-element combustor studied in Section~\ref{sec:nineElem} includes reactions involving third-body effects in the low-pressure limit. These corrections are either of the Lindemann--Hinshelwood form~\cite{Hinshelwood1926} or Troe form~\cite{Gilbert1983}.
 
 \subsection{Flamelet/Progress Variable Model}\label{sec:fpv}
 %

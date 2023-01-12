@@ -1,8 +1,8 @@
-\section{Purdue Nine-element Combustor}
+\section{Purdue Nine-element Combustor}\label{sec:nineElem}
 
 In this chapter, PROM performance in modeling a multi-element rocket combustor experiencing high-frequency combustion instability is examined. This model is based on experiments conducted with the nine-element Transverse Instability Combustor Purdue University by Orth \textit{et al.}~\cite{Orth2018}. In the following section, only a simplified description of the experiment as it pertains to the numerical model is described; the reader is encouraged to find greater detail on the experiment's design in~\cite{Orth2018}. As with the CVRC, this test article was designed in tandem with CFD researchers in an effort to establish a rocket combustor benchmark for the development of advanced reacting flow LES solvers. In this case, the number of parallel propellant injectors is increased to nine, introducing additional complexity due to interactions between injectors in the presence of strong transverse combustion instabilities. Indeed, work by Harvazinski \textit{et al.}~\cite{Harvazinski2019} was able to reasonably replicate the experimental self-excited combustion instability via LES with a reduced finite-rate chemistry mechanism. However, as will be demonstrated shortly, the computational cost of such simulations is exceptionally high and precludes any usefulness in the engineering design process. As such, this case provides an excellent target for reduced-order modeling.
 
-\section{Full-order Model}
+\subsection{Full-order Model}
 %
 The computational model presented here derives from the work by Harvazinski \textit{et al.}~\cite{Harvazinski2019}, using the same computational mesh, but marginally different boundary conditions and a different reaction mechanism. The spatial domain does not include the oxidizer preburner, oxidizer manifold, or fuel manifold elements of the experimental test article. A cutaway of the spatial domain is shown in Fig.~\ref{fig:nineElemGeomXY}, and an isometric view of the combustor is shown in Fig.~\ref{fig:nineElemGeomIso}. The combustor is composed of a linear array of nine coaxial propellant injection elements, each spaced centerline-to-centerline by 26.67 mm apart. The oxidizer posts extend 96.01 mm upstream of the dump plane, and has a diameter of 11.25 mm upstream of the fuel injection port. Each oxidizer post supplies 96.5\% gaseous oxygen and 3.5\% water vapor (by weight) at 636 K. The entire oxidizer injection assembly supplies oxidizer at a rate of 0.7575 kg/s. Fuel is supplied by radial injection approximately 42 mm upstream of the dump plane, after which flow is turned 90$^{\circ}$ to exit the annular fuel port and mix with the oxidizer approximately 11.34 mm upstream of the dump plane. The inner diameter of each fuel annulus measures 13 mm, and the outer diameter (also the diameter of the propellant injection port into the combustion chamber) measures 15.75 mm. Each fuel injector supplies 100\% gaseous methane at 287.6 K at a rate of 0.02369 kg/s. The main combustion chamber (upstream of the nozzle) measures 118.5 mm long ($x$-direction), 240 mm wide ($y$-direction), and 30.5 mm deep ($z$-direction). The nozzle is 81.5 mm long, and terminates in an exit port 142.1 mm wide and 10.8 mm deep.
 
@@ -31,7 +31,7 @@ The computational model presented here derives from the work by Harvazinski \tex
 		\ifdefined\DRAFT
 			\includegraphics[width=0.99\linewidth]{example-image-a}
 		\else
-			\includegraphics[width=0.99\linewidth]{Chapters/NineElement/Images/geom_xy.png}
+			\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/nineElem/geom_xy.png}
 		\fi
 		\caption{\label{fig:nineElemGeomXY}Nine-element combustor geometry, $x-y$ cutaway.}
 	\end{minipage}
@@ -39,7 +39,7 @@ The computational model presented here derives from the work by Harvazinski \tex
 		\ifdefined\DRAFT
 			\includegraphics[width=0.99\linewidth]{example-image-a}
 		\else
-			\includegraphics[width=0.99\linewidth]{Chapters/NineElement/Images/geom_iso.png}
+			\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/nineElem/geom_iso.png}
 		\fi
 		\caption{\label{fig:nineElemGeomIso}Nine-element combustor geometry, isometric view, with $Y_{\text{CO}_2}$ $y-z$ slices at $\timeVar = 21.5$ ms.}
 	\end{minipage}
@@ -58,14 +58,14 @@ The FOM is initialized as follows. The entire domain is initialized with zero ve
 		\ifdefined\DRAFT
 			\includegraphics[width=0.99\linewidth]{example-image-a}
 		\else
-			\includegraphics[width=0.99\linewidth,trim={0.5em 0em 6cm 0em},clip]{Chapters/NineElement/Images/example_snaps/example_pressure_z.png}
+			\includegraphics[width=0.99\linewidth,trim={0.5em 0em 6cm 0em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_pressure_z.png}
 		\fi
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
 		\ifdefined\DRAFT
 			\includegraphics[width=0.99\linewidth]{example-image-a}
 		\else
-			\includegraphics[width=0.99\linewidth,trim={6cm 0em 0.5em 0em},clip]{Chapters/NineElement/Images/example_snaps/example_pressure_z_216000.png}
+			\includegraphics[width=0.99\linewidth,trim={6cm 0em 0.5em 0em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_pressure_z_216000.png}
 		\fi
 	\end{minipage}
 
@@ -73,14 +73,14 @@ The FOM is initialized as follows. The entire domain is initialized with zero ve
 		\ifdefined\DRAFT
 			\includegraphics[width=0.99\linewidth]{example-image-a}
 		\else
-			\includegraphics[width=0.99\linewidth,trim={0.5em 0em 6cm 0em},clip]{Chapters/NineElement/Images/example_snaps/example_pressure_z_217000.png}
+			\includegraphics[width=0.99\linewidth,trim={0.5em 0em 6cm 0em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_pressure_z_217000.png}
 		\fi
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
 		\ifdefined\DRAFT
 			\includegraphics[width=0.99\linewidth]{example-image-a}
 		\else
-			\includegraphics[width=0.99\linewidth,trim={6cm 0em 0.5em 0em},clip]{Chapters/NineElement/Images/example_snaps/example_pressure_z_218000.png}
+			\includegraphics[width=0.99\linewidth,trim={6cm 0em 0.5em 0em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_pressure_z_218000.png}
 		\fi
 	\end{minipage}
 	\caption{\label{fig:nineElemFOMPressure}FOM pressure contours for $x-y$ plane slice at $\timeVar = $ 21.5 (top left), 21.6 (top right), 21.7 (bottom left) and 21.8 (bottom right) ms.}
@@ -91,14 +91,14 @@ The FOM is initialized as follows. The entire domain is initialized with zero ve
 		\ifdefined\DRAFT
 			\includegraphics[width=0.99\linewidth]{example-image-a}
 		\else
-			\includegraphics[width=0.99\linewidth,trim={0.5em 0em 6cm 0em},clip]{Chapters/NineElement/Images/example_snaps/example_heat_z.png}
+			\includegraphics[width=0.99\linewidth,trim={0.5em 0em 6cm 0em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_heat_z.png}
 		\fi
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
 		\ifdefined\DRAFT
 			\includegraphics[width=0.99\linewidth]{example-image-a}
 		\else
-			\includegraphics[width=0.99\linewidth,trim={6cm 0em 0.5em 0em},clip]{Chapters/NineElement/Images/example_snaps/example_heat_z_216000.png}
+			\includegraphics[width=0.99\linewidth,trim={6cm 0em 0.5em 0em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_heat_z_216000.png}
 		\fi
 	\end{minipage}
 
@@ -106,14 +106,14 @@ The FOM is initialized as follows. The entire domain is initialized with zero ve
 		\ifdefined\DRAFT
 			\includegraphics[width=0.99\linewidth]{example-image-a}
 		\else
-			\includegraphics[width=0.99\linewidth,trim={0.5em 0em 6cm 0em},clip]{Chapters/NineElement/Images/example_snaps/example_heat_z_217000.png}
+			\includegraphics[width=0.99\linewidth,trim={0.5em 0em 6cm 0em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_heat_z_217000.png}
 		\fi
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
 		\ifdefined\DRAFT
 			\includegraphics[width=0.99\linewidth]{example-image-a}
 		\else
-			\includegraphics[width=0.99\linewidth,trim={6cm 0em 0.5em 0em},clip]{Chapters/NineElement/Images/example_snaps/example_heat_z_218000.png}
+			\includegraphics[width=0.99\linewidth,trim={6cm 0em 0.5em 0em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_heat_z_218000.png}
 		\fi
 	\end{minipage}
 	\caption{\label{fig:nineElemFOMHeat}FOM heat release contours for $x-y$ plane slice at $\timeVar = $ 21.5 (top left), 21.6 (top right), 21.7 (bottom left) and 21.8 (bottom right) ms.}
@@ -126,7 +126,7 @@ Starting at $\timeVar = 21.5$ ms, snapshots of the primitive and conservative st
 	\ifdefined\DRAFT
 		\includegraphics[width=0.8\linewidth]{example-image-a}
 	\else
-		\includegraphics[width=0.8\linewidth]{Chapters/NineElement/Images/nineElem_pod_energy.png}
+		\includegraphics[width=0.8\linewidth]{Chapters/HPROMResults/Images/nineElem/nineElem_pod_energy.png}
 	\fi
 	\caption{\label{fig:nineElemPODEnergy}POD residual energy decay for nine-element combustor conservative and primitive state datasets.}
 \end{figure}
@@ -136,7 +136,7 @@ Starting at $\timeVar = 21.5$ ms, snapshots of the primitive and conservative st
 		\ifdefined\DRAFT
 			\includegraphics[width=0.99\linewidth]{example-image-a}
 		\else
-			\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/NineElement/Images/projection_error_primitive.png}
+			\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/nineElem/projection_error_primitive.png}
 		\fi
 		\caption{\label{fig:nineElemProjErrPrim}Primitive variables time-average projection error.}
 	\end{minipage} \hspace{0.5em}
@@ -144,7 +144,7 @@ Starting at $\timeVar = 21.5$ ms, snapshots of the primitive and conservative st
 		\ifdefined\DRAFT
 			\includegraphics[width=0.99\linewidth]{example-image-a}
 		\else
-			\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/NineElement/Images/projection_error_conservative.png}
+			\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/nineElem/projection_error_conservative.png}
 		\fi
 		\caption{\label{fig:nineElemProjErrCons}Conservative variables time-average projection error.}
 	\end{minipage}

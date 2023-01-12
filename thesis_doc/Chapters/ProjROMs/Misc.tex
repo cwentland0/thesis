@@ -24,7 +24,7 @@ where $\singVal_{\dummyIdx} \in \nonnegReals$ are the singular values of the tra
 
 This measure dates back to the origins of POD, when POD was used to decompose and analyze turbulent velocity fields~\cite{berkoozPOD}. In that context, the POD energy is an analogue of the kinetic energy contributed by a given trial mode, with lower mode numbers (associated with low-frequency, high-amplitude waveforms) contributing a relatively large portion of the energy, while the high mode numbers (associated with high-frequency, low-amplitude waveforms) contributing relatively little. The extension of POD energy to general flow fields does not always have quite a clear relationship, but helps form a good first guess for how well the trial basis will represent the unsteady flow field.
 
-Projection-based ROM practitioners will generally begin experimentation with trial bases achieving a POD residual energy of approximately 1.0\%, 0.1\%, and 0.01\%. Figure~\ref{fig:samplePODEnergy} displays a sample POD residual energy decay for the two-dimensional transonic cavity flow presented in Chapter~\ref{chap:CavityAndCVRC} for datasets spanning different simulation periods. For the 6 ms case, then, the practitioner might initially experiment with trial bases composed of the leading 19, 64, and 121 modes, corresponding to 1.0\%, 0.1\%, and 0.01\% residual energy.
+Projection-based ROM practitioners will generally begin experimentation with trial bases achieving a POD residual energy of approximately 1.0\%, 0.1\%, and 0.01\%. Figure~\ref{fig:samplePODEnergy} displays a sample POD residual energy decay for the two-dimensional transonic cavity flow presented in Chapter~\ref{chap:HPROMResults} for datasets spanning different simulation periods. For the 6 ms case, then, the practitioner might initially experiment with trial bases composed of the leading 19, 64, and 121 modes, corresponding to 1.0\%, 0.1\%, and 0.01\% residual energy.
 
 \begin{figure}
 	\centering
@@ -40,7 +40,7 @@ Such explorations of POD residual energy for datasets of varying sizes have the 
 
 \subsection{Projection Error}\label{subsec:projError}
 
-For results presented in Chapters~\ref{chap:CavityAndCVRC}-\ref{chap:TransientFlame}, the \textit{projection error} will be frequently used as a diagnostic tool for understanding the quality of a computed trial manifold $\trialSpace$ in modeling the FOM solution data. This error measure, with a linear trial space for the $\timeIdx$th time instance of the $\varIdx$th state variable (density, $x$-momentum, etc.), is given by the formulation
+For results presented in Chapters~\ref{chap:TransientFlame},-\ref{chap:AdaptiveResults}, the \textit{projection error} will be frequently used as a diagnostic tool for understanding the quality of a computed trial manifold $\trialSpace$ in modeling the FOM solution data. This error measure, with a linear trial space for the $\timeIdx$th time instance of the $\varIdx$th state variable (density, $x$-momentum, etc.), is given by the formulation
 %
 \begin{equation}\label{eq:projErrLinear}
     \errVecVar^\timeIdx = \frac{\left\Vert \stateVecVar^\timeIdx - \left[\stateVecCent + \scaleMat \basisMat \basisMat^\top \scaleMatInv \left[ \stateVecVar^\timeIdx - \stateVecCent \right] \right] \right\Vert_2}{\left\Vert \stateVecVar^\timeIdx \right\Vert_2}.
