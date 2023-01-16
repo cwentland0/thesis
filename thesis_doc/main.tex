@@ -31,6 +31,7 @@
 \usepackage{arydshln}
 \usepackage{rotating}
 \usepackage{subcaption}
+\usepackage{relsize}
 
 \makenomenclature
 \renewcommand{\nomname}{List of Symbols}
@@ -50,6 +51,7 @@
 \doublespacing
 
 \algsetup{indent=2em}
+\renewcommand{\algorithmiccomment}[1]{ // #1}
 
 % Formatting table of contents %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
@@ -152,15 +154,15 @@
 \input{Chapters/BestPractices/main.tex}
 \input{Chapters/Conclusion/main.tex}
 
-\begin{appendices}
-% \appendixpage
-% \addappheadtotoc
-% \stoptocwriting
-\input{Chapters/Appendices/SuppResults/main.tex}
-\input{Chapters/Appendices/ANNArch/main.tex}
-\input{Chapters/Appendices/CostAnalysis/main.tex}
-% \resumetocwriting
-\end{appendices}
+% \begin{appendices}
+% % \appendixpage
+% % \addappheadtotoc
+% % \stoptocwriting
+% \input{Chapters/Appendices/SuppResults/main.tex}
+% \input{Chapters/Appendices/ANNArch/main.tex}
+% \input{Chapters/Appendices/CostAnalysis/main.tex}
+% % \resumetocwriting
+% \end{appendices}
 
 % \bibliographystyle{plain}
 \printbibliography

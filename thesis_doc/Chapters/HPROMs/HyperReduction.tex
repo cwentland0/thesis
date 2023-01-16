@@ -398,40 +398,134 @@ For all sampling algorithms, the first $\numResModes$ sampled degrees of freedom
 
 	The algorithm for eigenvector-based sampling is provided in Alg.~\ref{alg:eigSampling}.
 
+	\begin{algorithm}
+		\caption{Eigenvector-based sampling}\label{alg:eigSampling}
+		\begin{algorithmic}
+			\REQUIRE Number of desired samples $\numSamps$, seed sampling set $\sampSet$ and operator $\sampMat$, regression basis $\deimBasis \inRTwo{\numDOF}{\numResModes}$
+			\STATE $\numSampsCell = \mathtt{ceil}\left(\numSamps / \numVars \right)$
+			\STATE $\numSampsGreedy = \mathtt{ceil} \left( \left\vert \sampSet \right\vert / \numVars \right)$
+			\FOR{$\dummyIdx = \numSampsGreedy$ to $\numSampsCell$}
+				\STATE $\leftEvecMat$, $\singValMat$, $\rightEvecMat = \mathtt{SVD}\left(\sampMat \deimBasis \right)$
+				\STATE $\errVec = \mathtt{abs} \left( \deimBasis \rightEvecVec{\numResModes} \right)$
+				\FORALL{$\sampIdx \in \sampSet$}
+					\STATE $\errVar_{\sampIdx} = 0$ \COMMENT{Disregard indices already selected}
+				\ENDFOR
+				\STATE $\errVecCell = \zeroVec \inROne{\numCells}$
+				\FOR{$\dummyIdxTwo = 1$ to $\numCells$}
+					\FOR{$\dummyIdxThree = 1$ to $\numVars$}
+						\STATE $\sampIdx = \dummyIdxTwo + (\dummyIdxThree - 1) \numCells$
+						\STATE $\errVar_{e,\dummyIdxTwo} \plusEq \errVar_{\sampIdx}$ \COMMENT{Sum metric for all DOFs of each mesh element}
+					\ENDFOR
+				\ENDFOR
+				\STATE $\dummyIdxTwo = \mathtt{argmax} \left(\errVecCell \right)$
+				\FOR{$\dummyIdxThree = 1$ to $\numVars$}
+					\STATE $\sampSet = \sampSet \; \cup \; \{\dummyIdxTwo + (\dummyIdxThree - 1) \numCells\} $ \COMMENT{Sample all DOFs of sampled mesh element}
+				\ENDFOR
+				\STATE $\sampMat = [\canonVec_{\sampIdx}]^\top \; \forall \; \sampIdx \in \sampSet$
+			\ENDFOR
+		\end{algorithmic}
+	\end{algorithm}
+
 	\item \textit{GNAT Sampling, Variant 1}: The sampling strategy devised by Carlberg \textit{et al.}~\cite{Carlberg2013} is an extension of the greedy sampling method originally proposed for DEIM~\cite{Chaturantabut2010}. This method seeks to minimize the error in computing the regression of the basis vectors $\deimBasisVec_{\dummyIdx}$ themselves. Following a greedy approach, at each sampling iteration $\greedyIdx$ the regression error is calculated by
 	%
-	\begin{equation}
+	\begin{equation}\label{eq:gnatMetric}
 		\errVec_{\greedyIdx} = \deimBasisVec_{\dummyIdx} - \deimBasis_{\dummyIdxTwo} \left[ \sampMat_{\greedyIdx} \deimBasis_{\dummyIdxTwo} \right]^+ \sampMat_{\greedyIdx}\deimBasisVec_{\dummyIdx},
 	\end{equation}
 	%
-	where the index $\dummyIdx$ repeatedly loops through the integer interval $\{1, \hdots, \; \numResModes\}$ (the greedy element of this approach), and $\deimBasis_{\dummyIdxTwo} \inRTwo{\numDOF}{\dummyIdxTwo}$ contains the leading $\dummyIdxTwo$ basis vectors of $\deimBasis$. The index $\dummyIdxTwo$ begins at 1 and is incremented by one at every sampling loop, until $\dummyIdxTwo = \numResModes$. At every iteration, the degree of freedom for which the absolute error $|\errVec_{\greedyIdx}|$ is greatest is sampled, and the corresponding canonical unit vector appended to $\sampMat_{\greedyIdx}$. For DEIM interpolations, Chaturantabut and Sorensen~\cite{Chaturantabut2010} showed that this algorithm limits the growth of the error bounds in Eq.~\ref{eq:deimErrorBound} at every iteration $\greedyIdx$.
+    where $\deimBasis_{\dummyIdxTwo} \inRTwo{\numDOF}{\dummyIdxTwo}$ contains the leading $\dummyIdxTwo$ basis vectors of $\deimBasis$. The index $\dummyIdxTwo$ begins at 1 and is incremented by one at every sampling loop, until $\dummyIdxTwo = \numResModes$. At every iteration, the $\text{\texttt{int}}\left(\numSamps / \numResModes\right)$ degrees of freedom for which the absolute error $|\errVec_{\greedyIdx}|$ is greatest are sampled, and the corresponding canonical unit vectors are appended to $\sampMat_{\greedyIdx}$. This approach has been successfully applied to several practical aerodynamics problems~\cite{Carlberg2013,Carlberg2017}.
 
-	The algorithm for DEIM-like sampling is provided in Alg.~\ref{alg:gnatOneSampling}.
+	The algorithm for this variant of GNAT sampling is provided in Alg.~\ref{alg:gnatOneSampling}.
 
-	\item \textit{GNAT Sampling, Variant 2}:
+	\begin{algorithm}
+		\caption{GNAT sampling, variant 1}\label{alg:gnatOneSampling}
+		\begin{algorithmic}
+			\REQUIRE Number of desired samples $\numSamps$, seed sampling set $\sampSet$ and operator $\sampMat$, regression basis $\deimBasis \inRTwo{\numDOF}{\numResModes}$   
+			
+			\STATE $N_{s,e} = \mathtt{ceil} \left((\numSamps - \vert\sampSet\vert) / (\numVars\numResModes)\right)$ \COMMENT{Number of mesh elements to sample each iteration}
+			
+			\FOR{$\dummyIdx = 1$ to $\numResModes$}
+	
+				\IF{$\dummyIdx == 1$}
+					\STATE $\errVec = \deimBasisVec_1$
+				\ELSE
+					\STATE $\mathbf{c} = \argmin{\dummyVec \inROne{\dummyIdx}} \norm{\sampMat \left[\deimBasisVec_1, \; \hdots \;, \; \deimBasisVec_{\dummyIdx} \right] \dummyVec - \sampMat \deimBasisVec_{\dummyIdx+1}}$
+					\STATE $\errVec = \deimBasisVec_{\dummyIdx+1} - \left[\deimBasisVec_1, \; \hdots \;, \; \deimBasisVec_{\dummyIdx} \right] \mathbf{c}$
+				\ENDIF
+				\STATE $\errVec = \mathtt{abs}\left(\errVec\right)$
+				
+				\FORALL{$\sampIdx \in \sampSet$}
+					\STATE $\errVar_{\sampIdx} = 0$ \COMMENT{Disregard indices already selected}
+				\ENDFOR
+	
+				\STATE $\errVecCell = \zeroVec \inROne{\numCells}$
+				\FOR{$\dummyIdxTwo = 1$ to $\numCells$}
+					\FOR{$\dummyIdxThree = 1$ to $\numVars$}
+						\STATE $\sampIdx = \dummyIdxTwo + (\dummyIdxThree - 1) \numCells$
+						\STATE $\errVar_{e,\dummyIdxTwo} \plusEq \errVar_{\sampIdx}$ \COMMENT{Sum metric for all DOFs of each mesh element}
+					\ENDFOR
+				\ENDFOR
+				
+				\FOR{$\dummyIdxTwo = 1$ to $N_{s,e}$}
+					\STATE $\sampIdx = \mathtt{argmax} \left( \errVecCell \right)$
+					\FOR{$\dummyIdxThree = 1$ to $\numVars$}
+						\STATE $\sampSet = \sampSet \; \cup \; \{\dummyIdxTwo + (\dummyIdxThree - 1) \numCells\} $ \COMMENT{Sample all DOFs of sampled mesh element}
+					\ENDFOR
+					\STATE $\errVecCellIdx{\sampIdx} = 0$
+					\STATE $\sampMat = [\canonVec_{\sampIdx}]^\top \; \forall \; \sampIdx \in \sampSet$
+				\ENDFOR
+				
+			\ENDFOR
+		\end{algorithmic}
+	\end{algorithm}
+
+	\item \textit{GNAT Sampling, Variant 2}: Preprint versions of the work by Peherstorfer \textit{et al.}~\cite{Peherstorfer2020} suggests a variant of the original GNAT sampling procedure. Instead of selecting $\text{\texttt{int}}\left(\numSamps / \numResModes\right)$ sample indices at each greedy iteration, the index $\dummyIdx$ repeatedly loops through the integer interval $\{1, \; \hdots \;, \; \numResModes\}$, and only \textit{one} sample index, for which the greedy metric in Eq.~\ref{eq:gnatMetric} is greatest, is selected at each greedy iteration. This can be thought of as a fine-grained alternative to the original GNAT algorithm, and theoretically approaches a more optimal selection at the cost of (potentially many) more evaluations of the greedy metric. This work appears to be the first direct comparison of these two alternative sampling methods.
+	
+	The algorithm for this variant of GNAT sampling is provided in Alg.~\ref{alg:gnatTwoSampling}.
+
+	\begin{algorithm}
+		\caption{GNAT sampling, variant 2}\label{alg:gnatTwoSampling}
+		\begin{algorithmic}
+			\REQUIRE Number of desired samples $\numSamps$, seed sampling set $\sampSet$ and operator $\sampMat$, regression basis $\deimBasis \inRTwo{\numDOF}{\numResModes}$ 
+	
+			\STATE $N_{s,e} = \mathtt{ceil}\left(\numSamps / \numVars \right)$
+			\STATE $\numSampsGreedy = \mathtt{ceil} \left( \left\vert \sampSet \right\vert / \numVars \right)$
+			
+			\FOR{$\dummyIdx = 1$ to $N_{s,e} - \numSampsGreedy$}
+	
+				\IF{$\dummyIdx == 1$}
+					\STATE $\errVec = \deimBasisVec_1$
+				\ELSE
+					\STATE $b = \dummyIdx \text{\texttt{\%}} \numResModes$
+					\STATE $d = \mathtt{min}\left(\dummyIdx, \numResModes \right)$
+					\STATE $\mathbf{c} = \argmin{\dummyVec \inROne{\dummyIdx}} \norm{\sampMat \left[\deimBasisVec_1, \; \hdots \;, \; \deimBasisVec_{d} \right] \dummyVec - \sampMat \deimBasisVec_{b}}$
+					\STATE $\errVec = \deimBasisVec_{b} - \left[\deimBasisVec_1, \; \hdots \;, \; \deimBasisVec_{d} \right] \mathbf{c}$
+				\ENDIF
+				\STATE $\errVec = \mathtt{abs}\left(\errVec\right)$
+				
+				\FORALL{$\sampIdx \in \sampSet$}
+					\STATE $\errVar_{\sampIdx} = 0$ \COMMENT{Disregard indices already selected}
+				\ENDFOR
+	
+				\STATE $\errVecCell = \zeroVec \inROne{\numCells}$
+				\FOR{$\dummyIdxTwo = 1$ to $\numCells$}
+					\FOR{$\dummyIdxThree = 1$ to $\numVars$}
+						\STATE $\sampIdx = \dummyIdxTwo + (\dummyIdxThree - 1) \numCells$
+						\STATE $\errVar_{e,\dummyIdxTwo} \plusEq \errVar_{\sampIdx}$ \COMMENT{Sum metric for all DOFs of each mesh element}
+					\ENDFOR
+				\ENDFOR
+				
+				\STATE $\sampIdx = \mathtt{argmax} \left( \errVecCell \right)$
+	
+				\FOR{$\dummyIdxThree = 1$ to $\numVars$}
+					\STATE $\sampSet = \sampSet \; \cup \; \{\dummyIdxTwo + (\dummyIdxThree - 1) \numCells\} $ \COMMENT{Sample all DOFs of sampled mesh element}
+				\ENDFOR
+				\STATE $\sampMat = [\canonVec_{\sampIdx}]^\top \; \forall \; \sampIdx \in \sampSet$
+				
+			\ENDFOR
+		\end{algorithmic}
+	\end{algorithm}
 
 \end{enumerate}
-
-\begin{algorithm}
-    \caption{Eigenvector-based sampling}\label{alg:eigSampling}
-    \begin{algorithmic}
-		\REQUIRE Number of desired samples $\numSamps$, seed sample set $\sampSet$, regression basis $\deimBasis$
-    \end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm}
-	\caption{GNAT, Variant 1}\label{alg:gnatOneSampling}
-	\begin{algorithmic}
-		\REQUIRE Number of desired samples $\numSamps$, seed sample set $\sampSet$, regression basis $\deimBasis$
-	\end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm}
-	\caption{GNAT, Variant 2}\label{alg:gnatTwoSampling}
-	\begin{algorithmic}
-		\REQUIRE Number of desired samples $\numSamps$, seed sample set $\sampSet$, regression basis $\deimBasis$
-	\end{algorithmic}
-\end{algorithm}
 
 \section{The Sample Mesh}\label{sec:sampleMesh}
 

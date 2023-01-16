@@ -47,7 +47,7 @@ The computational model presented here derives from the work by Harvazinski \tex
 
 Mass flow rate boundary conditions are applied to the oxidizer and fuel inlets, though a single rate is enforced for the entire oxidizer inlet area, while individual rates are enforced for each fuel inlet. Adiabatic, no-slip wall conditions are enforced at all walls. A fixed pressure outlet is enforced at the nozzle exit, specifying an exit pressure of 101,325 Pa to model venting to atmosphere.
 
-Reactions are modeled by a 12-species (plus inert nitrogen), 38-reaction finite-rate mechanism referred to as FFCMy-12, which is developed by Xu and Wang~\cite{Wang2018,Xu2018} as a reduced mechanism of the larger FFCM-1 mechanism~\cite{ffcm1} tailored for combustion of methane and oxygen in rocket combustors. As mentioned in Section~\ref{sec:finiterate}, this mechanism includes third-body low-pressure corrections of the Hinshelwood~\cite{Hinshelwood1926} and Troe~\cite{Gilbert1983} forms. This mechanism has been utilized previously in the simulation of traditional liquid rocket engines~\cite{Harvazinski2020,Harvazinski2021} as well as rotating detonation engines~\cite{Prakash2021,Batista2021}. The fluid is treated as a thermally-perfect gas, and thermodynamic and transport properties are computed by the empirical fit models described in Section~\ref{subsec:gasModels}.Subgrid dissipation is modeled via the Nicoud $\sigma$-model described in Section~\ref{subsec:subgrid}.
+Reactions are modeled by a 12-species (plus inert nitrogen), 38-reaction finite-rate mechanism referred to as FFCMy-12, which is developed by Xu and Wang~\cite{Wang2018,Xu2018} as a reduced mechanism of the larger FFCM-1 mechanism~\cite{ffcm1} tailored for combustion of methane and oxygen in rocket combustors. As mentioned in Section~\ref{sec:finiterate}, this mechanism includes third-body low-pressure corrections of the Hinshelwood~\cite{Hinshelwood1926} and Troe~\cite{Gilbert1983} forms. This mechanism has been utilized previously in the simulation of traditional liquid rocket engines~\cite{Harvazinski2020,Harvazinski2021} as well as rotating detonation engines~\cite{Prakash2021,Batista2021}. The fluid is treated as a thermally-perfect gas, and thermodynamic and transport properties are computed by the empirical fit models described in Section~\ref{subsec:gasModels}. Subgrid dissipation is modeled via the Nicoud $\sigma$-model described in Section~\ref{subsec:subgrid}.
 
 The computational mesh is composed of 14,387,292 hexahedral cells, resulting in a total full-order dimension of $\numDOF = 244,583,964$. To the best of the author's knowledge, this represents the largest case examined for PROMs of unsteady fluid flows, and also accounts for a significant increase in modeling complexity relative to comparable studies of aerodynamics problems.
 
@@ -149,3 +149,6 @@ Starting at $\timeVar = 21.5$ ms, snapshots of the primitive and conservative st
 		\caption{\label{fig:nineElemProjErrCons}Conservative variables time-average projection error.}
 	\end{minipage}
 \end{figure}
+
+\subsection{Unsampled PROMs}
+

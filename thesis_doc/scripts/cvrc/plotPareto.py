@@ -34,6 +34,10 @@ marker_types = ['o', 'o', 'o', 'o', 7]
 line_styles = ['-', '-', '-', '-', 'none']
 marker_sizes = [6, 6, 6, 6, 12]
 
+point_marker_idxs = [3, 6]
+point_marker_styles = ["D", "X"]
+point_marker_size = 8
+
 xbounds = [1, 30000]
 ybounds = [1e-2, 1.025]
 xlabel = None
@@ -51,7 +55,7 @@ legend_fontsize = 14
 deim_modes = 300
 
 plot_var = "Average"
-out_dir = "/home/chris/Research/Papers/thesis/thesis_doc/Chapters/CavityAndCVRC/Images/cvrc/deim"
+out_dir = "/home/chris/Research/Papers/thesis/thesis_doc/Chapters/HPROMResults/Images/cvrc/deim"
 
 data_dirs = [
     [
@@ -114,6 +118,7 @@ data_dirs = [
 #### dt = 2.5e-7 #####
 
 plot_legend = True
+plot_point_markers = False
 base_dir = "/home/chris/Research/Papers/thesis/thesis_doc/data/cvrc/ROMs/primitive/centIC_normL2_nonVelMag/5p0ms_to_5p5ms_dt2p5e-7/mplsvt-real/implicit/k100/solutionModes/conservative"
 
 iter_start_list = [
@@ -171,11 +176,16 @@ plotErrorAvgVs(
     marker_sizes=marker_sizes,
     line_styles=line_styles,
     legend_fontsize=legend_fontsize,
+    plot_point_markers=plot_point_markers,
+    point_marker_idxs=point_marker_idxs,
+    point_marker_styles=point_marker_styles,
+    point_marker_size=point_marker_size,
 )
 
 #### dt = 5e-7 #####
 
 plot_legend = True
+plot_point_markers = True
 base_dir = "/home/chris/Research/Papers/thesis/thesis_doc/data/cvrc/ROMs/primitive/centIC_normL2_nonVelMag/5p0ms_to_5p5ms_dt5e-7/mplsvt-real/implicit/k100/solutionModes/conservative"
 
 iter_start_list = [
@@ -233,11 +243,16 @@ plotErrorAvgVs(
     marker_sizes=marker_sizes,
     line_styles=line_styles,
     legend_fontsize=legend_fontsize,
+    plot_point_markers=plot_point_markers,
+    point_marker_idxs=point_marker_idxs,
+    point_marker_styles=point_marker_styles,
+    point_marker_size=point_marker_size,
 )
 
 #### dt = 1e-6 #####
 
 plot_legend = True
+plot_point_markers = False
 base_dir = "/home/chris/Research/Papers/thesis/thesis_doc/data/cvrc/ROMs/primitive/centIC_normL2_nonVelMag/5p0ms_to_5p5ms_dt1e-6/mplsvt-real/implicit/k100/solutionModes/conservative"
 
 iter_start_list = [
@@ -295,4 +310,8 @@ plotErrorAvgVs(
     marker_sizes=marker_sizes,
     line_styles=line_styles,
     legend_fontsize=legend_fontsize,
+    plot_point_markers=plot_point_markers,
+    point_marker_idxs=point_marker_idxs,
+    point_marker_styles=point_marker_styles,
+    point_marker_size=point_marker_size,
 )

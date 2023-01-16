@@ -19,19 +19,19 @@ Combustion is modeled using the FPV approach~\cite{Pierce2001} detailed in Secti
 
 \begin{figure}
 	\begin{minipage}{0.99\linewidth}
-		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/example_pressure_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.1em 0.5em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/example_pressure_z.png}}
 		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/example_pressure_x.png}}
 	\end{minipage}
 	\begin{minipage}{0.99\linewidth}
-		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/example_temperature_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.1em 0.5em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/example_temperature_z.png}}
 		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/example_temperature_x.png}}
 	\end{minipage}
 	\begin{minipage}{0.99\linewidth}
-		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/example_xVel_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.1em 0.5em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/example_xVel_z.png}}
 		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/example_xVel_x.png}}
 	\end{minipage}
 	\begin{minipage}{0.99\linewidth}
-		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/example_mixFrac_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.1em 0.5em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/example_mixFrac_z.png}}
 		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/example_mixFrac_x.png}}
 	\end{minipage}
 	\caption{\label{fig:cvrcFOMSlices}From top to bottom: pressure, temperature, axial velocity, and fuel mixture fraction slices at $\timeVar = 5.5$ ms.}
@@ -60,7 +60,7 @@ Figure~\ref{fig:cvrcPODEnergy} displays the POD residual energy for the model ro
 
 \subsection{Unsampled PROMs}
 
-The performance of the unsampled PROMs before proceeding to HPROMs are again examined. Discussion is restricted to MP-LSVT PROMs, and explain the exclusion of Galerkin and LSPG PROMs at the end of this section. A trial basis dimension and time step study is again conducted. The trial basis dimension is again $\numPrimModes$ evaluated at 25-mode intervals from 25 modes to 200 modes. Four time step sizes are examined: $\Delta \timeVar \in \{ 0.1, \; 0.25, \; 0.5, \; 1 \} \; \mu \text{s}$, or 1, 2.5, 5, and 10 times that of the FOM simulation.
+The performance of the unsampled PROMs are again examined before proceeding to HPROMs. Discussion is restricted to MP-LSVT PROMs, and the exclusion of Galerkin and LSPG PROMs is explained at the end of this section. A trial basis dimension and time step study is again conducted. The trial basis dimension $\numPrimModes$ is again evaluated at 25-mode intervals from 25 modes to 200 modes. Four time step sizes are examined: $\Delta \timeVar \in \{ 0.1, \; 0.25, \; 0.5, \; 1 \} \; \mu \text{s}$, or 1, 2.5, 5, and 10 times that of the FOM simulation.
 
 \begin{figure}
 	\centering
@@ -82,7 +82,7 @@ The time-average error results are displayed in Fig.~\ref{fig:cvrcUnsampledROMEr
 	\caption{\label{fig:cvrcUnsampledROMProbes}CVRC probe measurements, $\dt = 5 \times \dtFOM$, various $\numPrimModes$}
 \end{figure}
 
-The effect of trial basis enrichment is visualized in Fig.~\ref{fig:cvrcUnsampledROMProbes}. Interestingly, the pressure signal the dump plane corner, shown in Fig.~\ref{fig:cvrcUnsampledROMProbesPress}, is relatively easy to capture, although significant smearing of small scale fluctuations can be observed for $\numPrimModes = 25$, and less so for $\numPrimModes = 50$. For a trial basis dimension of $\numPrimModes = 100$, even very small scale fluctuations are captured well. Comparisons for the reacting mixing layer heat release, however, are more telling. Figure~\ref{fig:cvrcUnsampledROMProbesHeat} indicates that $\numPrimModes = 25$ results in dramatic over- and under-prediction of heat release across the entire simulation period. Increasing the trial basis resolution to $\numPrimModes = 50$ improves this error, but does not eliminate it. Again, $\numPrimModes = 100$ results in excellent time-accurate reconstruction of the unsteady heat release in the reacting mixing layer.
+The effect of trial basis enrichment is visualized in Fig.~\ref{fig:cvrcUnsampledROMProbes}. Interestingly, the pressure signal at the dump plane corner, shown in Fig.~\ref{fig:cvrcUnsampledROMProbesPress}, is relatively easy to capture, although significant smearing of small scale fluctuations can be observed for $\numPrimModes = 25$, and less so for $\numPrimModes = 50$. For a trial basis dimension of $\numPrimModes = 100$, even very small scale fluctuations are captured well. Comparisons for the reacting mixing layer heat release, however, are more telling. Figure~\ref{fig:cvrcUnsampledROMProbesHeat} indicates that $\numPrimModes = 25$ results in dramatic over- and under-prediction of heat release across the entire simulation period. Increasing the trial basis resolution to $\numPrimModes = 50$ improves this error, but does not eliminate it. Again, $\numPrimModes = 100$ results in excellent time-accurate reconstruction of the unsteady heat release in the reacting mixing layer.
 
 \begin{figure}
 	\begin{minipage}{0.49\linewidth}
@@ -96,7 +96,7 @@ The effect of trial basis enrichment is visualized in Fig.~\ref{fig:cvrcUnsample
 	\caption{CVRC unsampled MP-LSVT and LSPG PROM comparisons.}
 \end{figure}
 
-The absence of any analysis for LSPG PROMs above and throughout the remained of this section is now explained. As documented by Huang \textit{et al.} for a 2D single-element rocket combustor~\cite{Huang2022}, linearized Galerkin and LSPG PROMs exhibit increased stiffness in the resulting linear temporal evolution system, compared to that generated by the equivalent MP-LSVT PROM. The result is drastically degraded stability and accuracy, such that all investigated Galerkin PROMs were unstable and LSPG PROMs exhibited more than double the error measured for MP-LSVT PROMs with the same trial basis dimension. For the truncated CVRC case investigated here, \textit{all} LSPG PROMs computed unstable solutions, even with significant basis enrichment. Figure~\ref{fig:cvrcLSPGProbe} indicates the effect of this instability, with a rapid explosion in pressure measurements at roughly $\timeVar = 5.025$ ms for $\numConsModes \in \{100, \; 200\}$. The MP-LSVT PROM with $\numPrimModes = 100$ is both stable and noticeably more accurate than the equivalent LSPG PROM. Investigating further, Fig.~\ref{fig:cvrcLSPGCond} displays the evolution of the condition number of the the LSPG and MP-LSVT Newton iteration, i.e. $\kappa \left(\left[\testBasis^{\newtonIdx}\right]^\top \testBasis^{\newtonIdx}\right)$. This roughly measures the stiffness of the PROM linear solve, and reveals that while both methods experience similar ill conditioning at first, the conditioning of the MP-LSVT PROM gradually lessens while that of the LSPG PROM gradually increases and eventually explodes.
+The absence of any analysis for LSPG PROMs above and throughout the remained of this section is now explained. As documented by Huang \textit{et al.} for a 2D single-element rocket combustor~\cite{Huang2022}, Galerkin and LSPG PROMs exhibit increased stiffness in the resulting linear temporal evolution system, compared to that generated by the equivalent MP-LSVT PROM. The result is drastically degraded stability and accuracy, such that all investigated Galerkin PROMs were unstable and LSPG PROMs exhibited more than double the error measured for MP-LSVT PROMs with the same trial basis dimension. For the truncated CVRC case investigated here, \textit{all} LSPG PROMs computed unstable solutions, even with significant basis enrichment. Figure~\ref{fig:cvrcLSPGProbe} indicates the effect of this instability, with a rapid explosion in pressure measurements at roughly $\timeVar = 5.025$ ms for $\numConsModes \in \{100, \; 200\}$. The MP-LSVT PROM with $\numPrimModes = 100$ is both stable and noticeably more accurate than the equivalent LSPG PROM. Investigating further, Fig.~\ref{fig:cvrcLSPGCond} displays the evolution of the condition number of the first LSPG and MP-LSVT Newton iteration, i.e. $\kappa \left(\left[\testBasis^{\newtonIdx}\right]^\top \testBasis^{\newtonIdx}\right)$. This roughly measures the stiffness of the PROM linear solve, and reveals that while both methods experience similar ill conditioning at first, the conditioning of the MP-LSVT PROM gradually lessens while that of the LSPG PROM gradually increases and eventually explodes.
 
 \subsection{Mesh Sampling and Load Balancing}
 
@@ -124,90 +124,84 @@ The pre-processing stage of developing hyper-reduced PROMs for the truncated CVR
 As with the cavity flow case, the four sampling algorithms described in Section~\ref{subsec:sampAlgos} are studied, and analyses are conducted for a range of sampling rates and gappy POD regressor basis dimensions. The sampling rates investigated and the parallel partitioning for each sample mesh (regardless of the sampling algorithm used) are summarized in Table~\ref{tab:cvrcSampProcs}, and are again adjusted to ensure that the load balance is approximately equal to 1,000 cells per core.
 
 \begin{figure}
-	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/stats/cvrc_partition_stats.png}
-		\subcaption{Average cells per partition, \% of total mesh.}
-	\end{minipage}
-	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/stats/cvrc_partition_comms.png}
-		\subcaption{Total point-to-point MPI communications.}
-	\end{minipage}
-	\caption{Sample mesh partition statistics, 10 partitions, various sampling rates.}
-\end{figure}
-
-\begin{figure}
 	\begin{minipage}{0.99\linewidth}
-		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/deim/iblank/random_iblank_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/iblank/random_iblank_z.png}}
 		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/deim/iblank/random_iblank_x.png}}
 	\end{minipage}
 	\begin{minipage}{0.99\linewidth}
-		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/deim/iblank/eigenvec_iblank_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/iblank/eigenvec_iblank_z.png}}
 		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/deim/iblank/eigenvec_iblank_x.png}}
 	\end{minipage}
 	\begin{minipage}{0.99\linewidth}
-		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/deim/iblank/greedy_carlberg_iblank_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/iblank/greedy_carlberg_iblank_z.png}}
 		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/deim/iblank/greedy_carlberg_iblank_x.png}}
 	\end{minipage}
 	\begin{minipage}{0.99\linewidth}
-		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/deim/iblank/greedy_ben_iblank_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/iblank/greedy_ben_iblank_z.png}}
 		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/deim/iblank/greedy_ben_iblank_x.png}}
 	\end{minipage}
 	\caption{\label{fig:cvrcIBlankSlices}Example sample meshes for $\numSamps = 0.25\% \times \numDOF$, $\numResModes = 300$ for various sampling algorithms. From top to bottom: random, eigenvector-based, GNAT V1, and GNAT V2.}
 \end{figure}
 
+Visually inspecting several indicative samples meshes, with slices in Fig.~\ref{fig:cvrcIBlankSlices} and iso-surfaces in Fig.~\ref{fig:cvrcIBlankIso}, it is clear that the spatial distribution of the sample mesh points varies drastically between sampling strategies. Random sampling, as expected, selects points in a random pattern, including a significant number of points in the oxidizer duct. This might be considered computationally wasteful, as the physics in the oxidizer duct are quite simple, maintaining a roughly fixed temperature, velocity, and chemical composition, with only minor variations in pressure. Eigenvector-based sampling and both variants of GNAT sampling, on the other hand, display a vastly different result. In each case, sample mesh elements are clustered around the reacting shear layer downstream of the dump plane. This is particularly clear for eigenvector-based sampling, in which the sampling points form a conical shape aligned with the mixing layer of the annular fuel injection stream. This result is not entirely surprising, as the physics in the shear layer are by far the most complex in the system, featuring sharp gradients and strong non-linearities. Interestingly, both GNAT sampling methods generate extremely tight clusters in the vicinity of the fuel dump region, although the second variant selects some element in the downstream combustion chamber region. These findings are largely similar to those for the cavity flow case: among the greedy sampling algorithms, eigenvector sampling generates a larger, more diffuse sample mesh, while GNAT sampling clusters sampling points closely. 
+
 \begin{figure}
-	\begin{minipage}{0.49\linewidth}
+	\centering
+	\begin{minipage}{0.45\linewidth}
 		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/iblank/random_iblank_iso.png}
 		\subcaption{Random}
 	\end{minipage}
-	\begin{minipage}{0.49\linewidth}
+	\begin{minipage}{0.45\linewidth}
 		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/iblank/eigenvec_iblank_iso.png}
 		\subcaption{Eigenvector}
 	\end{minipage}
 
-	\begin{minipage}{0.49\linewidth}
+	\centering
+	\begin{minipage}{0.45\linewidth}
 		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/iblank/greedy_carlberg_iblank_iso.png}
 		\subcaption{GNAT V1}
 	\end{minipage}
-	\begin{minipage}{0.49\linewidth}
+	\begin{minipage}{0.45\linewidth}
 		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/iblank/greedy_ben_iblank_iso.png}
 		\subcaption{GNAT V2}
 	\end{minipage}
 	\caption{\label{fig:cvrcIBlankIso}Directly-sampled cell isosurfaces, $\numSamps = 0.25\% \times \numDOF$, $\numResModes = 300$, various sampling algorithms.}
 \end{figure}
 
-Visually inspecting how each sampling algorithm
+How these differences in sampling affect the load balancing of the mesh partitions is quantified in Fig.~\ref{fig:cvrcMeshStats}. Figure~\ref{fig:cvrcCellPerPart}
+displays the average number of cells per partition in the sample mesh as a percentage of the full mesh, when the sample mesh is split into ten partitions. Unsurprisingly, random sampling generates the largest meshes for all sampling rates, as the disperse sampling requires a larger number of auxiliary cells. Conversely, both GNAT sampling algorithms produce much smaller, compact sample meshes due to the tight clustering of sample points and commensurately fewer auxiliary cells they require. At low sampling rates, eigenvector-based sampling produces similar sample mesh sizes to random sampling, but approaches sizes similar to GNAT sampling at higher sampling rates. 
+
+\begin{figure}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/stats/cvrc_partition_stats.png}
+		\subcaption{\label{fig:cvrcCellPerPart}Average cells per partition, \% of total mesh.}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/stats/cvrc_partition_comms.png}
+		\subcaption{\label{fig:cvrcMPIComm}Total point-to-point MPI communications.}
+	\end{minipage}
+	\caption{\label{fig:cvrcMeshStats}Sample mesh partition statistics, 10 partitions, various sampling rates.}
+\end{figure}
+
+For much of the same reasons, the opposite is true for the volume of inter-core communications that are required for a given sample mesh. Figure~\ref{fig:cvrcMPIComm} shows that in many cases, random sampling produces sample meshes which require no point-to-point MPI communications whatsoever. This is a function of the aforementioned disperse sampling which results in a large number of disjoint graphs which can be effectively separated by the partitioning software. This is not the case at extremely low sampling rates, which are dominated by mesh elements selected by the QDEIM procedure. Both GNAT sampling algorithms produce nearly identical volumes of communication at all sampling rates. This follows logically from the fact that tight sampling clusters require edge cuts to ensure effective load balancing. Eigenvector-based sampling induces a lower volume than GNAT sampling at lower sampling rates, but more at higher sampling rates. 
 
 \begin{figure}
 	\begin{minipage}{0.49\linewidth}
 		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/samp_timing_wrt_samprate.png}
+		\subcaption{\label{fig:cvrcSampCostSamp}W/r/t sampling rate, $\numResModes = 300$.}
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
 		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/samp_timing_wrt_modes.png}
+		\subcaption{\label{fig:cvrcSampCostModes}W/r/t $\numResModes$, $\numSamps = 0.25\% \times \numDOF$.}
 	\end{minipage}
+	\caption{\label{fig:cvrcSampCost}Sample selection cost, relative to cost of a single FOM iteration.}
 \end{figure}
+
+Finally, Fig.~\ref{fig:cvrcSampCost} examines the offline cost of evaluating the various sampling algorithms. The cost is non-dimensionalized by the core-hours required to compute one FOM iteration. Of course, the cost of random sampling is nearly zero, scales negligibly with respect to the sampling rate~\ref{fig:cvrcSampCostSamp}, and is not influenced by the number of modes retained in the regression basis $\deimBasis$ (Fig.~\ref{fig:cvrcSampCostModes}). The greedy algorithms, on the other hand, incur noticeable computational cost. On the whole, the original GNAT sampling algorithm is significantly less expensive, obviously because it requires only $\numResModes$ evaluations of the greedy metric, while Peherstorfer's variant and eigenvector-based sampling require approximately $\numSamps / \numVars$ evaluations. Eigenvector-based sampling is only slightly more costly than Peherstorfer's GNAT variant. All greedy methods appear to scale sublinearly with respect to $\numResModes$, while eigenvector-based sampling and Peherstorfer's GNAT variant seem to scale exponentially with respect to the sampling rate. Although these latter two methods cost over ten FOM iterations to compute for sampling rates above $0.1\%$, recall that this accounts to 0.2\% of the total FOM cost (5,000 iterations). 
 
 \subsection{Hyper-reduced PROMs}
 
-
-
-\begin{figure}
-	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/sampled_dt2p5e-7_Average_errorRaw_pareto.png}
-		\subcaption{$\dt = 2.5 \times \dtFOM$}
-	\end{minipage}
-	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/sampled_dt5e-7_Average_errorRaw_pareto.png}
-		\subcaption{$\dt = 5 \times \dtFOM$}
-	\end{minipage}
-
-	\centering
-	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/sampled_dt1e-6_Average_errorRaw_pareto.png}
-		\subcaption{$\dt = 10 \times \dtFOM$}
-	\end{minipage}
-	\caption{\label{fig:cvrcSampledROMErrVsTime}CVRC HPROM time-average error vs. CPU-time speedup, various $\dt$}
-\end{figure}
+The same analysis conducted for the MP-LSVT PROMs of the 2D cavity case are repeated for the truncated CVRC. All HPROMs utilize a trial basis dimension of $\numPrimModes = 100$, as this was shown above to accurately reconstruct the pointwise unsteady heat release. Again, all gappy POD regressor bases are generated from the POD of the conservative field dataset. The sampling rates, number of partitions, and approximate number of cells per partition are given in Table~\ref{tab:cvrcSampProcs}.
 
 % \begin{figure}
 % 	\begin{minipage}{0.46\linewidth}
@@ -248,8 +242,10 @@ Visually inspecting how each sampling algorithm
 		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/err_contour_gnat2_dt5e-7.png}
 		\subcaption{GNAT, V2}
 	\end{minipage}
-	\caption{CVRC HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 5 \times \dtFOM$, various sampling algorithms}
+	\caption{\label{fig:cvrcSampledROMErrContourDt5e-7}CVRC HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 5 \times \dtFOM$, various sampling algorithms}
 \end{figure}
+
+Time-average $\ell^2$ error contour plots for $\dt \in \{5, \; 10\} \times \dtFOM$, for various $\numResModes$ and $\numSamps$, are shown in Figs.~\ref{fig:cvrcSampledROMErrContourDt5e-7} and~\ref{fig:cvrcSampledROMErrContourDt1e-6}. In this case, all HPROMs remain stable, though those simulations which accrued over 20\% error (indicated by bright yellow) can be considered complete failures. For random and eigenvector-based sampling, the natural tendency for accuracy to improve with increased $\numSamps$ and $\numResModes$ is observed again. Interestingly, both variants of GNAT sampling seem to perform better at higher sampling rates for lower $\numResModes$, though these algorithms tend to perform very poorly across most configurations. Again, eigenvector-based sampling performs remarkably well, generating stable HPROMs with less than 5\% time-average error for $\numResModes \ge 250$. Random sampling also appears capably of generating similar levels of accuracy, albeit at much higher sampling rates.
 
 \begin{figure}
 	\begin{minipage}{0.46\linewidth}
@@ -269,53 +265,89 @@ Visually inspecting how each sampling algorithm
 		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/err_contour_gnat2_dt1e-6.png}
 		\subcaption{GNAT, V2}
 	\end{minipage}
-	\caption{CVRC HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 10 \times \dtFOM$, various sampling algorithms}
+	\caption{\label{fig:cvrcSampledROMErrContourDt1e-6}CVRC HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 10 \times \dtFOM$, various sampling algorithms}
 \end{figure}
 
+Figure~\ref{fig:cvrcSampledROMErrVsTime} displays the cost-accuracy tradeoff incurred by varying the sampling rate, for fixed $\numResModes = 300$. As observed previously, decreasing the sampling rate tends to degrade simulation accuracy, but enables commensurate computational cost savings. Eigenvector-based sampling is able to generate HPROMs which achieve three to four orders of magnitude speedup over the FOM with minimal loss of accuracy with respect to the unsampled PROM. At extremely low sampling rates, though, the time-average error grows to over 8-10\%. Random sampling is capable of achieving similar speedup results, though this tends to incur unacceptable degredation of accuracy, particularly at very low sampling rates. In general, both GNAT sampling variants are unable to produce accurate HPROMs for any sampling rate investigated, measuring over 10\% error in almost all cases.
+
+\begin{figure}
+	% \begin{minipage}{0.49\linewidth}
+	% 	\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/sampled_dt2p5e-7_Average_errorRaw_pareto.png}
+	% 	\subcaption{$\dt = 2.5 \times \dtFOM$}
+	% \end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/sampled_dt5e-7_Average_errorRaw_pareto.png}
+		\subcaption{\label{fig:cvrcSampledROMErrVsTimeDt5e-7}$\dt = 5 \times \dtFOM$}
+	\end{minipage}
+	% \centering
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/sampled_dt1e-6_Average_errorRaw_pareto.png}
+		\subcaption{$\dt = 10 \times \dtFOM$}
+	\end{minipage}
+	\caption{\label{fig:cvrcSampledROMErrVsTime}CVRC HPROM time-average error vs. CPU-time speedup, various $\dt$}
+\end{figure}
+
+Figure~\ref{fig:cvrcSampledROMProbes} illustrates how the sampling algorithms and sampling rates affect the long-term reconstruction of the unsteady pressure signal at the dump plane corner (marked in Fig.~\ref{fig:cvrcGeom}). The average error for Fig.~\ref{fig:cvrcSampledROMProbe0p075} and~\ref{fig:cvrcSampledROMProbe0p25} are marked in Fig.~\ref{fig:cvrcSampledROMErrVsTimeDt5e-7} by an ``X'' and diamond, respectively. Almost all of the displayed simulations remain reasonably accurate up to $t = 5.1$ ms. As indicated by the above discussion, however, both GNAT variants appear incapable of generating accurate reconstructions beyond this point, either exploding or significantly deviating from the FOM pressure signal. For $\numSamps = 0.25 \times \numDOF$, random sampling is able to maintain an accurate reconstruction for $\timeVar < 5.35$ ms, but deteriorates near the end of the simulation. This is not the case for $\numSamps = 0.075 \times \numDOF$, where random sampling explodes shortly after $\timeVar = 5.25$ ms. On the other hand, eigenvector-based sampling is able to faithfully reconstruct the pressure signal in both instances, though for $\numSamps = 0.075 \times \numDOF$ the signal begins to deteriorate noticeably near the end of the simulation period.
+
+\begin{figure}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/pressure_probe_deim_dt5e-7_samp0p00075.png}
+		\subcaption{\label{fig:cvrcSampledROMProbe0p075}$\numSamps = 0.075\% \times \numDOF$}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/pressure_probe_deim_dt5e-7_samp0p0025.png}
+		\subcaption{\label{fig:cvrcSampledROMProbe0p25}$\numSamps = 0.25\% \times \numDOF$}
+	\end{minipage}
+	\caption{\label{fig:cvrcSampledROMProbes}CVRC MP-LSVT HPROM probe measurements, $\numPrimModes = 100$, $\numResModes = 300$, $\dt = 5 \times \dtFOM$.}
+\end{figure}
+
+These observations are emphasized further by field plots drawn from the end of the simulation period, $\timeVar = 5.5$ ms, for $\numSamps = 0.25\%$. Figure~\ref{fig:cvrcDEIMPressSlices} shows pressure slices, where it is abundantly clear that the HPROMs produced by random sampling and the GNAT variants have devolved into high-amplitude oscillations. Although the GNAT variants appear to avoid the extremely high-frequency oscillations observed in the random sampling cases, the point is ultimately irrelevant due to overall deviation from the solution. Eigenvector-based sampling computes a remarkably similar pressure field, though some of the very high-frequency content is absent in the combustion chamber (though this may be due entirely to an under-resolved trial space). 
 
 \begin{figure}
 	\begin{minipage}{0.99\linewidth}
-		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/example_pressure_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/example_pressure_z.png}}
 		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/example_pressure_x.png}}
 	\end{minipage}
 	\begin{minipage}{0.99\linewidth}
-		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.5em 0.2em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/random/random_pressure_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/random/random_pressure_z.png}}
 		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/random/random_pressure_x.png}}
 	\end{minipage}
 	\begin{minipage}{0.99\linewidth}
-		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.5em 0.2em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/eigenvec/eigenvec_pressure_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/eigenvec/eigenvec_pressure_z.png}}
 		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/eigenvec/eigenvec_pressure_x.png}}
 	\end{minipage}
 	\begin{minipage}{0.99\linewidth}
-		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.5em 0.2em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/greedy_carlberg/greedy_carlberg_pressure_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/greedy_carlberg/greedy_carlberg_pressure_z.png}}
 		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/greedy_carlberg/greedy_carlberg_pressure_x.png}}
 	\end{minipage}
 	\begin{minipage}{0.99\linewidth}
-		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.5em 0.2em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/greedy_ben/greedy_ben_pressure_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/greedy_ben/greedy_ben_pressure_z.png}}
 		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/greedy_ben/greedy_ben_pressure_x.png}}
 	\end{minipage}
 	\caption{\label{fig:cvrcDEIMPressSlices}CVRC HPROM pressure slices, $\timeVar = 5.5$ ms, $\numSamps$ = 0.25\%, $\numResModes = 300$, $\dt = 5 \times \dtFOM$. From top to bottom: FOM, random, eigenvector, GNAT V1, and GNAT V2 sampling.}
 \end{figure}
 
+Similar results are observed in the temperature field, shown in Fig.~\ref{fig:cvrcDEIMTempSlices}. The result produced by eigenvector-based sampling captures the mixing and advection of the reactant shear layer, though there is again noticeable smearing and spurious oscillations near the flame front. Much like with the pressure field, random sampling produces an HPROM which devolves into high-frequency oscillations in the mixing layer, while both GNAT variants produce exeptionally large oscillations throughout the combustion chamber. 
+
 \begin{figure}
 	\begin{minipage}{0.99\linewidth}
-		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.1em 0.2em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/example_temperature_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/example_temperature_z.png}}
 		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/example_temperature_x.png}}
 	\end{minipage}
 	\begin{minipage}{0.99\linewidth}
-		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.5em 0.2em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/random/random_temperature_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/random/random_temperature_z.png}}
 		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/random/random_temperature_x.png}}
 	\end{minipage}
 	\begin{minipage}{0.99\linewidth}
-		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.5em 0.2em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/eigenvec/eigenvec_temperature_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/eigenvec/eigenvec_temperature_z.png}}
 		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/eigenvec/eigenvec_temperature_x.png}}
 	\end{minipage}
 	\begin{minipage}{0.99\linewidth}
-		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.5em 0.2em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/greedy_carlberg/greedy_carlberg_temperature_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/greedy_carlberg/greedy_carlberg_temperature_z.png}}
 		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/greedy_carlberg/greedy_carlberg_temperature_x.png}}
 	\end{minipage}
 	\begin{minipage}{0.99\linewidth}
-		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.2em 0.5em 0.2em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/greedy_ben/greedy_ben_temperature_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/greedy_ben/greedy_ben_temperature_z.png}}
 		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/deim/contours/greedy_ben/greedy_ben_temperature_x.png}}
 	\end{minipage}
 	\caption{\label{fig:cvrcDEIMTempSlices}CVRC HPROM temperature slices, $\timeVar = 5.5$ ms, $\numSamps$ = 0.25\%, $\numResModes = 300$, $\dt = 5 \times \dtFOM$. From top to bottom: FOM, random, eigenvector, GNAT V1, and GNAT V2 sampling.}

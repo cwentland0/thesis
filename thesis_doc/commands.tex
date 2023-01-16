@@ -10,6 +10,7 @@
 \newcommand{\standardstate}{\circ\kern-0.47em-}
 \newcommand{\CC}{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\relsize{-3}{\textbf{++}}}}
 \newcommand{\canonVec}{\ensuremath{\mathbf{e}}}
+\newcommand{\plusEq}{\ensuremath{\mathrel{+}=}}
 
 % time
 \newcommand{\timeVar}{\ensuremath{\text{t}}}
@@ -43,7 +44,10 @@
 \newcommand{\numResModes}{\ensuremath{N_r}}
 \newcommand{\numJacobModes}{\ensuremath{N_J}}
 \newcommand{\numSamps}{\ensuremath{N_s}}
+\newcommand{\numSampsCell}{\ensuremath{N_{s,e}}}
 \newcommand{\numSampsFull}{\ensuremath{\widetilde{N}_s}}
+\newcommand{\numSampsComp}{\ensuremath{\breve{N}_s}}
+\newcommand{\numSampsGreedy}{\ensuremath{N_{s,\greedyIdx}}}
 \newcommand{\numReacs}{\ensuremath{N_r}}
 \newcommand{\numSnaps}{\ensuremath{N_{\finalTime}}}
 \newcommand{\numProg}{\ensuremath{N_{\text{prog}}}}
@@ -99,6 +103,7 @@
 \newcommand{\dummyVecTwo}{\ensuremath{\mathbf{b}}}
 \newcommand{\dummyIdx}{\ensuremath{i}}
 \newcommand{\dummyIdxTwo}{\ensuremath{j}}
+\newcommand{\dummyIdxThree}{\ensuremath{k}}
 \newcommand{\dummyMat}{\ensuremath{\mathbf{A}}}
 \newcommand{\dummyMatOne}{\ensuremath{\mathbf{A}}}
 \newcommand{\dummyMatTwo}{\ensuremath{\mathbf{B}}}
@@ -263,11 +268,12 @@
 \newcommand{\numRank}{z}
 
 % SVD
-\newcommand{\lEvecVar}{x}
-\newcommand{\rEvecVar}{y}
+\newcommand{\lEvecVar}{u}
+\newcommand{\rEvecVar}{v}
 \newcommand{\singVal}{\ensuremath{\sigma}}
 \newcommand{\leftEvecMat}{\ensuremath{\ensuremath{\mathbf{\MakeUppercase{\lEvecVar}}}}}
 \newcommand{\singValMat}{\ensuremath{\boldsymbol{\Sigma}}}
+\newcommand{\rightEvecVec}[1]{\ensuremath{\mathbf{\rEvecVar}_{#1}}}
 \newcommand{\rightEvecMat}{\ensuremath{\ensuremath{\mathbf{\MakeUppercase{\rEvecVar}}}}}
 \newcommand{\eigenVal}{\ensuremath{\lambda}}
 
@@ -303,8 +309,11 @@
 \newcommand{\resScaleInv}{\ensuremath{\resScale^{-1}}}
 
 % error
-\newcommand{\errVec}{\ensuremath{\epsilon}}
+\newcommand{\errVar}{\ensuremath{\epsilon}}
+\newcommand{\errVec}{\ensuremath{\errVar}}
 \newcommand{\errVecVar}{\ensuremath{\errVec_{\varIdx}}}
+\newcommand{\errVecCell}{\ensuremath{\errVec_{e}}}
+\newcommand{\errVecCellIdx}[1]{\ensuremath{\errVec_{e,#1}}}
 
 % thermodynamic quantities
 \newcommand{\density}{\ensuremath{\rho}}
