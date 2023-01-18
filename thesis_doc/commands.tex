@@ -70,6 +70,7 @@
 \newcommand{\primVar}{p}
 \newcommand{\consVec}{\ensuremath{\mathbf{\stateVar}_{\consVar}}}
 \newcommand{\consVecVar}{\ensuremath{\mathbf{\stateVar}_{\consVar,\varIdx}}}
+\newcommand{\consVecVarUns}{\ensuremath{\mathbf{\stateVar'}_{\consVar,\varIdx}}}
 \newcommand{\primVec}{\ensuremath{\mathbf{\stateVar}_{\primVar}}}
 \newcommand{\primVecVar}{\ensuremath{\mathbf{\stateVar}_{\primVar,\varIdx}}}
 \newcommand{\consFunc}[1]{\ensuremath{\consVec \left(#1\right)}}
@@ -86,6 +87,7 @@
 \newcommand{\consDataMat}{\ensuremath{\mathbf{\MakeUppercase{\stateVar}}_{\consVar}}}
 \newcommand{\consDataMatUns}{\ensuremath{\consDataMat'}}
 \newcommand{\consDataMatVar}{\ensuremath{\mathbf{\MakeUppercase{\stateVar}}_{\consVar,\varIdx}}}
+\newcommand{\consDataMatVarUns}{\ensuremath{\mathbf{\MakeUppercase{\stateVar}'}_{\consVar,\varIdx}}}
 \newcommand{\primDataMat}{\ensuremath{\mathbf{\MakeUppercase{\stateVar}}_{\primVar}}}
 \newcommand{\primDataMatUns}{\ensuremath{\primDataMat'}}
 \newcommand{\primDataMatVar}{\ensuremath{\mathbf{\MakeUppercase{\stateVar}}_{\primVar,\varIdx}}}
@@ -302,12 +304,10 @@
 \newcommand{\primScaleVecVar}[1]{\ensuremath{\scaleVec_{\primVar,#1}}}
 \newcommand{\primScale}{\ensuremath{\scaleMat_{\primVar}}}
 \newcommand{\primScaleInv}{\ensuremath{\primScale^{-1}}}
-\newcommand{\rhsScaleVar}{g}
-\newcommand{\rhsScale}{\ensuremath{\mathbf{\MakeUppercase{\rhsScaleVar}}}}
-\newcommand{\rhsScaleInv}{\ensuremath{\rhsScale^{-1}}}
-\newcommand{\resScaleVar}{r}
-\newcommand{\resScale}{\ensuremath{\mathbf{\MakeUppercase{\resScaleVar}}}}
+\newcommand{\resScale}{\ensuremath{\scaleMat_{\resVar}}}
 \newcommand{\resScaleInv}{\ensuremath{\resScale^{-1}}}
+\newcommand{\resScaleVar}[1]{\ensuremath{\scaleVar_{\resVar,#1}}}
+\newcommand{\resScaleVecVar}[1]{\ensuremath{\scaleVec_{\resVar,#1}}}
 
 % error
 \newcommand{\errVar}{\ensuremath{\epsilon}}

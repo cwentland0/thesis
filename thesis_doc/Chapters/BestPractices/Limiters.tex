@@ -1,1 +1,20 @@
 \section{Limiters}
+
+As discussed at length in work by Huang \textit{et al.}~\cite{Huang2019} and Blonigan \textit{et al.}~\cite{Blonigan2020}, PROMs for systems described by flow fields characterized by sharp gradients (such as shocks or flames) often generate non-physical solutions, such as negative densities, temperatures, or pressures. These inevitably cause the solver to fail in attempts to, say, compute the square root of a negative value. The cause of these issues in linear subspace PROMs is often due to ``ringing,'' a common issue in linear representations of non-linear functions. Closely related to Gibb's phenomena for Fourier series representations, ringing appears as large over- and undershoots in approximating sharp gradients, along with local oscillations in the vicinity. Severe ringing can result in non-physical solutions due to the aforementioned over- and undershoots. A simplified example for the 1D premixed flame case is shown in Fig.~\ref{fig:limitRingingEx}. This is generally caused by under-resolution of the trial space, and usually improves with increasing $\numConsModes/\numPrimModes$.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{example-image-a}
+    \caption{\label{fig:limitRingingEx}Example of ringing near a flame, various $\numPrimModes$.}
+\end{figure}
+
+A variety of tactics for combatting high-frequency oscillatory behavior in PROMs has been proposed, including adaptations of classical artifical viscosity~\cite{Sirisup2004,San2013} and filtering~\cite{Ardag2011,Wells2017} approaches to PROMs. Perhaps the simplest approach to eliminating non-physical solutions are limiting, or clipping, functions, which bound the solution from above, below, or both. This can be formalized by the limiting function 
+%
+\begin{equation}
+    \stateVar = max\left(min\left(\stateVar, \; \stateVar_{max}\right), \; \stateVar_{min}\right)
+\end{equation}
+%
+
+The work by Blonigan \textit{et al.}~\cite{Blonigan2020} on a hypersonic re-entry vehicle uses this approach to bound the density and temperature from below, ensuring that they never fall below zero and ensures a physical solution. The work by Huang \textit{et al.}~\cite{Huang2019} on a model rocket combustor goes further, bounding temperature from below using a value slighly smaller than the injection temperature of the cold fuel, and bounding from above using a value slightly larger than the adiabatic flame temperature of the reactants injected. This latter approach limits the solution more aggressive, but is ultimately informed by the physical constraints of the modeled system. Additionally, this approach is shown to not only improve stability, but also improve the long-term accuracy of the online PROM. Later work by Huang and coworkers~\cite{Huang2020,Huang2022} also explores similar heuristic limiters for species mass fraction fields; these are not discussed further in this thesis. In the results shown below, the effect of a temperature limiter will be demonstrated for the truncated CVRC case.
+
+As an aside, the work by Blonigan \textit{et al.}~\cite{Blonigan2020} classifies this limiting approach as a type of non-linear trial manifold, inasmuch the clipping function is non-linear and all realizable solutions are computed via this non-linear function. While this distinction is accurate, this thesis does not use such a label, as clipping functions are already commonly used in simulations of reacting flows to ensure that all species mass fractions sum to unity. Referring to this approach as a non-linear manifold PROM might unduly confuse the reader with respect to the neural network non-linear trial manifolds discussed in Sec.~\ref{subsec:nonlinManifold}.
