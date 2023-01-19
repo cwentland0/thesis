@@ -50,3 +50,27 @@ The above discussion motivates two primary approaches for computing the constant
     \item \textit{Conservative state}: This approach computes a residual scaling identical to that of the conservative state scaling matrix, $\consScale$. As outlined in Section~\ref{sec:centerScale}, this is associated with a particular centering and scaling method. Centering about the conservative initial condition and time-average field are investigated here, along with $\ell^2$-norm and min-max scaling.
     \item \textit{Right-hand side}: This approach computes the residual scaling from unsteady snapshots of the non-linear function $\rhsFunc{\cdot,\; \timeVar}$. As mentioned above, it does not make sense to center these snapshots, as the linear multi-step schemes used in this thesis cannot be decomposed such that a centering vector cancels out. As such, the following results compute RHS scaling by $\ell^2$-norm and min-max scaling, without centering. The latter option neglects subtracting the field variable minimums. 
 \end{enumerate}
+
+\begin{figure}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/BestPractices/Images/errVsModes_norm_l2_Average_errorRaw.png}
+		\subcaption{$\ell^2$-norm.}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/BestPractices/Images/errVsModes_norm_minmax_Average_errorRaw.png}
+		\subcaption{Min-max.}
+	\end{minipage}
+	\caption{CVRC unsampled MP-LSVT PROM time-average error, $\numPrimModes = 25$, various residual scalings.}
+\end{figure}
+
+\begin{figure}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/BestPractices/Images/pressure_probe_scale_l2.png}
+		\subcaption{$\ell^2$-norm.}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/BestPractices/Images/pressure_probe_scale_minmax.png}
+		\subcaption{Min-max.}
+	\end{minipage}
+	\caption{CVRC unsampled MP-LSVT PROM pressure probes, $\numPrimModes = 25$, various residual scalings.}
+\end{figure}

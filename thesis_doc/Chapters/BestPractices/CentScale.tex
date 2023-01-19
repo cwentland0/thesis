@@ -85,3 +85,37 @@ where $\consScaleVecVar{\varIdx}$, $\primScaleVecVar{\varIdx} \in \mathbb{R}$ is
 	
 	Although min-max scaling is fairly common within the machine learning community, and is a simple method of ensuring that the data are roughly the same order of magnitude, this scaling has the effect of emphasizing outliers which define the maximum and minimum bounds of the state variables.
 \end{enumerate}
+
+\begin{figure}
+	\begin{minipage}{0.32\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/BestPractices/Images/errVsModes_centScale_centNone_Average_errorRaw.png}
+		\subcaption{No centering.}
+	\end{minipage}
+	\begin{minipage}{0.32\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/BestPractices/Images/errVsModes_centScale_centIC_Average_errorRaw.png}
+		\subcaption{Initial condition.}
+	\end{minipage}
+	\begin{minipage}{0.32\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/BestPractices/Images/errVsModes_centScale_centMean_Average_errorRaw.png}
+		\subcaption{Time average.}
+	\end{minipage}
+	\caption{CVRC unsampled MP-LSVT PROM time-average error, $\numPrimModes = 25$, various trial space centerings.}
+\end{figure}
+
+\begin{figure}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/BestPractices/Images/pressure_probe_centScale_centNone.png}
+		\subcaption{No centering.}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/BestPractices/Images/pressure_probe_centScale_centIC.png}
+		\subcaption{Initial condition.}
+	\end{minipage}
+	
+	\centering
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/BestPractices/Images/pressure_probe_centScale_centMean.png}
+		\subcaption{Time average.}
+	\end{minipage}
+	\caption{CVRC unsampled MP-LSVT PROM pressure probes, $\numPrimModes = 25$, various trial space centerings.}
+\end{figure}
