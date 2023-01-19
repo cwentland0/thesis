@@ -495,8 +495,8 @@ For all sampling algorithms, the first $\numResModes$ sampled degrees of freedom
 				\IF{$\dummyIdx == 1$}
 					\STATE $\errVec = \deimBasisVec_1$
 				\ELSE
-					\STATE $b = \dummyIdx \text{\texttt{\%}} \numResModes$
-					\STATE $d = \mathtt{min}\left(\dummyIdx, \numResModes \right)$
+					\STATE $b = \dummyIdx \; \text{\texttt{\%}} \; \numResModes$
+					\STATE $d = \mathtt{min}\left(\dummyIdx, \; \numResModes \right)$
 					\STATE $\mathbf{c} = \argmin{\dummyVec \inROne{\dummyIdx}} \norm{\sampMat \left[\deimBasisVec_1, \; \hdots \;, \; \deimBasisVec_{d} \right] \dummyVec - \sampMat \deimBasisVec_{b}}$
 					\STATE $\errVec = \deimBasisVec_{b} - \left[\deimBasisVec_1, \; \hdots \;, \; \deimBasisVec_{d} \right] \mathbf{c}$
 				\ENDIF
