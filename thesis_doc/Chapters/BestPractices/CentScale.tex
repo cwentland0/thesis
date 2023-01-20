@@ -99,7 +99,7 @@ where $\consScaleVecVar{\varIdx}$, $\primScaleVecVar{\varIdx} \in \mathbb{R}$ is
 		\includegraphics[width=0.99\linewidth]{Chapters/BestPractices/Images/errVsModes_centScale_centMean_Average_errorRaw.png}
 		\subcaption{Time average.}
 	\end{minipage}
-	\caption{CVRC unsampled MP-LSVT PROM time-average error, $\numPrimModes = 25$, various trial space centerings.}
+	\caption{\label{fig:centScaleError}CVRC unsampled MP-LSVT PROM time-average error, $\numPrimModes = 25$, various trial space centerings.}
 \end{figure}
 
 \begin{figure}
@@ -117,5 +117,7 @@ where $\consScaleVecVar{\varIdx}$, $\primScaleVecVar{\varIdx} \in \mathbb{R}$ is
 		\includegraphics[width=0.99\linewidth]{Chapters/BestPractices/Images/pressure_probe_centScale_centMean.png}
 		\subcaption{Time average.}
 	\end{minipage}
-	\caption{CVRC unsampled MP-LSVT PROM pressure probes, $\numPrimModes = 25$, various trial space centerings.}
+	\caption{\label{fig:centScaleProbes}CVRC unsampled MP-LSVT PROM pressure probes, $\numPrimModes = 25$, various trial space centerings.}
 \end{figure}
+
+Time-average error results for the MP-LSVT PROMs of the truncated CVRC, for $\numPrimModes = \{25,\; 50,\; 75,\; 100\}$, are shown in Fig.~\ref{fig:centScaleError}, along with indicative pressure probe measurements in Fig.~\ref{fig:centScaleProbes}. Both instances in which centering is applied (either initial condition or time-average field) perform similarly, and scaling the state appears to improve the solution over cases without scaling. If no centering, however, the PROM accuracy is rather poor even in cases where scaling is also applied. 

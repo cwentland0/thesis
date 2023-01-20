@@ -60,7 +60,7 @@ The above discussion motivates two primary approaches for computing the constant
 		\includegraphics[width=0.99\linewidth]{Chapters/BestPractices/Images/errVsModes_norm_minmax_Average_errorRaw.png}
 		\subcaption{Min-max.}
 	\end{minipage}
-	\caption{CVRC unsampled MP-LSVT PROM time-average error, $\numPrimModes = 25$, various residual scalings.}
+	\caption{\label{fig:resError}CVRC unsampled MP-LSVT PROM time-average error, $\numPrimModes = 25$, various residual scalings.}
 \end{figure}
 
 \begin{figure}
@@ -72,5 +72,7 @@ The above discussion motivates two primary approaches for computing the constant
 		\includegraphics[width=0.99\linewidth]{Chapters/BestPractices/Images/pressure_probe_scale_minmax.png}
 		\subcaption{Min-max.}
 	\end{minipage}
-	\caption{CVRC unsampled MP-LSVT PROM pressure probes, $\numPrimModes = 25$, various residual scalings.}
+	\caption{\label{fig:resProbes}CVRC unsampled MP-LSVT PROM pressure probes, $\numPrimModes = 25$, various residual scalings.}
 \end{figure}
+
+MP-LSVT PROMs are again computed for the truncated CVRC. The primitive state is centered about the initial condition and scaled by the $\ell^2$-norm in all cases. Time-average error and probe measurements are again displayed in Fig.~\ref{fig:resError} and~\ref{fig:resProbes}, respectively. Here, the effect of residual weighting is slightly more nuanced than that of solution centering and scaling. On the whole, all cases are reasonably accurate. However, certain choices of residual scaling have the effect of causing/preventing an apparent decrease in the frequency of the dominant pressure mode, making it appear as if the solution is lagging behind that of the FOM. In particular, it appears that computing the residual scaling via the un-centered conservative variables alleviates this problem to the greatest extent, and generally results in the lowest time-average error.  
