@@ -64,28 +64,28 @@
         \includegraphics[width=0.99\linewidth]{Chapters/TransientFlame/Images/lstm/pod_rom_temp_snaps.png}
     \end{minipage}
     \begin{minipage}{0.49\linewidth}
-        \includegraphics[width=0.99\linewidth]{Chapters/TransientFlame/Images/lstm/cae_rom_temp_snaps.png}
+        \includegraphics[width=0.99\linewidth]{Chapters/TransientFlame/Images/lstm/pod_rom_press_snaps.png}
     \end{minipage}
-    \caption{Online temperature field snapshots for LSTMs trained with POD (left) and CAE (right) trajectories, $\timeVar = XXX$, $f = 168.75$ kHz, various $\numPrimModes$.}
+    \caption{Online temperature (left) and pressure (right) field predictions for LSTMs trained with POD trajectories, $\timeVar = 500 \mu$s, $f = 131.25$ kHz, various $\numPrimModes$.}
 \end{figure}
 
 \begin{figure}
     \begin{minipage}{0.49\linewidth}
-        \includegraphics[width=0.99\linewidth]{Chapters/TransientFlame/Images/lstm/pod_rom_press_snaps.png}
+        \includegraphics[width=0.99\linewidth]{Chapters/TransientFlame/Images/lstm/cae_rom_temp_snaps.png}
     \end{minipage}
     \begin{minipage}{0.49\linewidth}
         \includegraphics[width=0.99\linewidth]{Chapters/TransientFlame/Images/lstm/cae_rom_press_snaps.png}
     \end{minipage}
-    \caption{Online pressure field snapshots for LSTMs trained with POD (left) and CAE (right) trajectories, $\timeVar = XXX$, $f = 168.75$ kHz, various $\numPrimModes$.}
+    \caption{Online temperature (left) and pressure (right) field predictions for LSTMs trained with CAE trajectories, $\timeVar = 500 \mu$s, $f = 131.25$ kHz, various $\numPrimModes$. Note that $\numPrimModes = 3$ was unstable.}
 \end{figure}
 
 \begin{figure}
     \begin{minipage}{0.49\linewidth}
-        \includegraphics[width=0.99\linewidth]{example-image-a}
+        \includegraphics[width=0.99\linewidth]{Chapters/TransientFlame/Images/lstm/freq_err.png}
         \subcaption{Upstream $f$.}
     \end{minipage}
     \begin{minipage}{0.49\linewidth}
-        \includegraphics[width=0.99\linewidth]{example-image-a}
+        \includegraphics[width=0.99\linewidth]{Chapters/TransientFlame/Images/lstm/err_flame.png}
         \subcaption{Flame speed}
     \end{minipage}
     \caption{Aggregate predictions of QoIs across all forcing frequencies, all $\numPrimModes$. The best predictions for each model are marked by a bold line.}
