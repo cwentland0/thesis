@@ -30,7 +30,7 @@
 \captionsetup{compatibility=false}
 \usepackage{blindtext}
 \usepackage{tcolorbox}
-\usepackage[final]{animate}
+\usepackage[draft]{animate}
 \usepackage{comment}
 \usepackage{appendixnumberbeamer}
 \usepackage{booktabs}
@@ -119,6 +119,21 @@
   \endgroup
 }
 
+\useoutertheme{miniframes}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{section in head/foot shaded}{\color{gray}\usebeamertemplate{section in head/foot}}
+
+\setbeamertemplate{headline}{%
+  \begin{beamercolorbox}[colsep=1.5pt]{upper separation line head}
+  \end{beamercolorbox}
+  \begin{beamercolorbox}{section in head/foot}
+    \vskip2pt\insertsectionnavigationhorizontal{\paperwidth}{}{}\vskip2pt
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[colsep=1.5pt]{lower separation line head}
+  \end{beamercolorbox}
+}
+
 \input{commands}
 \graphicspath{{./Images/}}
 
@@ -148,7 +163,7 @@ Krzysztof Fidkowski \\
 \titlepage % Print the title page as the first slide
 \end{frame}
 
-\section*{Introduction}
+\section*{Intro}
 
 \begin{frame}{``New space'' era}
     \begin{itemize}
@@ -254,7 +269,7 @@ Krzysztof Fidkowski \\
 
 \begin{frame}{Data-driven reduced-order models (ROMs)}
 	\begin{itemize}
-		\item Learning cheap models from high fidelity simulations, experiments
+		\item Learning low-cost models from high fidelity simulations, experiments
 		\item Evolving \textbf{low-dimensional} state approximation in time
 		\item Non-intrusive methods
 		\begin{itemize}
@@ -267,7 +282,7 @@ Krzysztof Fidkowski \\
 			\item Directly manipulate governing equations
 			\item Galerkin, Petrov--Galerkin projection
 		\end{itemize}
-		\item \textbf{Not} reduced-fidelity models, e.g.
+		\item \textbf{Not} reduced-physics models, e.g.
 		\begin{itemize}
 			\item Reduced chemical mechanisms
 			\item Flamelet-progress variable models
@@ -299,22 +314,59 @@ Krzysztof Fidkowski \\
 		\end{figure}
 	\end{minipage}
 	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
-		PROMs of non-linear systems have \textbf{no stability guarantees} \\
-		Accuracy/robustness are rarely tested beyond canonical problems
+		PROMs of non-linear systems have \textbf{no stability guarantees}
 	\end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Prior work}
+	\begin{itemize}
+		\item 2000's
+		\begin{itemize}
+			\item Balanced truncation, balanced POD (Willcox, Benner) 
+			\item Galerkin PROMs for fluid flows (Rowley, Bui-Thanh)
+		\end{itemize}
+		\item 2010's
+		\begin{itemize}
+			\item Least-squares Petrov--Galerkin PROMs (Carlberg, Farhat)
+			\item MPE, DEIM, GNAT (Willcox, Chaturantabut, Carlberg)
+			\item Closure and stabilization (Tezaur, Iliescu, San, Duraisamy)
+			\item Local trial bases, dictionary methods (Amsallem, Zahr)
+		\end{itemize}
+		\item 2020's
+		\begin{itemize}
+			\item Non-intrusive ROMs (Willcox, Hesthaven)
+			\item Non-linear manifold PROMs (Lee, Choi)
+			\item Online basis and sampling adaptation (Peherstorfer, Huang)
+		\end{itemize}
+		
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{Objectives}
 	\begin{itemize}
-		\item 
+		\item How are PROMs best extended to \textbf{reacting flows}?
+		\item What methods promote \textbf{accurate} and \textbf{scalable} PROM solutions? 
+		\item Can PROMs be truly \textbf{predictive} for large-scale systems?
+		\item What \textbf{nuances} does the literature fail to adequately detail?
 	\end{itemize}
+
+	\begin{figure}
+		\begin{minipage}{0.49\linewidth}
+			\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.99\linewidth,every=100]{10}{Images/experiments/cvrc/fom_temp/fig_z_Temperature_}{50000}{55000}
+
+			\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.99\linewidth,every=100]{10}{Images/experiments/cvrc/fom_z/fig_z_Flamelet_Scalar_Mean_}{50000}{55000}
+		\end{minipage}
+		\begin{minipage}{0.45\linewidth}
+			\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth,every=60]{10}{Images/experiments/9elem/fom_pressure/fig_z_Static_Pressure_}{215000}{218900}
+		\end{minipage}
+	\end{figure}
 \end{frame}
 
 \begin{frame}{Contributions}
     \begin{enumerate}
-		\item PERFORM, Python package for prototyping novel ROM methods
+		\item PERFORM, open-source Python package for rapid prototyping novel ROM methods, challenging benchmarks
+		\item Scalable PROM solver in high-performance combustion CFD code
         \item State-of-the-art PROMs for multi-scale, multi-physics flow systems
-        \item Scalable PROM solver in high-performance combustion CFD code
         \item Analysis of cost and performance of sparse sampling methods
         \item First study of PROMs for 3D multi-injector rocket combustor, containing $>$ 250 million DOFs
         \item Truly predictive PROMs for single-element rocket combutor
@@ -322,7 +374,7 @@ Krzysztof Fidkowski \\
     \end{enumerate}
 \end{frame}
 
-\section*{Projection ROMs}
+\section*{PROMs}
 
 \begin{frame}{Projection-based ROMs}
     \begin{itemize}
@@ -360,27 +412,7 @@ Krzysztof Fidkowski \\
 	\begin{figure}
 		\includegraphics[width=0.5\linewidth]{theory/podProfileConverge.png}
 	\end{figure}
-	\footnotetext[1]{\tiny{Berkooz et al., \textit{Annu Rev Fluid Mech}, Vol. 25, 1993, pp. 539-575.}}
-\end{frame}
-
-\begin{frame}{Non-linear trial manifold}
-	\begin{itemize}
-		\item Linear basis approximates non-linear solution manifold poorly
-		\item Autoencoders learn mapping b/w solution and latent manifolds\footnotemark[2]
-	\end{itemize}
-	\vspace{1em}
-	\begin{equation*}
-		\consVec(\timeVar) \approx \consVecRom(\timeVar) \defEq \consVecCent + \consScale \mathbf{g}\left(\consVecCoef(\timeVar)\right)
-	\end{equation*}
-	\begin{figure}
-		\begin{minipage}{0.4\linewidth}
-			\includegraphics[width=0.99\linewidth,trim={2em 2em 2em 2em},clip]{theory/tangentPlane.png}
-		\end{minipage}
-		\begin{minipage}{0.59\linewidth}
-			\includegraphics[width=0.99\linewidth]{theory/CAE_dense.png}
-		\end{minipage}
-	\end{figure}
-	\footnotetext[2]{\tiny{Lee and Carlberg, \textit{J. Comp. Phys.}, Vol. 404, 2020.}}
+	\footnotetext[1]{\tiny{Berkooz et al., \textit{Annu Rev Fluid Mech}, Vol. 25, 1993.}}
 \end{frame}
 
 \begin{frame}{The test basis}
@@ -398,7 +430,7 @@ Krzysztof Fidkowski \\
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Least-squares Petrov--Galerkin (LSPG)\footnotemark[3]}
+\begin{frame}{Least-squares Petrov--Galerkin (LSPG)}
     \begin{itemize}
 		\item Fully-discrete residual (e.g. BDF1)
 		\begin{equation*}
@@ -408,7 +440,7 @@ Krzysztof Fidkowski \\
 		\begin{equation*}
 			\delta \consVecCoef^{\newtonIdx, \timeIdx} = \argmin{\dummyVec \in \mathbb{R}^{\numConsModes}} \norm{\resScaleInv \left(\pde{\resFuncIter{\timeIdx}{\dummyVec}}{\dummyVec} \dummyVec + \resFuncIter{\timeIdx}{\dummyVec}\right)}_2^2
 		\end{equation*}
-		\item Equivalent to Petrov--Galerkin projection with test basis
+		\item Equivalent to Petrov--Galerkin projection with test basis\footnotemark[2]
 		\begin{equation*}
 			\testBasis = \resScaleInv \pde{\resFuncIter{\timeIdx}{\consVecCoef^{\newtonIdx}}}{\consVec} \consScale \consTrial
 		\end{equation*}
@@ -417,15 +449,15 @@ Krzysztof Fidkowski \\
 	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
 		LSPG is \textbf{discrete-optimal} at every time step
 	\end{tcolorbox}
-	\footnotetext[3]{\tiny{Carlberg el al., \textit{Int. J. Numer. Meth. Engng}, Vol. 86, 2010, pp. 155--181.}}
+	\footnotetext[2]{\tiny{Carlberg el al., \textit{Int. J. Numer. Meth. Engng}, Vol. 86, 2010.}}
 \end{frame}
 
 \begin{frame}{State of the art in 2017}
 	\begin{itemize}
-		\item PROMs for parametrized elliptic problems are extremely robust\footnotemark[4]
+		\item PROMs for parametrized elliptic problems are extremely robust\footnotemark[3]
 		\item Galerkin ROMs are generally unstable for unsteady problems
-		\item LSPG is leap forward, biggest case in 3D Ahmed body\footnotemark[5]
-		\item First studies of PROMs for reacting flows suffer from instabilities\footnotemark[6]
+		\item LSPG is leap forward, biggest case in 3D Ahmed body\footnotemark[4]
+		\item First studies of PROMs for reacting flows suffer from instabilities\footnotemark[5]
 	\end{itemize}
 	
 	\begin{minipage}{0.4\linewidth}
@@ -442,17 +474,18 @@ Krzysztof Fidkowski \\
 		\end{figure}
 	\end{minipage}
 
-	\footnotetext[4]{\tiny{Hesthaven et al., \textit{Certified Reduced Basis Methods for Parametrized Partial Differential Equations}, Springer, 2015.}}
-	\footnotetext[5]{\tiny{Carlberg et al., \textit{J Comp Phys}, Vol. 242, 2013, pp. 623--647.}}
-	\footnotetext[6]{\tiny{Huang et al., \textit{AIAA Propulsion and Energy}, 2018.}}
+	\footnotetext[3]{\tiny{Hesthaven et al., \textit{Certified Reduced Basis Methods for Parametrized Partial Differential Equations}, Springer, 2015.}}
+	\footnotetext[4]{\tiny{Carlberg et al., \textit{J Comp Phys}, Vol. 242, 2013.}}
+	\footnotetext[5]{\tiny{Huang et al., \textit{AIAA Propulsion and Energy}, 2018.}}
 \end{frame}
+
+\section*{MP-LSVT}
 
 \begin{frame}{Generalizing least-squares ROMs}
     \begin{itemize}
-		\item LSPG trial space formulated for the conserved variables, but alternative variables can prove useful
+		\item LSPG trial space formulated for the conserved variables, but \textbf{alternative variables} can prove useful
 		\begin{itemize}
 			\item Entropy variables
-			\item Characteristic variables
 			\item Quadratic lifting variables
 		\end{itemize}
 		\item Choose \textbf{any} complete set of variables, e.g. primitive variables
@@ -469,9 +502,9 @@ Krzysztof Fidkowski \\
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{\small{Model-form preserving least-squares with variable transformation (MP-LSVT)\footnotemark[7]}}
+\begin{frame}{\small{Model-form preserving least-squares with variable transformation (MP-LSVT)}}
 	\begin{itemize}
-		\item Frame residual in terms of target state
+		\item Frame residual in terms of target state\footnotemark[6]
 		\begin{equation*}
 			\resFuncIter{\timeIdx}{\primVecCoef^{\newtonIdx}} \defEq \consFunc{\primVecCent + \primScale \primTrial \primVecCoef^{\newtonIdx}} - \consVec^{\timeIdx-1} + \dt \, \rhsFunc{\primVecCent + \primScale \primTrial \primVecCoef^{\newtonIdx}} = \zeroVec
 		\end{equation*}
@@ -480,19 +513,22 @@ Krzysztof Fidkowski \\
 			\testBasis = \resScaleInv \pde{\resFuncIter{\timeIdx}{\primVecCoef^{\newtonIdx}}}{\primVec} \primScale \primTrial
 		\end{equation*}
 	\end{itemize}
-	\begin{minipage}{0.49\linewidth}
+	\begin{minipage}{0.4\linewidth}
 		\centering
 		\begin{figure}
-			\includegraphics[width=0.75\linewidth]{theory/mplsvt_err_vs_modes.png}
+			\includegraphics[width=0.9\linewidth]{theory/mplsvt_err_vs_modes.png}
 		\end{figure}
 	\end{minipage}
-	\begin{minipage}{0.49\linewidth}
-		\centering
-		\begin{figure}
-			\includegraphics[width=0.75\linewidth]{theory/mplsvt_pressure_probe.png}
-		\end{figure}
+	\begin{minipage}{0.58\linewidth}
+		\begin{tcolorbox}[colframe=blue!50!white,halign=center]
+			MP-LSVT greatly ehnances accuracy and conditioning for \textbf{extremely stiff} systems
+		\end{tcolorbox}
 	\end{minipage}
-	\footnotetext[7]{\tiny{Huang, \textbf{Wentland}, and Duraisamy, \textit{J Comp Phys.}, Vol. 448, 2022, pp. 110742.}}
+	\footnotetext[6]{\tiny{Huang, \textbf{Wentland}, and Duraisamy, \textit{J Comp Phys.}, Vol. 448, 2022.}}
+\end{frame}
+
+\begin{frame}{MP-LSVT for stiff systems}
+	
 \end{frame}
 
 \section*{Hyper-reduction}
@@ -515,12 +551,11 @@ Krzysztof Fidkowski \\
 
 \begin{frame}{Hyper-reduction by gappy POD}
     \begin{itemize}
-		\item Approximate non-linear terms with POD basis $\deimBasis \in \mathbb{R}^{\numDOF \times \numResModes}$
-		\begin{align*}
-			\resFunc{\primVecCoef} \approx \resApproxFunc{\primVecCoef} &= \deimBasis \dummyVec \\
-			\sampMat \resApproxFunc{\primVecCoef} &= \sampMat \deimBasis \dummyVec
-		\end{align*}
-		\item Least-squares regression, gappy POD\footnotemark[8] ($\numSamps > \numResModes$)
+		\item Approximate non-linear terms with POD basis $\deimBasis \in \mathbb{R}^{\numDOF \times \numResModes}$, sample
+		\begin{equation*}
+			\sampMat \resApproxFunc{\primVecCoef} = \sampMat \deimBasis \dummyVec
+		\end{equation*}
+		\item Least-squares regression, gappy POD\footnotemark[7] ($\numSamps > \numResModes$)
 		\begin{equation*}
 			\resApproxFunc{\primVecCoef} \defEq \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resFunc{\primVecCoef}
 		\end{equation*}
@@ -532,7 +567,10 @@ Krzysztof Fidkowski \\
 			\testBasis^\newtonIdx \defEq \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resScaleInv \jacobResPrim^{\newtonIdx} \primTrial
 		\end{equation*}
 	\end{itemize}
-	\footnotetext[8]{\tiny{Everson and Sirovich, \textit{J Opt Soc Am A}, Vol. 12 (8), 1995, pp 1657--1664.}}
+	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
+		HPROM is \textbf{independent} of full-order dimension $\numDOF$
+	\end{tcolorbox}
+	\footnotetext[7]{\tiny{Everson and Sirovich, \textit{J Opt Soc Am A}, Vol. 12 (8), 1995, pp 1657--1664.}}
 \end{frame}
 
 \begin{frame}{Sampling algorithms}
@@ -540,8 +578,8 @@ Krzysztof Fidkowski \\
 		\item Computing optimal sampling $\sampMat$ is intractable
 		\item Usually resort to greedy (locally-optimal) algorithms
 		\begin{itemize}
-			\item GNAT (two variants)$^{5,9}$
-			\item Eigenvector-based\footnotemark[9]
+			\item GNAT (two variants)$^{5,8}$
+			\item Eigenvector-based\footnotemark[8]
 		\end{itemize}
 	\end{itemize}
 	\vspace{-1em}
@@ -572,29 +610,20 @@ Krzysztof Fidkowski \\
 		\includegraphics[width=0.85\linewidth,trim={0.2em 2em 0.3em 2em},clip]{Images/theory/iblanks/eigenvec_iblank_z.png}
 	\end{minipage}
 	\vspace{-2em}
-	\footnotetext[9]{\miniscule{Peherstorfer et al., \textit{SIAM J Comp Sci}, Vol. 42, 2020, pp. 2837--2864.}}
+	\footnotetext[8]{\tiny{Peherstorfer et al., \textit{SIAM J Comp Sci}, Vol. 42, 2020.}}
 \end{frame}
 
-% \begin{frame}{Online HPROM scalability}
-% 	\begin{itemize}
-% 		\item Compute scalability is easy; memory scalability is tricky
-% 		\item Only allocate mesh elements required for calculating $\sampMat \rhsFunc{\cdot}$
-% 		\item Disjoint graphs induce much lower MPI overhead
-% 		\item Field reconstruction done as post-processing step
-% 	\end{itemize}
-% 	\begin{minipage}{0.49\linewidth}
-% 		\begin{figure}
-% 			\includegraphics[width=0.8\linewidth]{theory/sampling_3d_2ndOrder.png}
-% 		\end{figure}
-% 	\end{minipage}
-% 	\begin{minipage}{0.49\linewidth}
-% 		\begin{figure}
-% 			\includegraphics[width=0.8\linewidth]{theory/load_balancing_withEdgeCuts_noSyms.png}
-% 		\end{figure}
-% 	\end{minipage}
-% \end{frame}
+\begin{frame}{Methodology review}
+	\begin{itemize}
+		\item ROMs leverage data to build low-dimensional approximations
+		\item Galerkin and LSPG PROMs fail for reacting flows
+		\item MP-LSVT PROMs enhance stability and accuracy for stiff systems
+		\item Gappy POD enables scalable solutions, unlocks cost savings
+		\item Greedy algorithms make principled estimates, but vary greatly
+	\end{itemize}
+\end{frame}
 
-\section*{Numerical Experiments}
+\section*{}
 
 \begin{frame}{Full-order model}
     \begin{itemize}
@@ -632,11 +661,13 @@ Krzysztof Fidkowski \\
 	\normalsize
 \end{frame}
 
-\begin{frame}{\footnotesize{Prototyping Environment for Reacting Flow Order Reduction Methods (PERFORM)\footnotemark[10]}}
+\section*{PERFORM}
+
+\begin{frame}{\footnotesize{Prototyping Environment for Reacting Flow Order Reduction Methods (PERFORM)}}
 	\begin{itemize}
 		\small
-		\item Open-source 1D reacting flow solver w/ flexible ROM API
-		\item Used for linearized ROMs\footnotemark[0], adaptive HPROMs\footnotemark[0], AERO 577 projects
+		\item Open-source 1D reacting flow solver w/ flexible ROM API\footnotemark[9]
+		\item Used for linearized ROMs\footnotemark[10], adaptive HPROMs\footnotemark[11], AERO 577 projects
 		\normalsize
 	\end{itemize}
 	\vspace{0.5em}
@@ -650,91 +681,27 @@ Krzysztof Fidkowski \\
 	\vspace{1em}
 	\centering
 	\texttt{https://github.com/cwentland0/perform}
-	\footnotetext[10]{\tiny{\textbf{Wentland} and Duraisamy, \textit{J Open Source Soft.}, 2022.}}
+	\footnotetext[9]{\tiny{\textbf{Wentland} and Duraisamy, \textit{J Open Source Soft.}, 2022.}}
+	\footnotetext[10]{\tiny{Rezaian et al., \textit{Phil. Trans. Royal Soc. A}, Vol. 380, 2022.}}
+	\footnotetext[11]{\tiny{Uy et al., \textit{arXiv:2209.06957}, 2022.}}
 \end{frame}
 
 \begin{frame}{Acoustically-forced model premixed flame}
 	\begin{itemize}
-		\item Fictitious ``reactant'' converts directly to ``product''
-		\item Pressure forcing at outlet for parametrically-varied dataset
+		\item Compare linear and non-linear manifold intrusive PROMs, non-intrusive neural network approaches
 	\end{itemize}
-	\begin{minipage}{0.59\linewidth}
-		\animategraphics[autoplay,loop,width=0.99\linewidth,every=50]{10}{Images/experiments/transientFlame/fom/fig_}{10000}{13000}
-	\end{minipage}
-	\begin{minipage}{0.4\linewidth}
-		\vspace{1em}
-		\scriptsize
-		\begin{table}
-			\centering
-			\begin{tabular}{ lll }
-			\toprule
-			Training & Validation & Testing  \\
-			\midrule
-			100   & 118.75 & 87.5 \\
-			112.5 & 156.25 & 93.75 \\
-			125   & 193.75 & 106.25 \\
-			137.5 &        & 131.25 \\
-			150   &        & 143.75 \\
-			162.5 &        & 168.75 \\
-			175   &        & 181.25 \\
-			187.5 &        & 206.25 \\
-			200   &        & 212.5 \\
-			\bottomrule
-			\end{tabular}
-			\caption*{Outlet forcing frequency in kHz}
-		\end{table}
-	\end{minipage}
-	\normalsize
-\end{frame}
 
-\begin{frame}{Linear trial space: failure}
-	\begin{itemize}
-		\item Linear basis approximates sharp, propagating flame poorly
-		\item Low $\numPrimModes$ $\rightarrow$ smeared solution, high $\numPrimModes$ $\rightarrow$ instability
-	\end{itemize}
+	\centering
 	\begin{figure}
-		\animategraphics[autoplay,loop,width=0.7\linewidth,every=1]{10}{Images/experiments/transientFlame/linear/fig_}{1}{51}
+		\animategraphics[controls={play,stop},buttonsize=1em,width=0.59\linewidth,every=1]{5}{Images/experiments/transientFlame/agg/fig_}{1}{50}
 	\end{figure}
+	
+	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
+		Explore \textbf{novel} ROMs for \textbf{challenging} benchmark problems
+	\end{tcolorbox}
 \end{frame}
 
-\begin{frame}{Non-linear trial manifold: failure}
-	\begin{itemize}
-		\item Noisy solution, better temperature prediction but pressure signal lost
-		\item Online cost is difficult to justify, auto-diff Jacobian is worst offender 
-	\end{itemize}
-	\vspace{1em}
-	\begin{minipage}{0.6\linewidth}
-		\begin{figure}
-			\animategraphics[autoplay,loop,width=0.99\linewidth,every=1]{10}{Images/experiments/transientFlame/nonlinear/fig_}{1}{51}
-		\end{figure}
-	\end{minipage}
-	\begin{minipage}{0.39\linewidth}
-		\scriptsize
-		\begin{table}
-			\centering
-			\begin{tabular}{ lll }
-			\toprule
-			Model & Cost (FOMs)  \\
-			\midrule
-			FOM & 1 \\
-			Train, $\numPrimModes = 3$ & 13.81 \\
-			Train, $\numPrimModes = 10$ & 11.67 \\
-			NLM, $\numPrimModes = 3$ & 17.14 \\
-			\bottomrule
-			\end{tabular}
-		\end{table}
-	\end{minipage}
-\end{frame}
-
-\begin{frame}{Non-intrusive ROMs via LSTMs}
-	\begin{itemize}
-		\item Recurrent neural network learns evolution of latent state
-		\item Excellent off-training predictions in seconds
-	\end{itemize}
-	\begin{figure}
-		\animategraphics[autoplay,loop,width=0.7\linewidth,every=1]{10}{Images/experiments/transientFlame/lstm/fig_}{1}{51}
-	\end{figure}
-\end{frame}
+\section*{Scalable PROMs}
 
 \begin{frame}{HPROMs of multi-scale, multi-physics system}
 	\begin{itemize}
@@ -745,55 +712,33 @@ Krzysztof Fidkowski \\
 			\item Gappy POD regressor dimension $\numResModes$
 			\item Sampling algorithm
 		\end{itemize}
-		\item Stability, accuracy, computational cost
+		\item Stability, accuracy, load balancing,computational cost
 	\end{itemize}
+
+	\begin{equation*}
+		\ell^2\text{-error} = \frac{1}{\numSnaps} \sum_{\timeIdx=1}^{\numSnaps} \frac{\left\Vert \primVec^{\timeIdx} - \primVecRom^{\timeIdx} \right\Vert_2}{\left\Vert \primVec^{\timeIdx} \right\Vert_2}
+	\end{equation*}
+
+	\begin{equation*}
+		\text{Speedup ratio} = \frac{(\text{FOM wall time}) \times (\text{\# FOM cores})}{(\text{ROM wall time}) \times (\text{\# ROM cores})}
+	\end{equation*}
 \end{frame}
 
 \begin{frame}{2D transonic flow over an open cavity}
     \begin{itemize}
-		\item Ma = 0.6 flow over rectangular cavity (L/D = 2)
-		\item 500k DOF, 120 cores $\rightarrow$ 120 CPU-h per 10 ms simulated 
-		\item Acoustic resonance between shear layer and trailing edge
+		\item Ma = 0.6 flow over rectangular cavity\footnotemark[12]
+		\item Validation for non-reacting multi-scale system
 	\end{itemize}
 	\begin{figure}
-		\begin{minipage}{0.4\linewidth}
-			\vspace{1em}
-				\includegraphics[width=0.99\linewidth]{experiments/2d_cavity/tamAndBlockCavity.png}
-				\caption*{\tiny{Tam and Block, 1978}}
-		\end{minipage}
 		\begin{minipage}{0.59\linewidth}
 			\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth,every=50]{10}{Images/experiments/2d_cavity/fom_pressure/fig_Static_Pressure_}{100000}{103000}
 		\end{minipage}
+		\begin{minipage}{0.4\linewidth}
+			\includegraphics[width=0.99\linewidth]{experiments/2d_cavity/psd_fom_100ms.png}
+		\end{minipage}
 	\end{figure}
-\end{frame}
 
-\begin{frame}{Sparse sampling}
-	\begin{itemize}
-		\item $\numResModes = 150\text{-}300$, $\numSamps = 0.5\text{-}10\% \times \numDOF$
-	\end{itemize}
-	\begin{figure}
-		\begin{minipage}{0.49\linewidth}
-			\centering
-			\includegraphics[width=0.63\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Images/experiments/2d_cavity/iblank/iBlank_random_zoom.png}
-			\subcaption{\scriptsize{Random}}
-		\end{minipage}
-		\begin{minipage}{0.49\linewidth}
-			\centering
-			\includegraphics[width=0.63\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Images/experiments/2d_cavity/iblank/iBlank_eigenvec_zoom.png}
-			\subcaption{\scriptsize{Eigenvector}}
-		\end{minipage}
-	
-		\begin{minipage}{0.49\linewidth}
-			\centering
-			\includegraphics[width=0.63\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Images/experiments/2d_cavity/iblank/iBlank_greedy_carlberg_zoom.png}
-			\subcaption{\scriptsize{GNAT V1}}
-		\end{minipage}
-		\begin{minipage}{0.49\linewidth}
-			\centering
-			\includegraphics[width=0.63\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Images/experiments/2d_cavity/iblank/iBlank_greedy_ben_zoom.png}
-			\subcaption{\scriptsize{GNAT V2}}
-		\end{minipage}
-	\end{figure}
+	\footnotetext[12]{\tiny{Tezaur et al., \textit{Tech. report Sandia National Laboratories}, 2017.}}
 \end{frame}
 
 \begin{frame}{HPROM performance}
@@ -801,28 +746,23 @@ Krzysztof Fidkowski \\
 		\begin{minipage}{0.49\linewidth}
 			\includegraphics[width=0.99\linewidth]{Images/experiments/2d_cavity/sampled_dt2p5e-6_Average_errorRaw_pareto.png}
 		\end{minipage}
-		\begin{minipage}{0.49\linewidth}
-			\includegraphics[width=0.99\linewidth]{Images/experiments/2d_cavity/pressure_probe_deim_2p5.png}
-		\end{minipage}
-	\end{figure}
-\end{frame}
-
-\begin{frame}{HPROM performance}
-	\begin{figure}
-		\begin{minipage}{0.49\linewidth}
-			\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth,every=40]{10}{Images/experiments/2d_cavity/fom_pressure_zoom/fig_Static_Pressure_zoom_}{108000}{110000}
-			\caption*{FOM}
-		\end{minipage}
-		\begin{minipage}{0.49\linewidth}
-			\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth,every=16]{10}{Images/experiments/2d_cavity/hprom_pressure_zoom/fig_Static_Pressure_zoom_}{43200}{44000}
+		\begin{minipage}{0.4\linewidth}
+			\centering
+			\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.75\linewidth,every=40]{10}{Images/experiments/2d_cavity/fom_pressure_zoom/fig_Static_Pressure_zoom_}{108000}{110000}
+			
+			\centering
+			\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.75\linewidth,every=16]{10}{Images/experiments/2d_cavity/hprom_pressure_zoom/fig_Static_Pressure_zoom_}{43200}{44000}
 			\caption*{$\numResModes = 250, \numSamps = 1\%$}
 		\end{minipage}
 	\end{figure}
+	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
+		\textbf{Extreme sensitivity} to sampling method	
+	\end{tcolorbox}
 \end{frame}
 
 \begin{frame}{3D trucated CVRC combustor}
 	\begin{itemize}
-		\item Truncated single-element gaseous methane-peroxide combustor\footnotemark[0]
+		\item Truncated single-element gaseous methane-peroxide combustor\footnotemark[13]
 		\item Flamelet-progress variable combustion model (GRI-Mech 1.2)
 		\item $\sim$18 mil. DOF, 880 cores $\rightarrow$ 30k CPU-h per simulated millisecond
 	\end{itemize}
@@ -839,6 +779,7 @@ Krzysztof Fidkowski \\
 		\end{minipage}
 	\end{figure}
 
+	\footnotetext[13]{\tiny{Harvazinski et al., \textit{Phys. Fluids}, Vol. 27, 2015.}}
 \end{frame}
 
 \begin{frame}{Sparse sampling}
@@ -866,6 +807,9 @@ Krzysztof Fidkowski \\
 \end{frame}
 
 \begin{frame}{Offline cost}
+	\begin{itemize}
+		\item Sampling cost in terms of FOM iteration cost 
+	\end{itemize}
 	\begin{figure}
 		\begin{minipage}{0.49\linewidth}
 			\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/samp_timing_wrt_samprate.png}
@@ -876,13 +820,16 @@ Krzysztof Fidkowski \\
 			\caption*{$\numSamps = 0.25\% \times \numDOF$}
 		\end{minipage}
 	\end{figure}
-	\begin{itemize}
-		\item Greedy methods scale exponential with $\numSamps$
-		\item Sublinear scaling with $\numResModes$
-	\end{itemize}
+	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
+		Random sampling costs \textbf{nothing} \\
+		Greedy methods scale \textbf{exponentially} with $\numSamps$
+	\end{tcolorbox}
 \end{frame}
 
-\begin{frame}{Load balancing}
+\begin{frame}{Load balancing (18 mil. DOF)}
+	\begin{itemize}
+		\item How the mesh is divided between parallel processes
+	\end{itemize}
 	\begin{figure}
 		\begin{minipage}{0.49\linewidth}
 			\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/cvrc_partition_stats.png}
@@ -892,13 +839,13 @@ Krzysztof Fidkowski \\
 		\end{minipage}
 		\caption*{10 partitions, various $\numSamps$.}
 	\end{figure}
-	\begin{itemize}
-		\item Random sampling is inefficient, but few MPI comms
-		\item Greedy algorithm clustering induces higher MPI overhead
-	\end{itemize}
+	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
+		Random meshes are \textbf{large}, but \textbf{disjoint} \\
+		Greedy meshes are \textbf{small}, but induce \textbf{high MPI overhead}
+	\end{tcolorbox}
 \end{frame}
 
-\begin{frame}{HPROM performance}
+\begin{frame}{HPROM performance (18 mil. DOF)}
 	\begin{figure}
 		\begin{minipage}{0.35\linewidth}
 			\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/err_contour_random_dt5e-7.png}
@@ -920,7 +867,7 @@ Krzysztof Fidkowski \\
 	\end{figure}
 \end{frame}
 
-\begin{frame}{HPROM performance}
+\begin{frame}{HPROM performance (18 mil. DOF)}
 	\begin{figure}
 		\begin{minipage}{0.49\linewidth}
 			\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/sampled_dt5e-7_Average_errorRaw_pareto.png}
@@ -928,12 +875,16 @@ Krzysztof Fidkowski \\
 		\end{minipage}
 		\begin{minipage}{0.49\linewidth}
 			\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/pressure_probe_deim_dt5e-7_samp0p0025.png}
-			\caption*{$\numSamps = 0.25\% \times \numDOF$, $\numResModes = 300$}
+			\caption*{$\numResModes = 300$, $\numSamps = 0.25\% \times \numDOF$}
 		\end{minipage}
 	\end{figure}
+	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
+		\textbf{Eigenvector-based sampling} consistently outperforms \\
+		$10^3$-$10^4$ cost savings with \textbf{minimal accuracy loss}
+	\end{tcolorbox}
 \end{frame}
 
-\begin{frame}{HPROM performance}
+\begin{frame}{HPROM performance (18 mil. DOF)}
 	\begin{minipage}{0.15\linewidth}
 		\textbf{FOM}
 
@@ -973,9 +924,9 @@ Krzysztof Fidkowski \\
 \end{frame}
 
 
-\begin{frame}{3D nine-element combustor\footnotemark[11]}
+\begin{frame}{3D nine-element combustor}
 	\begin{itemize}
-		\item Air Force Center of Excellence ``grand challenge'' case
+		\item Air Force Center of Excellence ``grand challenge'' case\footnotemark[14]
 		\item 12 species, 38 reaction mechanism 
 		\item 238 mil. DOF, 2,200 cores $\rightarrow ~\sim$400k CPU-h per 1T mode
 	\end{itemize}
@@ -987,7 +938,7 @@ Krzysztof Fidkowski \\
 			\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth,every=60]{10}{Images/experiments/9elem/fom_pressure/fig_z_Static_Pressure_}{215000}{218900}
 		\end{minipage}
 	\end{figure}
-	\footnotetext[11]{\tiny{Harvazinski et al., \textit{AIAA Scitech Forum}, 2019}}
+	\footnotetext[14]{\tiny{Harvazinski et al., \textit{AIAA Scitech Forum}, 2019}}
 \end{frame}
 
 \begin{frame}{Unsampled PROM perfomance}
@@ -1000,19 +951,40 @@ Krzysztof Fidkowski \\
 			\includegraphics[width=0.99\linewidth]{Images/experiments/9elem/point_3_Static_Pressure.png}
 		\end{minipage}
 		\begin{minipage}{0.45\linewidth}
-			\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth,every=2]{10}{Images/experiments/9elem/rom_pressure/fig_z_Static_Pressure_}{4306}{4380}
+			\animategraphics[autoplay,loop,trim=1em 1em 1em 1em,width=0.99\linewidth,every=2]{6}{Images/experiments/9elem/rom_pressure/fig_z_Static_Pressure_}{4302}{4380}
 		\end{minipage}
 	\end{figure}
 \end{frame}
 
-\begin{frame}{Future-state predictivity}
+\begin{frame}{HPROM takeaways}
 	\begin{itemize}
-		\item Trial space cannot represent unseen data
-		\item Out-of-training predictions require \textit{adaptation}
+		\item MP-LSVT exhibits excellent stability and accuracy
+		\item Offline cost of greedy methods can be significant
+		\item Performance is extremely sensitive to sampling algorithm
+		\begin{itemize}
+			\item Eigenvector-based sampling is clear victor
+			\item Traditional GNAT often worse than random sampling
+		\end{itemize}
+		\item Over three orders of magnitude cost savings
+		\item Faithful modeling of complex combustion phenomena
+	\end{itemize}
+\end{frame}
+
+\section*{Adaptive PROMs}
+
+\begin{frame}{Predictive PROMs}
+	\begin{itemize}
+		\item Out-of-training predictions
+		\begin{itemize}
+			\item Future-state
+			\item Parametric variations (BC's, reaction, etc.)
+			\item Geometric variations
+		\end{itemize}
+		\item Static trial space cannot represent unseen data
 	\end{itemize}
 	\begin{figure}
 		\begin{minipage}{0.49\linewidth}
-			\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/proj_err_time.png}
+			\includegraphics[width=0.9\linewidth]{Images/experiments/cvrc/proj_err_time.png}
 		\end{minipage}	
 		\begin{minipage}{0.49\linewidth}
 			\animategraphics[autoplay,loop,trim={0.5em 0.5em 0.5em 0.5em},clip,width=0.99\linewidth,every=40]{10}{Images/experiments/cvrc/fom_temp_adapt/fig_z_Temperature_}{54000}{56000}	
@@ -1020,23 +992,58 @@ Krzysztof Fidkowski \\
 			\animategraphics[autoplay,loop,trim={0.5em 0.5em 0.5em 0.5em},clip,width=0.99\linewidth,every=40]{10}{Images/experiments/cvrc/proj_temp/fig_z_Temperature_}{54000}{56000}	
 		\end{minipage}
 	\end{figure}
+	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
+		True predictivity requires \textbf{adaptation}
+	\end{tcolorbox}
 \end{frame}
 
 \begin{frame}{Basis and sampling adaptation}
 	\begin{itemize}
-		\item AADEIM\footnotemark[0] sampling update criterion
+		\item Periodic queries of full-order operator at interval $\updateFreq$
+		\item AADEIM\footnotemark[15] sampling update criterion
 		\begin{equation*}
 			\argmax{} \primVec - \primTrial \left[\sampMat \primTrial\right]^+ \sampMat \primVecRom
 		\end{equation*}
-		\item One-step basis adaptation\footnotemark[0]
+		\item One-step basis adaptation\footnotemark[16]
 		\begin{equation*}
 			\primVec^{\timeIdx} = \primVecCent + \primScale \left[\primTrial^{\timeIdx} + \left[\primTrialUpdate\right]^{\timeIdx} \right] \primVecCoef^{\timeIdx},
 		\end{equation*}
 		\begin{equation*}
 			\sampMat^{\timeIdx} [\primTrialUpdate]^{\timeIdx+1} = \sampMat^{\timeIdx} [\primTrialUpdate]^{\timeIdx} + \frac{\sampMat^{\timeIdx} \left[\primScaleInv\left[\primVec^{\timeIdx} - \primVecCent\right] - \primTrial^{\timeIdx} \primVecCoef^{\timeIdx}\right]\left[\primVecCoef^{\timeIdx}\right]^\top}{\left\Vert \primVecCoef^{\timeIdx} \right\Vert^2_2}
 		\end{equation*}
-		\item New dial to adjust: adaptation interval $\updateFreq$
 	\end{itemize}
+
+	\footnotetext[15]{\tiny{Peherstorfer and Willcox, \textit{SIAM J Sci. Comp.}, Vol. 37, 2015.}}
+	\footnotetext[16]{\tiny{Huang et al., \textit{Front. Phys.}, Vol. 10, 2022}}
+\end{frame}
+
+\begin{frame}{CVRC future-state predictions}
+	\begin{itemize}
+		\item Train only on first 0.005 ms, predict for 0.5 ms
+		\item Small trial basis, $\numPrimModes \le 10$ 
+	\end{itemize}
+	\begin{figure}
+			% probe showing training bound
+			\includegraphics[width=0.5\linewidth]{Images/experiments/cvrc/press_fom_train_bound.png}
+	\end{figure}
+	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
+		Adaptive PROM incurs \textbf{miniscule offline cost}
+	\end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Adaptive HPROM performance}
+	\begin{itemize}
+		\item Increasing $\updateFreq$ decreases cost, causes solution to ``drag''
+	\end{itemize}
+	\begin{figure}
+		\begin{minipage}{0.49\linewidth}
+			\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/pressure_probe_wrt_iter.png}
+		\end{minipage}
+		\begin{minipage}{0.49\linewidth}
+			\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/pareto_wrt_iters_Average_errorRaw_pareto.png}
+		\end{minipage}
+	\end{figure}
+
 \end{frame}
 
 \begin{frame}{Adaptive HPROM performance}
@@ -1071,40 +1078,138 @@ Krzysztof Fidkowski \\
 	\end{minipage}
 \end{frame}
 
-\begin{frame}{Adaptive HPROM performance}
+\begin{frame}{Adaptive PROM takeaways}
 	\begin{itemize}
+		\item Reasonable predictions where static basis fails outright
+		\item Increasing update threshold $\updateFreq$
+		\begin{itemize}
+			\item Deteriorates point-wise measurements
+			\item Retains qualitative flow field behavior
+		\end{itemize}
 		\item Absolute speedup threshold dictated by $\updateFreq$
-		\item Adaptive PROM is \textit{not} independent of $\numDOF$
+		\item Adaptive PROM is \textbf{not} independent of $\numDOF$
 	\end{itemize}
-	\begin{figure}
-		\begin{minipage}{0.49\linewidth}
-			\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/pressure_probe_wrt_iter.png}
-		\end{minipage}
-		\begin{minipage}{0.49\linewidth}
-			\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/pareto_wrt_iters_Average_errorRaw_pareto.png}
-		\end{minipage}
-	\end{figure}
 \end{frame}
+
+\section*{Best Practices}
 
 \begin{frame}{Best practices}
 	\begin{itemize}
+		\item Literature often glosses over small, critical details
 		\item Feature scaling
-		\begin{itemize}
-			\item Data preparation is crucial for accurate trial basis
-			\item Centering/normalization are required, exact method not as important
-		\end{itemize}
+		\begin{equation*}
+			\primVecRom = \primVecCent + \primScale \primTrial \primVecCoef
+		\end{equation*}
 		\item Residual non-dimensionalization
-		\begin{itemize}
-			\item Failing to non-dimensionalize ROMs leads to terrible conditioning
-			\item Constant scaling factors are simple, inexpensive, and robust
-		\end{itemize}
+		\begin{equation*}
+			\delta \primVecCoef^{\newtonIdx, \timeIdx} = \argmin{\dummyVec \in \mathbb{R}^{\numPrimModes}} \norm{\resScaleInv \left(\pde{\resFuncIter{\timeIdx}{\dummyVec}}{\dummyVec} \dummyVec + \resFuncIter{\timeIdx}{\dummyVec}\right)}_2^2
+		\end{equation*}
 		\item Local limiters
-		\begin{itemize}
-			\item ``Ringing'' from linear trial basis can lead to large over/undershoots
-			\item System-specific limiters are a simple hot-fix
-		\end{itemize}
-		
+		\begin{equation*}
+			\temperature = min\left(max\left(\temperature, \; \temperature_{min}\right), \; \temperature_{max}\right)
+		\end{equation*}
+		\item Sampling algorithm
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Best practices: feature scaling}
+	\begin{itemize}
+		\item Data preparation is crucial for accurate trial space
+		\item Centering: initial condition, mean field
+		\item Scaling: $\ell^2$-norm, min-max
+	\end{itemize}
+	\begin{figure}
+		\only<1>{
+			\begin{minipage}{0.32\linewidth}
+				\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/best_pract/errVsModes_centScale_centNone_Average_errorRaw.png}
+				\caption*{No centering}
+			\end{minipage}
+			\begin{minipage}{0.32\linewidth}
+				\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/best_pract/errVsModes_centScale_centIC_Average_errorRaw.png}
+				\caption*{IC centering}
+			\end{minipage}
+			\begin{minipage}{0.32\linewidth}
+				\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/best_pract/errVsModes_centScale_centMean_Average_errorRaw.png}
+				\caption*{Mean centering}
+			\end{minipage}
+		}
+		\only<2>{
+			\begin{minipage}{0.32\linewidth}
+				\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/best_pract/pressure_probe_centScale_centNone.png}
+				\caption*{No centering}
+			\end{minipage}
+			\begin{minipage}{0.32\linewidth}
+				\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/best_pract/pressure_probe_centScale_centIC.png}
+				\caption*{IC centering}
+			\end{minipage}
+			\begin{minipage}{0.32\linewidth}
+				\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/best_pract/pressure_probe_centScale_centMean.png}
+				\caption*{Mean centering}
+			\end{minipage}
+		}
+	\end{figure}
+	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
+		Centering/scaling are \textbf{required}, \\
+		exact method not as important
+	\end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Best practices: residual non-dimensionalization}
+	\begin{itemize}
+		\item Failing to non-dimensionalize ROMs leads to poor conditioning
+		\item Scaling dataset: $\consVec$, $\rhsFunc{\cdot}$
+		\item Scaling method: $\ell^2$-norm, min-max
+	\end{itemize}
+	\begin{figure}
+		\centering
+		\only<1>{
+			\begin{minipage}{0.4\linewidth}
+				\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/best_pract/errVsModes_norm_l2_Average_errorRaw.png}
+				\caption*{$\ell^2$-norm scaling}
+			\end{minipage}
+			\begin{minipage}{0.4\linewidth}
+				\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/best_pract/errVsModes_norm_minmax_Average_errorRaw.png}
+				\caption*{Min-max scaling}
+			\end{minipage}
+		}
+		\only<2>{
+			\begin{minipage}{0.4\linewidth}
+				\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/best_pract/pressure_probe_scale_l2.png}
+				\caption*{$\ell^2$-norm scaling}
+			\end{minipage}
+			\begin{minipage}{0.4\linewidth}
+				\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/best_pract/pressure_probe_scale_minmax.png}
+				\caption*{Min-max scaling}
+			\end{minipage}
+		}
+	\end{figure}
+	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
+		Residual scaling \textbf{halves} time-average error \\
+		\textbf{Conservative variable} scaling minimizes solution ``drag''
+	\end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Best practices: local limiters}
+	\begin{itemize}
+		\item ``Ringing'' from linear trial basis can lead to large over/undershoots
+		\item Bound below by fuel temperature, above by AFT 
+	\end{itemize}
+	\begin{figure}
+		\centering
+		\begin{minipage}{0.4\linewidth}
+			\includegraphics[width=0.99\linewidth]{example-image-a}
+		\end{minipage}
+		\begin{minipage}{0.4\linewidth}
+			\includegraphics[width=0.99\linewidth]{example-image-a}
+		\end{minipage}
+	\end{figure}
+	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
+		System-specific limiters are a \textbf{simple hot-fix}
+	\end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Best practices: sparse sampling}
+	
 \end{frame}
 
 \section*{Conclusions}
@@ -1153,12 +1258,11 @@ Krzysztof Fidkowski \\
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Acknowledgements}
+\begin{frame}{Financial and compute support}
 	\begin{itemize}
 	    \item Financial support from the US Air Force through the Center of Excellence Grant FA9550-17-1-0195
 	    \item Compute support from the US Department of Defense High Performance Computing Modernization Program
 		\item Compute support of ConFlux and Lighthouse systems from the University of Michigan Advanced Research Computing division
-		\item Nicholas Arnold-Medabalimi for development and maintenance of PLATFORM
 	\end{itemize}
 	\begin{minipage}{0.15\linewidth}
 		\vspace{0.5em}
@@ -1181,6 +1285,10 @@ Krzysztof Fidkowski \\
 			\includegraphics[width=0.99\linewidth,trim={0em 3cm 0em 3cm},clip]{back_matter/arc.png}
 		\end{figure}
 	\end{minipage}
+\end{frame}
+
+\begin{frame}{Acknowledgements}
+	
 \end{frame}
 
 \end{document}
