@@ -30,7 +30,7 @@
 \captionsetup{compatibility=false}
 \usepackage{blindtext}
 \usepackage{tcolorbox}
-\usepackage[draft]{animate}
+\usepackage[final]{animate}
 \usepackage{comment}
 \usepackage{appendixnumberbeamer}
 \usepackage{booktabs}
@@ -431,6 +431,7 @@ Krzysztof Fidkowski \\
 \end{frame}
 
 \begin{frame}{Least-squares Petrov--Galerkin (LSPG)}
+	\small
     \begin{itemize}
 		\item Fully-discrete residual (e.g. BDF1)
 		\begin{equation*}
@@ -442,13 +443,19 @@ Krzysztof Fidkowski \\
 		\end{equation*}
 		\item Equivalent to Petrov--Galerkin projection with test basis\footnotemark[2]
 		\begin{equation*}
-			\testBasis = \resScaleInv \pde{\resFuncIter{\timeIdx}{\consVecCoef^{\newtonIdx}}}{\consVec} \consScale \consTrial
+			\testBasis = \resScaleInv \pde{\resFuncIter{\timeIdx}{\consVecCoef^{\newtonIdx}}}{\consVec} \consScale \consTrial, \quad 
+		\end{equation*}
+		\vspace{-2em}
+		\item Stable for LTI systems
+		\begin{equation*}
+			\left\Vert \left(\testBasis^\top \testBasis\right)^{-1} \testBasis \consTrial \right\Vert_2 \le \frac{1}{\sigma_{\numConsModes}\left(\testBasis\right)}, \quad \sigma_{\numConsModes}\left(\testBasis\right) \ge \sigma_{\numDOF}\left(\mathbf{A}\right) \ge 1 
 		\end{equation*}
 	\end{itemize}
 	\vspace{-1em}
 	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
 		LSPG is \textbf{discrete-optimal} at every time step
 	\end{tcolorbox}
+	\normalsize
 	\footnotetext[2]{\tiny{Carlberg el al., \textit{Int. J. Numer. Meth. Engng}, Vol. 86, 2010.}}
 \end{frame}
 
@@ -521,15 +528,15 @@ Krzysztof Fidkowski \\
 	\end{minipage}
 	\begin{minipage}{0.58\linewidth}
 		\begin{tcolorbox}[colframe=blue!50!white,halign=center]
-			MP-LSVT greatly ehnances accuracy and conditioning for \textbf{extremely stiff} systems
+			Enhances accuracy and conditioning for \textbf{extremely stiff} systems
 		\end{tcolorbox}
 	\end{minipage}
 	\footnotetext[6]{\tiny{Huang, \textbf{Wentland}, and Duraisamy, \textit{J Comp Phys.}, Vol. 448, 2022.}}
 \end{frame}
 
-\begin{frame}{MP-LSVT for stiff systems}
+% \begin{frame}{MP-LSVT for stiff systems}
 	
-\end{frame}
+% \end{frame}
 
 \section*{Hyper-reduction}
 
@@ -567,10 +574,32 @@ Krzysztof Fidkowski \\
 			\testBasis^\newtonIdx \defEq \deimBasis \left[ \sampMat \deimBasis \right]^{+} \sampMat \resScaleInv \jacobResPrim^{\newtonIdx} \primTrial
 		\end{equation*}
 	\end{itemize}
-	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
-		HPROM is \textbf{independent} of full-order dimension $\numDOF$
+	\begin{tcolorbox}[colframe=blue!50!white,halign=left]
+		PROM: \; $8 \mathbf{\numDOF} \omega + 4 \mathbf{\numDOF} \numPrimModes^2 + 14 \mathbf{\numDOF} \numPrimModes + \numPrimModes^3 - \numPrimModes^2$ \\
+		HPROM: $8 \mathbf{\numSamps} \omega + 4 \mathbf{\numSamps} \numPrimModes^2 + 14 \mathbf{\numSamps} \numPrimModes + 2 \mathbf{\numSamps} \numResModes \numPrimModes + \mathbf{\numSamps} \numResModes - \numResModes + \numPrimModes^3 - \numPrimModes^2$
 	\end{tcolorbox}
 	\footnotetext[7]{\tiny{Everson and Sirovich, \textit{J Opt Soc Am A}, Vol. 12 (8), 1995, pp 1657--1664.}}
+\end{frame}
+
+\begin{frame}{Parallel scalability}
+	\begin{itemize}
+		\item Only need mesh elements required for $\sampMat \resFunc{\consVec} = \resFunc{\sampMatFull \consVec}$
+		\item ``Sample mesh'' consumes a fraction of FOM memory
+		\item Careful partitioning eliminates MPI communications
+	\end{itemize}
+	\begin{figure}
+		\centering
+		\begin{minipage}{0.4\linewidth}
+			\includegraphics[width=0.9\linewidth]{Images/theory/sampling_3d_2ndOrder.png}
+		\end{minipage}
+		\begin{minipage}{0.4\linewidth}
+			\includegraphics[width=0.8\linewidth]{Images/theory/load_balancing_withEdgeCuts_noSyms.png}
+		\end{minipage}
+	\end{figure}
+	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
+		HPROM is \textbf{independent} of full-order dimension $\numDOF$ \\
+		Enables computations on \textbf{laptops/workstations} 
+	\end{tcolorbox}
 \end{frame}
 
 \begin{frame}{Sampling algorithms}
@@ -904,19 +933,24 @@ Krzysztof Fidkowski \\
 
 		\textbf{GNAT V2}
 
-	\end{minipage}\hspace{2em}
-	\begin{minipage}{0.6\linewidth}
+	\end{minipage}\hspace{1em}
+	\begin{minipage}{0.75\linewidth}
 		\begin{figure}
 		
-			\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.99\linewidth,every=50]{10}{Images/experiments/cvrc/fom_temp_comp/fig_z_Temperature_}{52500}{55000}
+			\raisebox{-0.5\height}{\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.81\linewidth,every=50]{10}{Images/experiments/cvrc/fom_temp_comp/fig_z_Temperature_}{52500}{55000}}
+			\raisebox{-0.5\height}{\animategraphics[autoplay,loop,trim=0.1em 0.1em 0.1em 0.1em,width=0.14\linewidth,every=50]{10}{Images/experiments/cvrc/fom_temp_comp/fig_x_Temperature_}{52500}{55000}}
 	
-			\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.99\linewidth,every=10]{10}{Images/experiments/cvrc/random_temp/fig_z_Temperature_}{10500}{11000}
+			\raisebox{-0.5\height}{\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.81\linewidth,every=10]{10}{Images/experiments/cvrc/random_temp/fig_z_Temperature_}{10500}{11000}}
+			\raisebox{-0.5\height}{\animategraphics[autoplay,loop,trim=0.1em 0.1em 0.1em 0.1em,width=0.14\linewidth,every=10]{10}{Images/experiments/cvrc/random_temp/fig_x_Temperature_}{10500}{11000}}
 
-			\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.99\linewidth,every=10]{10}{Images/experiments/cvrc/eigenvec_temp/fig_z_Temperature_}{10500}{11000}
+			\raisebox{-0.5\height}{\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.81\linewidth,every=10]{10}{Images/experiments/cvrc/eigenvec_temp/fig_z_Temperature_}{10500}{11000}}
+			\raisebox{-0.5\height}{\animategraphics[autoplay,loop,trim=0.1em 0.1em 0.1em 0.1em,width=0.14\linewidth,every=10]{10}{Images/experiments/cvrc/eigenvec_temp/fig_x_Temperature_}{10500}{11000}}
 
-			\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.99\linewidth,every=10]{10}{Images/experiments/cvrc/gnatv1_temp/fig_z_Temperature_}{10500}{11000}
+			\raisebox{-0.5\height}{\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.81\linewidth,every=10]{10}{Images/experiments/cvrc/gnatv1_temp/fig_z_Temperature_}{10500}{11000}}
+			\raisebox{-0.5\height}{\animategraphics[autoplay,loop,trim=0.1em 0.1em 0.1em 0.1em,width=0.14\linewidth,every=10]{10}{Images/experiments/cvrc/gnatv1_temp/fig_x_Temperature_}{10500}{11000}}
 
-			\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.99\linewidth,every=10]{10}{Images/experiments/cvrc/gnatv2_temp/fig_z_Temperature_}{10500}{11000}
+			\raisebox{-0.5\height}{\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.81\linewidth,every=10]{10}{Images/experiments/cvrc/gnatv2_temp/fig_z_Temperature_}{10500}{11000}}
+			\raisebox{-0.5\height}{\animategraphics[autoplay,loop,trim=0.1em 0.1em 0.1em 0.1em,width=0.14\linewidth,every=10]{10}{Images/experiments/cvrc/gnatv2_temp/fig_x_Temperature_}{10500}{11000}}
 
 		\end{figure}
 	\end{minipage}
@@ -1014,7 +1048,7 @@ Krzysztof Fidkowski \\
 	\end{itemize}
 
 	\footnotetext[15]{\tiny{Peherstorfer and Willcox, \textit{SIAM J Sci. Comp.}, Vol. 37, 2015.}}
-	\footnotetext[16]{\tiny{Huang et al., \textit{Front. Phys.}, Vol. 10, 2022}}
+	\footnotetext[16]{\tiny{Huang and Duraisamy, \textit{arXiv:2301.09006}, 2023}}
 \end{frame}
 
 \begin{frame}{CVRC future-state predictions}
@@ -1063,16 +1097,20 @@ Krzysztof Fidkowski \\
 		$\mathbf{\updateFreq = 5}$
 
 	\end{minipage}\hspace{2em}
-	\begin{minipage}{0.6\linewidth}
+	\begin{minipage}{0.75\linewidth}
 		\begin{figure}
 		
-			\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.99\linewidth,every=100]{10}{Images/experiments/cvrc/fom_temp_adapt_rom/fig_z_Temperature_}{50100}{55000}
-	
-			\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.99\linewidth,every=2]{10}{Images/experiments/cvrc/adapt_freq2/fig_z_Temperature_}{1002}{1100}
+			\raisebox{-0.5\height}{\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.81\linewidth,every=100]{10}{Images/experiments/cvrc/fom_temp_adapt_rom/fig_z_Temperature_}{50100}{55000}}
+			\raisebox{-0.5\height}{\animategraphics[autoplay,loop,trim=0.1em 0.1em 0.1em 0.1em,width=0.14\linewidth,every=100]{10}{Images/experiments/cvrc/fom_temp_adapt_rom/fig_x_Temperature_}{50100}{55000}}
 
-			\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.99\linewidth,every=2]{10}{Images/experiments/cvrc/adapt_freq4/fig_z_Temperature_}{1002}{1100}
+			\raisebox{-0.5\height}{\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.81\linewidth,every=2]{10}{Images/experiments/cvrc/adapt_freq2/fig_z_Temperature_}{1002}{1100}}
+			\raisebox{-0.5\height}{\animategraphics[autoplay,loop,trim=0.1em 0.1em 0.1em 0.1em,width=0.14\linewidth,every=2]{10}{Images/experiments/cvrc/adapt_freq2/fig_x_Temperature_}{1002}{1100}}
 
-			\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.99\linewidth,every=2]{10}{Images/experiments/cvrc/adapt_freq5/fig_z_Temperature_}{1002}{1100}
+			\raisebox{-0.5\height}{\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.81\linewidth,every=2]{10}{Images/experiments/cvrc/adapt_freq4/fig_z_Temperature_}{1002}{1100}}
+			\raisebox{-0.5\height}{\animategraphics[autoplay,loop,trim=0.1em 0.1em 0.1em 0.1em,width=0.14\linewidth,every=2]{10}{Images/experiments/cvrc/adapt_freq4/fig_x_Temperature_}{1002}{1100}}
+
+			\raisebox{-0.5\height}{\animategraphics[autoplay,loop,trim=0.5em 0.5em 0.5em 0.5em,width=0.81\linewidth,every=2]{10}{Images/experiments/cvrc/adapt_freq5/fig_z_Temperature_}{1002}{1100}}
+			\raisebox{-0.5\height}{\animategraphics[autoplay,loop,trim=0.1em 0.1em 0.1em 0.1em,width=0.14\linewidth,every=2]{10}{Images/experiments/cvrc/adapt_freq5/fig_x_Temperature_}{1002}{1100}}
 
 		\end{figure}
 	\end{minipage}
@@ -1089,6 +1127,10 @@ Krzysztof Fidkowski \\
 		\item Absolute speedup threshold dictated by $\updateFreq$
 		\item Adaptive PROM is \textbf{not} independent of $\numDOF$
 	\end{itemize}
+
+	\begin{equation*}
+		\lambda \le \updateFreq \frac{k_{\text{ROM}}}{k_{\text{FOM}}} 
+	\end{equation*}
 \end{frame}
 
 \section*{Best Practices}
@@ -1209,22 +1251,39 @@ Krzysztof Fidkowski \\
 \end{frame}
 
 \begin{frame}{Best practices: sparse sampling}
-	
+	\begin{itemize}
+		\item Traditional sampling methods did not suffice
+	\end{itemize}
+	\begin{figure}
+		\begin{minipage}{0.49\linewidth}
+			\includegraphics[width=0.99\linewidth]{Images/experiments/2d_cavity/sampled_dt2p5e-6_Average_errorRaw_pareto.png}
+			\caption*{Cavity}
+		\end{minipage}
+		\begin{minipage}{0.49\linewidth}
+			\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/sampled_dt5e-7_Average_errorRaw_pareto.png}
+			\caption*{CVRC}
+		\end{minipage}
+	\end{figure}
+	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
+		Eigenvector-based sampling promotes \textbf{fast} and \textbf{accurate} solutions \\
+		Random sampling offers \textbf{inexpensive} early experimentation
+	\end{tcolorbox}
 \end{frame}
 
 \section*{Conclusions}
 
 \begin{frame}{Contributions}
     \begin{enumerate}
+		\item PERFORM, open-source Python package for rapid prototyping novel ROM methods, challenging benchmarks
+		\item Scalable PROM solver in high-performance combustion CFD code
         \item State-of-the-art PROMs for multi-scale, multi-physics flow systems
-        \item Scalable PROM solver in high-performance combustion CFD code
         \item Analysis of cost and performance of sparse sampling methods
         \item First study of PROMs for 3D multi-injector rocket combustor, containing $>$ 250 million DOFs
         \item Truly predictive PROMs for single-element rocket combutor
-        \item PERFORM, Python package for prototyping novel ROM methods
-        \item Insight on best practices for PROMs of multi-scale systems
+        \item Best practices for PROMs of multi-scale systems
     \end{enumerate}
 \end{frame}
+
 
 \begin{frame}{Publications and presentations}
 	\begin{itemize}
@@ -1287,8 +1346,8 @@ Krzysztof Fidkowski \\
 	\end{minipage}
 \end{frame}
 
-\begin{frame}{Acknowledgements}
+% \begin{frame}{Acknowledgements}
 	
-\end{frame}
+% \end{frame}
 
 \end{document}

@@ -6,7 +6,7 @@ In this work, the full injector and combustor geometry of the CVRC is not modele
 
 \subsection{Full-order Model}
 
-The truncated CVRC case presented here generally follows that investigated by Harvazinski and Shimizu~\cite{HarvazinskiCVRCflamelet}, with a truncated combustion chamber. The geometry is displayed in Fig.~\ref{fig:cvrcGeom}. The oxidizer post extends approximately 14 cm usptream of the dump plane ($x = $ 0 m), with a diameter of 2.05 cm. The annular fuel injection port has an outer diameter of 23.09 cm and an inner diameter of 22.27 cm, extends 30.55 cm upstream of the dump plane, and enters the oxidizer stream 10.18 cm upstream of the dump plane. The combustion chamber has a diameter of 4.5 cm, and extends approximately 14 cm downstream of the dump plane. The oxidizer inlet injects 42.35\% gaseous oxygen and 57.65\% water vapor by mass at 1,030 K, with a specified mass flow rate of 0.32 kg/s. Gaseous methane is injected through the fuel duct at 300 K, with a mass flow rate of 0.027 kg/s. The computational mesh is composed of 2,637,771 hexahedral cells, resulting in a total number of degrees of freedom $\numDOF =$ 18,464,397. No-slip, adiabatic conditions are enforced at the domain walls, and a subsonic characteristic boundary condition is applied at the outlet.
+The truncated CVRC case presented here generally follows that investigated by Harvazinski and Shimizu~\cite{HarvazinskiCVRCflamelet}, with a truncated combustion chamber. The geometry is displayed in Fig.~\ref{fig:cvrcGeom}. The oxidizer post extends approximately 14 cm upstream of the dump plane ($x = $ 0 m), with a diameter of 2.05 cm. The annular fuel injection port has an outer diameter of 23.09 cm and an inner diameter of 22.27 cm, extends 30.55 cm upstream of the dump plane, and enters the oxidizer stream 10.18 cm upstream of the dump plane. The combustion chamber has a diameter of 4.5 cm, and extends approximately 14 cm downstream of the dump plane. The oxidizer inlet injects 42.35\% gaseous oxygen and 57.65\% water vapor by mass at 1,030 K, with a specified mass flow rate of 0.32 kg/s. Gaseous methane is injected through the fuel duct at 300 K, with a mass flow rate of 0.027 kg/s. The computational mesh is composed of 2,637,771 hexahedral cells, resulting in a total number of degrees of freedom $\numDOF =$ 18,464,397. No-slip, adiabatic conditions are enforced at the domain walls, and a subsonic characteristic boundary condition is applied at the outlet.
 
 \begin{figure}
 	\centering
@@ -57,6 +57,8 @@ The FOM simulation is computed with a physical time step of $\dtFOM = 0.1 \; \mu
 \end{figure}
 
 Figure~\ref{fig:cvrcPODEnergy} displays the POD residual energy for the model rocket combustor data. Achieving 1\%, 0.1\%, and 0.01\% residual energy for the conservative dataset requires 51, 123, and 245 basis modes, respectively. For the primitive dataset, these levels require 44, 134, and 267 modes respectively. This decay is significantly slower than that observed for 2D open cavity flow (Fig.~\ref{fig:cavityPODEnergy}), and is indicative of the difficulty with which linear trial spaces capture the highly non-linear flow physics which characterize rocket combustion. This is further emphasized in the projection error plots shown in Figs.~\ref{fig:cvrcProjErrPrim} and~\ref{fig:cvrcProjErrCons}, where it is apparent that the fuel mixture fraction and progress variable fields induce much higher error levels at a given trial basis dimension than the primary flow fields.
+
+As with the 2D cavity case, this full-order model should not be considered a well-resolved or accurate representation of the complex combustion phenomena which occur in real liquid-propellant rocket combustor. Although this model is derived from numerical experiments~\cite{HarvazinskiCVRCOrig} which exhibited reasonable predictions of certain quantities of interest, the results presented here should be contextualized strictly as approximating the system dynamics modeled by the underlying numerical solver, which this thesis does not claim to perfectly represent reality.
 
 \subsection{Unsampled PROMs}
 
@@ -327,7 +329,7 @@ These observations are emphasized further by field plots drawn from the end of t
 	\caption{\label{fig:cvrcDEIMPressSlices}CVRC HPROM pressure slices, $\timeVar = 5.5$ ms, $\numSamps$ = 0.25\%, $\numResModes = 300$, $\dt = 5 \times \dtFOM$. From top to bottom: FOM, random, eigenvector, GNAT V1, and GNAT V2 sampling.}
 \end{figure}
 
-Similar results are observed in the temperature field, shown in Fig.~\ref{fig:cvrcDEIMTempSlices}. The result produced by eigenvector-based sampling captures the mixing and advection of the reactant shear layer, though there is again noticeable smearing and spurious oscillations near the flame front. Much like with the pressure field, random sampling produces an HPROM which devolves into high-frequency oscillations in the mixing layer, while both GNAT variants produce exeptionally large oscillations throughout the combustion chamber. 
+Similar results are observed in the temperature field, shown in Fig.~\ref{fig:cvrcDEIMTempSlices}. The result produced by eigenvector-based sampling captures the mixing and advection of the reactant shear layer, though there is again noticeable smearing and spurious oscillations near the flame front. Much like with the pressure field, random sampling produces an HPROM which devolves into high-frequency oscillations in the mixing layer, while both GNAT variants produce large oscillations throughout the combustion chamber. 
 
 \begin{figure}
 	\begin{minipage}{0.99\linewidth}
@@ -352,3 +354,103 @@ Similar results are observed in the temperature field, shown in Fig.~\ref{fig:cv
 	\end{minipage}
 	\caption{\label{fig:cvrcDEIMTempSlices}CVRC HPROM temperature slices, $\timeVar = 5.5$ ms, $\numSamps$ = 0.25\%, $\numResModes = 300$, $\dt = 5 \times \dtFOM$. From top to bottom: FOM, random, eigenvector, GNAT V1, and GNAT V2 sampling.}
 \end{figure}
+
+\subsection{Effects of Sampling Criteria}\label{subsec:cvrcDOFSamp}
+
+Three approaches for evaluating the greedy sampling algorithm metric and selecting those degrees of freedom to be appended to the sample set were described in Section~\ref{subsec:samplingCriteria}: agnostic, post-sampling, and comprehensive sampling. The comprehensive method has been claimed to provide a more complete description of the sampling metric for coupled fluid flow systems, and is used for all hyper-reduction results presented in this thesis. In this section, the validity of this claim is investigated. The performance of HPROMs generated by the post-sampling and comprehensive techniques are thus compared. Random sampling via post-sampling is omitted, as it is not a greedy sampling algorithm. The same sample mesh sizes as those listed in Table~\ref{tab:cvrcSampProcs} are again used for all post-sampling meshes. 
+
+\begin{figure}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/dof_samp/iblank/eigenvec_iblank_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/dof_samp/iblank/eigenvec_iblank_x.png}}
+	\end{minipage}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/dof_samp/iblank/greedy_carlberg_iblank_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/dof_samp/iblank/greedy_carlberg_iblank_x.png}}
+	\end{minipage}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/dof_samp/iblank/greedy_ben_iblank_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/dof_samp/iblank/greedy_ben_iblank_x.png}}
+	\end{minipage}
+	\caption{\label{fig:cvrcIBlankSlicesDOF}Example sample meshes for $\numSamps = 0.25\% \times \numDOF$, $\numResModes = 300$ for various sampling algorithms, using the post-sampling approach. From top to bottom: random, eigenvector-based, GNAT V1, and GNAT V2.}
+\end{figure}
+
+Figure~\ref{fig:cvrcIBlankSlicesDOF} provide indicative sample mesh slices for post-sampling meshes, reflecting the same mesh size and regression basis dimension $\numResModes$ as those displayed in Fig.~\ref{fig:cvrcIBlankSlices}. The two approaches generate similar meshes, and close inspection is required to notice differences. One might notice slightly tighter clustering of sampled points for eigenvector-based sampling, while the GNAT sample meshes are slightly more diffuse.
+
+\begin{figure}
+	\begin{minipage}{0.46\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/dof_samp/err_contour_random_dof_dt5e-7.png}
+		\subcaption{Random}
+	\end{minipage}
+	\begin{minipage}{0.53\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/dof_samp/err_contour_eigenvec_dof_dt5e-7.png}
+		\subcaption{Eigenvector}
+	\end{minipage}
+
+	\begin{minipage}{0.46\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/dof_samp/err_contour_gnat1_dof_dt5e-7.png}
+		\subcaption{GNAT, V1}
+	\end{minipage}
+	\begin{minipage}{0.53\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/dof_samp/err_contour_gnat2_dof_dt5e-7.png}
+		\subcaption{GNAT, V2}
+	\end{minipage}
+	\caption{\label{fig:cvrcSampledROMErrContourDOFDt5e-7}CVRC HPROM time-average error contours for sample meshes constructed via the post-sampling approach, with respect to gappy POD regressor dimension and sampling rate, $\dt = 5 \times \dtFOM$, various sampling algorithms}
+\end{figure}
+
+The resulting simulation accuracy with respect to the sample rate $\numSamps$ and the regression basis dimension $\numResModes$ also remains largely the same, as seen in Fig.~\ref{fig:cvrcSampledROMErrContourDOFDt5e-7}. Eigenvector-based sampling performs quite well at low sampling rates, random sampling performs well at high sampling rates, and both GNAT algorithms tend to perform poorly at any sampling rate. The general trend of improved accuracy with increased $\numResModes$ is observed again, most noticeably with eigenvector-based sampling.
+
+\begin{figure}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/dof_samp/sampled_dt5e-7_Average_errorRaw_pareto.png}
+		\caption{\label{fig:cvrcSampledROMErrVsTimeDOF}CVRC HPROM time-average error vs. CPU-time speedup, $\dt = 5 \times \dtFOM$}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/dof_samp/pressure_probe_deim_dof_dt5e-7_samp0p0025.png}
+		\caption{\label{fig:cvrcSampledROMProbesDOF}CVRC HPROM probe sampled via post-sampling, $\numPrimModes = 100$, $\numSamps = 0.25\% \times \numDOF$, $\numResModes = 300$, $\dt = 5 \times \dtFOM$.}
+	\end{minipage}
+\end{figure}
+
+Examining the cost-accuracy tradeoff in Fig.~\ref{fig:cvrcSampledROMErrVsTimeDOF} emphasizes that the post-sampling approach has little, if any, influence on the accuracy and computational cost savings of the HPROMs. Except at very high sampling rates, where post-sampling appears to \textit{improve} the accuracy of the GNAT algorithms, the lines representing post-sampling results lie nearly on top of those representing comprehensive sampling. Pressure probe results in Fig.~\ref{fig:cvrcSampledROMProbesDOF} display nearly identical performance to those shown in Fig.~\ref{fig:cvrcSampledROMProbe0p25}.
+
+The results shown above indicate that the choice of sampling criterion plays a minimal role in enabling fast and accurate HPROMs, relative to the extreme sensitivity to the sampling algorithm. This logically follows from the idea that certain variables make outsized contributions to the greedy sampling metric, e.g. the temperature vs. pressure field, and so both approaches result in similar sample meshes despite non-dimensionalization of the data prior to generation of the regression basis $\deimBasis$. In either case, those mesh elements which incur the greatest error are still selected.
+
+\subsection{Effects of Dual Basis Gappy POD}\label{subsec:cvrcDualBasis}
+
+All results shown thus far have used a single gappy POD regression basis, $\deimBasis \inRTwo{\numDOF}{\numResModes}$. Following the justification outlined in Section~\ref{subsec:stateApproxDEIM}, the regression basis has been chosen such that $\deimBasis = \consTrialSpace$; that is, the regression basis is computed from snapshots of the conservative fields. This approach has worked well, but alternative approaches have suggested representing components of the fully-discrete residual with separate gappy POD approximations (as in brief notes in~\cite{Tezaur2017} and~\cite{Grimberg2021}). In Section~\ref{subsec:dualBasis}, a dual-basis formulation was proposed by which the fully-discrete residual is separated into the time integrator $\consVecDt$ and all spatial discretization terms $\rhsFunc{\consVec, \; \timeVar}$, with corresponding gappy POD regression bases $\deimBasisCons \inRTwo{\numDOF}{\numConsModes}$ and $\deimBasisRhs \inRTwo{\numDOF}{\numRHSModes}$ respectively. For the sake of completeness, HPROMs constructed via this approach are investigated below. Only one set of basis sizes is investigated: $\numResModes = \numConsModes = 300$ and $\numRHSModes = 800$. Unlike in the above Section~\ref{subsec:cvrcDOFSamp}
+
+\begin{figure}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/dualModes/iblank/eigenvec_iblank_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/dualModes/iblank/eigenvec_iblank_x.png}}
+	\end{minipage}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/dualModes/iblank/greedy_carlberg_iblank_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/dualModes/iblank/greedy_carlberg_iblank_x.png}}
+	\end{minipage}
+	\begin{minipage}{0.99\linewidth}
+		\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/cvrc/dualModes/iblank/greedy_ben_iblank_z.png}}
+		\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Chapters/HPROMResults/Images/cvrc/dualModes/iblank/greedy_ben_iblank_x.png}}
+	\end{minipage}
+	\caption{\label{fig:cvrcIBlankSlicesDual}Example sample meshes for $\numSamps = 0.25\% \times \numDOF$, $\numResModes = 300$ for various sampling algorithms, using the post-sampling approach. From top to bottom: random, eigenvector-based, GNAT V1, and GNAT V2.}
+\end{figure}
+
+The sample meshes generated by the dual-basis sampling procedure are virtually identical to those generated by the single-basis approach, as seen in Fig.~\ref{fig:cvrcIBlankSlicesDual}. Close inspection reveals minor differences, but follow the same trends as those seen in Fig.~\ref{fig:cvrcIBlankSlices}. Despite the marked similarities of the sample meshes, the performance of the online HPROMs are strikingly different, as shown in Fig.~\ref{fig:cvrcSampledROMErrVsTimeDual}. For a given sample rate $\numSamps$, the dual-basis formulation halves the computational cost savings and nearly doubles the error (or even becomes unstable). Although the relative discrepancies between the sampling algorithms persist (eigenvector-based sampling performing the best, followed by random sampling, and GNAT tending to fail outright).
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.6\linewidth]{Chapters/HPROMResults/Images/cvrc/dualModes/sampled_dt5e-7_Average_errorRaw_pareto.png}
+	\caption{\label{fig:cvrcSampledROMErrVsTimeDual}CVRC HPROM time-average error vs. CPU-time speedup, $\dt = 5 \times \dtFOM$}
+\end{figure}
+
+\begin{figure}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/dualModes/pressure_probe_deim_dual_random_eig_dt5e-7_samp0p0025.png}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/dualModes/pressure_probe_deim_dual_gnat_dt5e-7_samp0p0025.png}
+	\end{minipage}
+	\caption{\label{fig:cvrcSampledROMProbesDual}CVRC HPROM probe sampled via post-sampling, $\numPrimModes = 100$, $\numSamps = 0.25\% \times \numDOF$, $\numResModes = 300$, $\dt = 5 \times \dtFOM$.}
+\end{figure}
+
+Pressure monitor results in Fig.~\ref{fig:cvrcSampledROMProbesDual} only emphasize the comparatively poor performance of the dual-basis formulation. The accuracy of the random and eigenvector-based HPROMs deteriorates much more rapidly (around $\timeVar = 5.2$ ms), and even the GNAT HPROMs are wholly unstable (opposed to greatly inaccurate). These results indicate that the dual-basis formulation does not benefit the performance of the HPROMs despite a supposed improvement in the accuracy of the constituent gappy POD regressions. This is, in some sense, a comfort, inasmuch as the simplest solution (a single gappy POD basis) appears to be the best. Of course, increased granularity of the fully-discrete residual (e.g. generating separate approximations for the inviscid and viscous fluxes) might improve on this, but the introduces an exceptional level of complexity in the Gauss--Newton normal equations and was not deemed a worthwhile investigation. 

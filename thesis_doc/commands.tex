@@ -94,6 +94,7 @@
 \newcommand{\rkVec}{\ensuremath{\mathbf{h}}}
 \newcommand{\consVecDt}{\ensuremath{\dott{\mathbf{\stateVar}}_{\consVar}}}
 \newcommand{\consVecRomDt}{\ensuremath{\dott{\mathbf{\widetilde{\stateVar}}}_{\consVar}}}
+\newcommand{\consVecDtApprox}{\ensuremath{\mathbf{\widetilde{\dot{\stateVar}}}}_{\consVar}}
 \newcommand{\consVecCoefDt}{\ensuremath{\dott{\mathbf{\widehat{\stateVar}}}_{\consVar}}}
 \newcommand{\solutionVar}{t}
 \newcommand{\targetVec}{\ensuremath{\mathbf{\stateVar}_{\targetVar}}}
@@ -201,6 +202,7 @@
 \newcommand{\jacobResPrim}{\ensuremath{\jacobMat_{\resVar,\primVar}}}
 \newcommand{\jacobResCoefCons}{\ensuremath{\jacobMatCoef_{\resVar,\consVar}}}
 \newcommand{\jacobResCoefPrim}{\ensuremath{\jacobMatCoef_{\resVar,\primVar}}}
+\newcommand{\jacobRhsPrim}{\ensuremath{\jacobMat_{\rhsVar,\primVar}}}
 \newcommand{\jacobCons}{\ensuremath{\jacobMat_{\consVar}}}
 \newcommand{\jacobPrim}{\ensuremath{\jacobMat_{\primVar}}}
 \newcommand{\jacobTrialConsFunc}[1]{\ensuremath{\jacobTrialCons \left(#1\right)}}
@@ -208,9 +210,8 @@
 \newcommand{\jacobDecodeConsFunc}[1]{\ensuremath{\jacobDecodeCons \left(#1\right)}}
 \newcommand{\jacobDecodePrimFunc}[1]{\ensuremath{\jacobDecodePrim \left(#1\right)}}
 \newcommand{\jacobApproxFunc}[1]{\ensuremath{\widetilde{\jacobMat}}\left(#1\right)}
-\newcommand{\gm}{\ensuremath{\boldsymbol{\Gamma}}}
+\newcommand{\gm}{\ensuremath{\jacobMat_{\consVar,\primVar}}}
 \newcommand{\gmFunc}[1]{\ensuremath{\gm \left(#1\right)}}
-\newcommand{\gmInv}{\ensuremath{\boldsymbol{\Gamma}^{-1}}}
 
 % linear bases
 \newcommand{\basisVar}{u}
@@ -249,16 +250,16 @@
 \newcommand{\sampMatInterp}{\ensuremath{\mathbf{\widehat{S}}}}
 \newcommand{\sampSet}{\ensuremath{\MC{S}}}
 \newcommand{\sampSetFull}{\ensuremath{\MC{\widetilde{S}}}}
-\newcommand{\deimRegressorCons}{\ensuremath{\deimBasisCons (\sampMat \deimBasisCons)^+ \sampMat}}
-\newcommand{\deimRegressorConsSmall}{\ensuremath{(\sampMat \deimBasisCons)^+ \sampMat}}
-\newcommand{\deimRegressorConsTiny}{\ensuremath{(\sampMat \deimBasisCons)^+}}
-\newcommand{\deimRegressorRhs}{\ensuremath{\deimBasisRhs (\sampMat \deimBasisRhs)^+ \sampMat}}
-\newcommand{\deimRegressorRhsSmall}{\ensuremath{(\sampMat \deimBasisRhs)^+ \sampMat}}
-\newcommand{\deimRegressorRhsTiny}{\ensuremath{(\sampMat \deimBasisRhs)^+}}
-\newcommand{\deimRegressorRes}{\ensuremath{\deimBasisRes (\sampMat \deimBasisRes)^+ \sampMat}}
-\newcommand{\deimRegressorResSmall}{\ensuremath{(\sampMat \deimBasisRes)^+ \sampMat}}
-\newcommand{\deimRegressorJac}{\ensuremath{\deimBasisJac (\sampMat \deimBasisJac)^+ \sampMat}}
-\newcommand{\deimRegressorJacSmall}{\ensuremath{(\sampMat \deimBasisJac)^+ \sampMat}}
+\newcommand{\deimRegressorCons}{\ensuremath{\deimBasisCons \left[ \sampMat \deimBasisCons \right]^+ \sampMat}}
+\newcommand{\deimRegressorConsSmall}{\ensuremath{\left[\sampMat \deimBasisCons\right]^+ \sampMat}}
+\newcommand{\deimRegressorConsTiny}{\ensuremath{\left[\sampMat \deimBasisCons\right]^+}}
+\newcommand{\deimRegressorRhs}{\ensuremath{\deimBasisRhs \left[\sampMat \deimBasisRhs\right]^+ \sampMat}}
+\newcommand{\deimRegressorRhsSmall}{\ensuremath{\left[\sampMat \deimBasisRhs\right]^+ \sampMat}}
+\newcommand{\deimRegressorRhsTiny}{\ensuremath{\left[\sampMat \deimBasisRhs\right]^+}}
+\newcommand{\deimRegressorRes}{\ensuremath{\deimBasisRes \left[\sampMat \deimBasisRes\right]^+ \sampMat}}
+\newcommand{\deimRegressorResSmall}{\ensuremath{\left[\sampMat \deimBasisRes\right]^+ \sampMat}}
+\newcommand{\deimRegressorJac}{\ensuremath{\deimBasisJac \left[\sampMat \deimBasisJac\right]^+ \sampMat}}
+\newcommand{\deimRegressorJacSmall}{\ensuremath{\left[\sampMat \deimBasisJac\right]^+ \sampMat}}
 \newcommand{\deimBasisREvecRow}{\ensuremath{\deimBasisVec'_+}}
 \newcommand{\deimBasisRowUpdate}{\ensuremath{\deimBasisVec_+}}
 
@@ -306,6 +307,8 @@
 \newcommand{\primScaleInv}{\ensuremath{\primScale^{-1}}}
 \newcommand{\resScale}{\ensuremath{\scaleMat_{\resVar}}}
 \newcommand{\resScaleInv}{\ensuremath{\resScale^{-1}}}
+\newcommand{\rhsScale}{\ensuremath{\scaleMat_{\rhsVar}}}
+\newcommand{\rhsScaleInv}{\ensuremath{\rhsScale^{-1}}}
 \newcommand{\resScaleVar}[1]{\ensuremath{\scaleVar_{\resVar,#1}}}
 \newcommand{\resScaleVecVar}[1]{\ensuremath{\scaleVec_{\resVar,#1}}}
 

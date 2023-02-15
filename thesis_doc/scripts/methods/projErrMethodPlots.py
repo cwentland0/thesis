@@ -16,17 +16,17 @@ from tensorflow.keras.models import load_model
 
 # ----- BEGIN USER INPUTS -----
 
-data_file = "/home/chris/Research/thesis_data/1d_flame/proj_err_method/data/sol_prim_FOM.npy"
+data_file = "/home/chris/Research/Papers/thesis/thesis_doc/data/1d_flame/proj_err_method/data/sol_prim_FOM.npy"
 snap_start = 200
 snap_end = 1000
 snap_skip = 10
 snap_num = 600
 
-cae_dir = "/home/chris/Research/thesis_data/1d_flame/proj_err_method/cae"
+cae_dir = "/home/chris/Research/Papers/thesis/thesis_doc/data/1d_flame/proj_err_method/cae"
 
-pod_dir = "/home/chris/Research/thesis_data/1d_flame/proj_err_method/pod"
+pod_dir = "/home/chris/Research/Papers/thesis/thesis_doc/data/1d_flame/proj_err_method/pod"
 
-scale_dir = "/home/chris/Research/thesis_data/1d_flame/proj_err_method/scaling"
+scale_dir = "/home/chris/Research/Papers/thesis/thesis_doc/data/1d_flame/proj_err_method/scaling"
 
 x_L = 0.0
 x_R = 0.01
@@ -34,7 +34,7 @@ x_R = 0.01
 t_start = 0.0
 t_end = 0.4
 
-outdir = "/home/chris/Research/thesis_data/1d_flame/proj_err_method"
+outdir = "/home/chris/Research/Papers/thesis/thesis_doc/Chapters/ProjROMs/Images"
 
 # ----- END USER INPUTS -----
 
@@ -146,7 +146,8 @@ ax_temp_err.semilogy(t, temp_err[0,:], "b")
 ax_temp_err.semilogy(t, temp_err[1,:], "r")
 ax_temp_err.set_ylabel(r"Temperature $\ell^2$ Error")
 ax_temp_err.set_xlabel("t (ms)")
-ax_temp_err.set_ylim([1e-4, 1.0])
+ax_temp_err.set_ylim([1e-4, 3.0])
+ax_temp_err.legend(["POD", "CAE"], loc="upper left", fontsize=14)
 plt.tight_layout()
 plt.savefig(os.path.join(outdir, "temp_error.png"))
 
@@ -156,7 +157,7 @@ ax_mf_err.semilogy(t, mf_err[0,:], "b")
 ax_mf_err.semilogy(t, mf_err[1,:], "r")
 ax_mf_err.set_ylabel(r"Reactant Mass Frac. $\ell^2$ Error")
 ax_mf_err.set_xlabel("t (ms)")
-ax_mf_err.set_ylim([1e-4, 1.0])
+ax_mf_err.set_ylim([1e-4, 10.0])
 plt.tight_layout()
 plt.savefig(os.path.join(outdir, "mf_error.png"))
 

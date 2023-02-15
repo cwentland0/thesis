@@ -9,5 +9,18 @@
                 "pdflatex"
             ]
         },
-	]
+    ],
+    "cSpell.words": [
+        "Carlberg",
+        "DEIM",
+        "discretization",
+        "HPROM",
+        "HPROMs",
+        "Jacobians",
+        "Peherstorfer",
+        "Peherstorfer's",
+        "Petrov",
+        "QDEIM",
+        "unsampled"
+    ]
 }

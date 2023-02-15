@@ -242,13 +242,13 @@ The question of how the regression basis $\deimBasis$ is computed is now address
 In the case of gappy POD Galerkin PROMs, the two approximations of non-linear terms in the ROM ODE/O$\Delta$E have been outlined, but are restated here. The traditional method of gappy POD for Galerkin PROMs~\cite{Chaturantabut2010} computes a regression for the non-linear function $\rhsFunc{\cdot, \; \timeVar}$ of the form
 %
 \begin{equation}
-	\resScaleInv \rhsFunc{\consVec, \; \timeVar} \approx \rhsApproxFunc{\consVec, \timeVar} \defEq \deimBasis \left[\sampMat \deimBasis \right]^+ \sampMat \resScaleInv \rhsFunc{\consVec, \; \timeVar}
+	\rhsScaleInv \rhsFunc{\consVec, \; \timeVar} \approx \rhsApproxFunc{\consVec, \timeVar} \defEq \deimBasis \left[\sampMat \deimBasis \right]^+ \sampMat \rhsScaleInv \rhsFunc{\consVec, \; \timeVar}
 \end{equation}
 %
-In this case, as with computing the solution trial bases, snapshots of the unsteady non-linear term field $\rhsFunc{\consVec, \; \timeVar}$ are collected from FOM simulations. Unlike the process for the solution trial bases, a reference state about which snapshots are centered is not defined. However, disparate scales of the non-linear terms must be accounted for, and the same scaling format as that used for scaling the fully-discrete residual, $\resScaleInv$, is suggested. The snapshot matrix is thus aggregated as
+In this case, as with computing the solution trial bases, snapshots of the unsteady non-linear term field $\rhsFunc{\consVec, \; \timeVar}$ are collected from FOM simulations. Unlike the process for the solution trial bases, a reference state about which snapshots are centered is not defined. However, disparate scales of the non-linear terms must be accounted for, and some scaling operations should be computed via $\rhsScaleInv$. The snapshot matrix is thus aggregated as
 %
 \begin{equation}
-	\rhsDataMat = \left[ \resScaleInv \rhsFunc{\consFunc{\timeVar^0}, \; \timeVar^0}, \; \resScaleInv \rhsFunc{\consFunc{\timeVar^1}, \; \timeVar^1}, \; \hdots, \; \resScaleInv \rhsFunc{\consFunc{\finalTime}, \; \timeVar^{\finalTime}} \right]
+	\rhsDataMat = \left[ \rhsScaleInv \rhsFunc{\consFunc{\timeVar^0}, \; \timeVar^0}, \; \rhsScaleInv \rhsFunc{\consFunc{\timeVar^1}, \; \timeVar^1}, \; \hdots, \; \rhsScaleInv \rhsFunc{\consFunc{\finalTime}, \; \timeVar^{\finalTime}} \right]
 \end{equation}
 %
 The regression basis is then computed from the POD of the snapshot matrix $\rhsDataMat$, extracting the leading $\numResModes$ singular vectors as $\deimBasis$.
@@ -281,7 +281,7 @@ Discussion is restricted to linear multi-step methods, which normally take the g
 	\consVec^{\timeIdx} + \sum_{\dummyIdx=1}^{s} a_{\dummyIdx} \consVec^{\timeIdx-\dummyIdx} + \dt \sum_{\dummyIdx=0}^{s} b_{\dummyIdx} \rhsFunc{\consVec^{\timeIdx-\dummyIdx}, \; \timeVar^{\timeIdx-\dummyIdx}} = \zeroVec
 \end{equation}
 %
-where $b_{\dummyIdx}$, $a_{\dummyIdx} \in \mathbb{R}$ are tabulated coefficients for a given method of order $s$. Note that for a linear multistep method to be consistent, the coefficients $a_{\dummyIdx}$ must satisfy
+where $b_{\dummyIdx}$, $a_{\dummyIdx} \in \mathbb{R}$ are tabulated coefficients for a given method of order $s$. Note that for a linear multi-step method to be consistent, the coefficients $a_{\dummyIdx}$ must satisfy
 %
 \begin{equation}\label{eq:lmsNegOne}
 	\sum_{\dummyIdx=1}^{s} a_{\dummyIdx} = -1
@@ -305,7 +305,7 @@ Given the resulting equivalence
 	\consTrial \consVecCoef^{\timeIdx-1} = \consScaleInv \rhsResFunc{\consVecCoef^{\timeIdx},\; \timeVar^{\timeIdx}},
 \end{equation}
 %
-it now appears appropriate to approximate the lumped non-linear term as $\rhsResApproxFunc{\cdot} \defEq \deimBasis \left[\sampMat \deimBasis\right]^+ \sampMat \consScaleInv \rhsResFunc{\cdot}$ by choosing $\deimBasis = \consTrial$. Although this derivation may seem tedious to make this distinction solely in the context of linear multistep time integrators, recall that the attempt to naively set $\deimBasis = \consTrial$ for any time integration scheme resulted in the unusable gappy POD approximation given in Eq.~\ref{eq:stateGPODWrong}.
+it now appears appropriate to approximate the lumped non-linear term as $\rhsResApproxFunc{\cdot} \defEq \deimBasis \left[\sampMat \deimBasis\right]^+ \sampMat \consScaleInv \rhsResFunc{\cdot}$ by choosing $\deimBasis = \consTrial$. Although this derivation may seem tedious to make this distinction solely in the context of linear multi-step time integrators, recall that the attempt to naively set $\deimBasis = \consTrial$ for any time integration scheme resulted in the unusable gappy POD approximation given in Eq.~\ref{eq:stateGPODWrong}.
 
 This approach is valid for Galerkin, LSPG, and MP-LSVT PROMs alike, as each is derived from the original, conservative governing equations and computes the same full-order fully-discrete ROM residual prior to projection. However, note that the conservative state gappy POD regression applied to MP-LSVT PROMs necessitates the calculation of two distinct bases: $\primTrial$ for the target state trial space, and $\consTrial$ strictly for the gappy POD regression. For Galerkin and LSPG, the trial basis $\consTrial$ is simply reused for the gappy POD regression (or slightly reduced or expanded, for $\numConsModes \neq \numResModes$).
 
@@ -327,11 +327,81 @@ Note that the collection of snapshots for every Newton subiteration can quickly 
 
 In this work, GNAT PROMs using POD bases computed from the residual or residual Jacobian are not examined. It is the author's opinion (informed by many failed numerical experiments) that this approach requires far too much trial-and-error and manual tuning in selecting appropriate residual snapshots and computing (often poorly-conditioned) gappy POD approximations. Further, the dependence of the residual field convergence on the FOM sparse linear solver is not experienced in the low-dimensional dense PROM solve, and it is not clear if the resulting approximation is appropriate for the entire Gauss--Newton solve.
 
+\subsection{Dual Basis Formulation}\label{subsec:dualBasis}
+
+In this section, a method is proposed which circumvents several of the issues noted above for the state approximation and fully-discrete residual approximation approaches. As mentioned in passing by several authors~\cite{Tezaur2017,Grimberg2021}, it is possible to define gappy POD approximations for individual elements of the fully-discrete residual. In the most fine-grained extreme, this would entail constructing gappy POD bases for the flux, boundary condition, source, body force, and time integrator terms separately. However, this results in exceptional computational complexity and high memory consumption. This work will investigate an approach which constructs two gappy POD approximations: one for the time integrator term, and one for the general non-linear right-hand side term.
+
+Recall that the fully-discrete residual is traditionally written as
+%
+\begin{equation}
+    \resFunc{\consVec^\timeIdx} \defEq \consVecRomDt^{\timeIdx} - \rhsFunc{\consVec^{\timeIdx}, \; \timeVar} = \zeroVec,
+\end{equation}
+%
+where the $\consVecRomDt$ is the discrete time integrator term and $\rhsFunc{\cdot, \; \timeVar}$ encompasses all other terms associated with the spatial discretization of the governing equations. These terms can be approximated by gappy POD as
+%
+\begin{align}
+	\consVecDt &\approx \consVecDtApprox \defEq \consScale \deimRegressorCons \consScaleInv \consVecDt, \label{eq:consvApprox} \\
+	\rhsFunc{\consVec, \; \timeVar} &\approx \rhsApproxFunc{\consVec} \defEq \rhsScale \deimRegressorRhs \rhsScaleInv \rhsFunc{\consVec}. \label{eq:rhsApprox}
+\end{align}
+%
+where $\deimBasisCons \inRTwo{\numDOF}{\numConsModes}$ and $\consScale \inRTwo{\numDOF}{\numDOF}$ are the time integrator POD basis and diagonal scaling matrix, respectively. The matrices $\deimBasisRhs \inRTwo{\numDOF}{\numRHSModes}$ and $\rhsScale \inRTwo{\numDOF}{\numDOF}$ are the POD basis and diagonal scaling matrix for the RHS function, respectively. 
+
+For the sake of brevity, the application of these approximations are only detailed for the MP-LSVT method. Inserting them into the residual-minimization problem and solving by Gauss--Newton arrives at the form
+%
+\begin{equation}\label{eq:dualBasisGaussNewton}
+		\delta \primVecCoef^{\newtonIdx} = \underset{\dummyVec \inROne{\numPrimModes}}{argmin} \bigg\Vert \resScaleInv \Big[ [\consScale \deimBasisCons \dummyMatOne - \rhsScale \deimBasisRhs \dummyMatTwo] \dummyVec
+		+ \consScale \deimBasisCons \dummyVecOne - \rhsScale \deimBasisRhs \dummyVecTwo \Big] \bigg\Vert_2^2,
+\end{equation}
+%
+where terms have been grouped as
+%
+\begin{align}
+	\dummyMatOne &\defEq \deimRegressorConsTiny \sampMat \consScaleInv \gm^{\newtonIdx} \primScale \primTrial \inRTwo{\numConsModes}{\numPrimModes} \\
+	\dummyMatTwo &\defEq \deimRegressorRhsTiny \sampMat \rhsScaleInv \jacobRhsPrim^{\newtonIdx} \primScale \primTrial \inRTwo{\numRHSModes}{\numPrimModes} \\
+	\dummyVecOne &\defEq \deimRegressorConsTiny \sampMat \consScaleInv \consVecDt \left(\primVecRom^{\newtonIdx}\right) \inROne{\numConsModes} \\
+	\dummyVecTwo &\defEq \deimRegressorRhsTiny \sampMat \rhsScaleInv \rhsFunc{\primVecRom^{\newtonIdx}} \inROne{\numRHSModes}
+\end{align}
+%
+The Jacobian matrices are defined as $\gm^{\newtonIdx} \defEq \consVecDt\left(\primVecRom^{\newtonIdx}\right) / \primVec^{\newtonIdx} \inRTwo{\numDOF}{\numDOF}$ and $\jacobRhsPrim \defEq \rhsFunc{\primVecRom^{\newtonIdx}} / \primVec^{\newtonIdx} \inRTwo{\numDOF}{\numDOF}$. Note that the quantities $\deimRegressorConsTiny \inRTwo{\numConsModes}{\numSamps}$ and $\deimRegressorRhsTiny \inRTwo{\numRHSModes}{\numSamps}$ can be computed in the offline stage. Further, note that the application of the sampling operator $\sampMat$ to the time integrator and RHS terms, as well as their Jacobians, indicates that only $\numSamps$ rows of these terms must be evaluated.
+
+Solving Eq.~\ref{eq:dualBasisGaussNewton} by its normal form results in the rather convoluted formulation
+\begin{equation}\label{eq:dualBasisNormal}
+	\Big[ \dummyMatOne^\top \dummyMatThree \dummyMatOne - \dummyMatOne^\top \dummyMatFour \dummyMatTwo - \dummyMatTwo^\top \dummyMatFour^\top \dummyMatOne + \dummyMatTwo^\top \dummyMatFive \dummyMatTwo \Big] \delta \primVecCoef^{\newtonIdx} = -\Big[ \dummyMatOne^\top \dummyMatThree \dummyVecOne - \dummyMatOne^\top \dummyMatFour \dummyVecTwo - \dummyMatTwo^\top \dummyMatFour^\top \dummyVecOne + \dummyMatTwo^\top \dummyMatFive \dummyVecTwo \Big]
+\end{equation}
+%
+where terms have again been grouped as
+%
+\begin{align}
+	\dummyMatThree &\defEq \deimBasisCons^\top \consScale \resScale^{-2} \consScale \deimBasisCons \inRTwo{\numConsModes}{\numConsModes} \\
+	\dummyMatFour &\defEq \deimBasisCons^\top \consScale \resScale^{-2} \rhsScale \deimBasisRhs \inRTwo{\numConsModes}{\numRHSModes} \\
+	\dummyMatFive &\defEq \deimBasisRhs^\top \rhsScale \resScale^{-2} \rhsScale \deimBasisRhs \inRTwo{\numRHSModes}{\numRHSModes}
+\end{align}
+%
+Matrices $\dummyMatThree$, $\dummyMatFour$, and $\dummyMatFive$ can all be computed in the offline stage.
+
+Compared to the standard gappy POD HPROM formulation, this has the negative effect of requiring one additional global matrix reduction and one additional global vector reduction, along with several additional dense matrix-matrix and matrix-vector multiplications. The cost-benefits tradeoff of this approach is investigated experimentally in Section~\ref{subsec:cvrcDualBasis}.
+
+For linear multi-step schemes, recall that the time integrator term takes the general form
+%
+\begin{equation}
+	\consVecRomDt^{\timeIdx} = \consVec^{\timeIdx} + \sum_{\dummyIdx=1}^{s} a_{\dummyIdx} \consVec^{\timeIdx-\dummyIdx}
+\end{equation}
+%
+and consistent schemes satisfy
+%
+\begin{equation}
+	\sum_{\dummyIdx=1}^{s} a_{\dummyIdx} = -1
+\end{equation}
+%
+From the previous discussions, it is apparent that the choice $\deimBasisCons = \consTrial$ is a valid choice. The process for computing $\deimBasisRhs$ is more straighforward, following from the POD of scaled snapshots of the RHS function as detailed in Section~\ref{sec:regBasis}.
+
+Although the process has only been described for the MP-LSVT method, this approach is also valid for LSPG projection. For LSPG, this necessitates the construction of two bases, $\deimBasisRhs$ and $\consTrial = \deimBasisCons$ (resized as needed). Again, the MP-LSVT method requires the primitive trial basis $\primTrial$ as well, necessitating the storage of three POD bases in total.
+
 \section{Sample Selection}\label{subsec:sampleSelect}
 
 As described above, the computation of the non-linear function regression basis $\deimBasis$ is somewhat nuanced, but is ultimately derived from the POD of a solution, non-linear terms, or fully-discrete residual (Jacobian) snapshot matrix. Methods for selecting the sampling indices defining the sample set $\sampSet$, and hence the construction of the sampling operator $\sampMat$, are much more varied. The selection of $\numSamps > \numResModes$ samples which globally minimize the regression error (Eq.~\ref{eq:gappyPODErrorBound}) is a computationally-intractable problem. As such, almost all methods for selecting sampling points are \textit{greedy} methods, which iteratively select points based on some measure of local optimality at a given iteration. The ``best'' choice of greedy sampling method is an area of active research. Unfortunately, very few comparisons between sampling methods have been published, with the exception of the work by Peherstorfer \textit{et al.}~\cite{Peherstorfer2020}. Although extremely insightful, their exploration of hyper-reduced PROMs was limited to one-dimensional steady reaction-diffusion system. Results presented in Chapter~\ref{chap:HPROMResults} seek to expand on their work by studying more complex, unsteady 2D and 3D multi-scale and multi-physics problems.
 
-\subsection{Sampling Criteria}
+\subsection{Sampling Criteria}\label{subsec:samplingCriteria}
 %
 Before discussing specific sampling algorithms, sampling criteria for greedy algorithms must be discussed. In general, at each iteration, the algorithm chooses the next index to include in the sample set $\sampSet$ by evaluating some metric (usually an error measure) and selecting the index which maximizes/minimizes that metric. This process is slightly nuanced for the sampling of non-linear functions describing flow physics characterized by disparate spatio-temporal scales. Up until this point, sampling has only been spoken of in terms of individual \textit{degrees of freedom} (DOFs). That is, sampling indices $\sampIdx \in \{1,\; \hdots \;, \; \numDOF\}$ are considered to have no specific connection to any variables or mesh elements. In reality, these indices are important for determining local connectivity of mesh elements and for computing numerical quantities such as fluxes and gradients. A state vector (or a function of the state vector) might be visualized as a two-dimensional array, with the leading dimension corresponding to the number of mesh elements $\numCells$ and the trailing dimension corresponding to the number of variables $\numVars$ associated with a single mesh element. This can be written as
 %
