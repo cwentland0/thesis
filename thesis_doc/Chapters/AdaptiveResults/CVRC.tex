@@ -129,3 +129,7 @@ Although the predictive performance of these adaptive HPROMs shown above are qui
     \includegraphics[width=0.5\linewidth]{Chapters/AdaptiveResults/Images/cvrc/pareto_wrt_iters_Average_errorRaw_pareto.png}
     \caption{\label{fig:cvrcAdaptivePareto}CVRC adaptive HPROM time-average error vs. computational speedup, $\numPrimModes = 5$, various $\updateFreq$.}
 \end{figure}
+
+\section{Conclusions}
+
+The above results represent an exploratory effort in the application of online trial basis and sample mesh adaptation in pursuit of truly predictive HPROMs. Although the methodology and initial implementation was not conducted by the author, personal contributions centered on optimization of the implementation to enable the feasible application of these methods of problems of unprecedented scale. Although the methodology is fundamentally limited in its ability to enable significant computational cost savings, these results display that the method is capable of generating (quantitatively) accurate simulations of high-dimensional, highly non-linear combusting flows beyond the limits of the training dataset with measurable speedup. 
