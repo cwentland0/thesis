@@ -1,25 +1,23 @@
 \chapter{Acknowledgements}
 
-{\color{red}
-USING THIS SPACE FOR NOTES
-\begin{itemize}
-	\item Need to double check DOIs, Mendeley seems to have messed some of them up
-	\item Summations over x, y, z in Gov Eqs is a little weird. Any way to fix?
-	\item Need discussion on whether to put PERFORM first or after GEMS results. Start with simple 1D, or keep niche non-linear ROMs in the back?
-	\item Should solution be parameterized? Only really matters for 1D flame, but might not hurt to be general
-	\item Be consistent about time step indices (use $\timeIdx + 1$ and $\timeIdx$, or $\timeIdx$ and $\timeIdx - 1$). Same with Newton iteration.
-	\item Make sure notation of residual and RHS functions are consistent ($\rhsFunc{\cdot}$ vs. $\rhsFunc{\cdot, \timeVar}$, etc)
-	\item Mention scalar vs vector POD?
-	\item Consistency in RHS/residual arguments, use full order but expand POD expression
-	\item Time step index on time values, e.g. $\timeVar^{\timeIdx}$
-	\item Include spatial dimension in definitions of state, functions?
-	\item Use PROM and HPROM where applicable, instead of just ROM
-	\item ``Tangent trial space'' or ``trial space tangent''? I've been using the former, but the latter might be more appropriate.
-	\item Update PLATFORM citation once it's accepted/published
-	\item Usage of $\jacobDecodeCons$ and $\jacobTrialCons$ is really confusing
-	\item Letters for encoder and decoder suck, need to pick better ones
-	\item Replace all scientific notation with `e'.
-	\item Stop using $\testBasisCons$ and $\testBasisPrim$
-\end{itemize}
+It has taken a village to research and write this thesis, from friends and family who encouraged me at every point, to labmates and department colleagues who offered advice and camaraderie, and to mentors who shaped my research skills. All of these people deserve recognition (even though most won't read this), so I won't skimp on acknowledgements.
 
-}
+My advisor, Professor Karthik Duraisamy, has been an incredible mentor to me from the second I walked into FXB. He has been been encouraging of my interests and goals, forgiving of my shortcoming, and celebratory of my successes. His curiosity in math and engineering is infectious, and I hope I can emulate a fraction of his passion in my career. He took a chance on a kid with relatively little research background, and I cannot thank him enough for that.
+
+Prof. Cheng Huang, also an amazing advisor, has been my guide through the thorny world of combustion and a patient recipient of countless questions regarding GEMS. I can't count all the times I popped up at his desk to bug him about theory or code. He has given me so much support in the research we've worked on together, and his development of the MP-LSVT method made this thesis possible. He has been in turns an honest critic, a sympathetic ear, and a great friend.
+
+The two other members of my committee, Prof. Krzysztof Fidkowski and Prof. Jesse Capecelatro, have been immensely generous in reviewing this dissertation. Their feedback throughout the editing and defense process have been instrumental in exposing me to new perspectives from which to understand my research and present it to others. Their comments on this thesis have helped shape it into a work that better reflects the nuances of combustion, CFD, and data science.
+
+My labmates past and present have been a constant source of learning, collaboration, and friendship. I have been lucky to count Anand, Shaowu, David, Aniruddhe, Niloy, Daisuke, Sahil, Christian, James, Yaser, and Adam as my coworkers; sharing ideas and drinks with them  The FXB 2000 crew, Jasmin, Bernardo, and Elnaz, have been wonderful company, with a lot of laughs even while fighting over the thermostat. My former FXB 2006 (a.k.a. ``The Hellhole'') crew, namely Vishal, Danny, Ayoub, and Eric, took me under their collective wing and guided me through my turbulent first year at UM. Without them I most certainly would not have made it through to candidacy, and they made working in a windowless office not only bearable, but fun. Last but most certainly not least, all of the work in this thesis has been assisted by Nick in one way or another. From calming me down after I failed my first combustion exam, to writing PLATFORM, to answering every dumb HPC question I had, to helping keep the lab social scene alive with regular board game nights, he helped keep me sane and steady through five and a half long years. A thesis can't have a co-author, but he's just about the closest thing.
+
+The many UM Aerospace Engineering grad students that I've had the fortune of befriending over the years have been great companions in our mutual suffering. The largest contingent, from the MDO lab, including Anil, Alex, Ben, Kleb, Sabet, Galen, Marco, Saja, Hannah, Ali, Eytan, and Josh, made life a million times more fun with lunches outside, ultimate frisbee, triathlon training, parties, and just company in FXB. Among the other labs, Prince, Miles, Nima, Ral, Anthony, and Sebastian regularly brightened my day just seeing each other and chatting around FXB. The wise sages of AERO past, including Kaelan, John, Shamsheer, Ryan, Fabian, Jacob, Logan, and Krystal, were all friends and role models alike, welcoming me to the department and showing me the ropes. From my cohort of PhD students, I'm particularly thankful to Shivam, Supraj, Andy, Gary, and Pawel for helping me through my first year of classes and prelims. I'm the last one to get out, but I couldn't have even made it here without you guys. At the end, I was grateful to co-work with Neil, who kept me accountable as we wrote our respective theses over long hours in the robotics building. 
+
+My Benet friends, Dave, Tarik, Sam, and Jack, were my saving grace during the pandemic. Reconnecting through our weekly video calls gave me something to look forward to and kept my spirits up when the world was going to pot. Being stuck in a tiny studio apartment wasn't so bad while reminiscing about the dumb stuff we used to get up to.
+
+My friends from Rice supported me all through undergrad and continue to do so even today, especially Isaac, Olivia, Madhuri, Farish, Sanjiv, and Annie. Late nights struggling through PDE, vibrations, and mechanical design homework were easier with such great people around me. I am so thankful for them continuing to cheer me on through my PhD even though we're spread out around the country. I also thank the crazy people I worked with on Eclipse, particularly Elijah, Josh, Andrew, Morgen, Sam, Cole, and Jeremy, for inspiring a love of rockets and space in me. Also from Rice, the post-doc who told me I couldn't make it through a PhD program failed to discourage me, and instead made me want to prove them otherwise. This petty spite helped push me through the darker moments of grad school.
+
+Before coming to Michigan, I was lucky to have several mentors who took the time to teach me about research before I really knew what it entailed. Dr. Mark Nutt and Dr. Casey Trail took me on at Argonne National Lab, even though I knew nothing about nuclear waste, and guided me step by step through my first real research projects. Prof. Yildiz Bayazitoglu, beyond teaching me heat transfer, gave me an opportunity to learn the craft as a teaching assistant and generously helped me apply to grad schools. Prof. Tayfun Tezduyar was the first person to teach me CFD, and patiently sat through hours of questions on the topic, giving advice on applying to grad school and securing my first CFD-related research position in Japan. Prof. Makoto Yamamoto (and his entire group, as well), in turn, was kind enough to take me into his lab despite the fact that I had never done CFD research before.
+
+Of course, my mom Sheila, my dad Rob, and my sister Kelly have been my rock since day one. They have helped pull me up from my lowest moments, and are always cheering the loudest when I succeed. Keeping me fed before deadlines, calling to check in and remind me they love me no matter what, and driving to Ann Arbor just to spend time with me, they've kept me going when I didn't think I could go on any longer. Getting to see them more regularly after moving back to the Midwest was a blessing, and I'm already sad to have moved so far away. 
+
+Finally, I thank my fianc\'{e}e, Lauren, for being the light of my life. She suffered through the rollercoaster of my PhD for over four years, putting up with my late nights, irritable moods, and overwhelming anxiety with nothing by love and support. I can say with absolutely certainty that I could not have completed this PhD program without her endless compassion and care. Lauren, living life with you has been a dream-come-true, and I cannot wait to see where the future takes us.
