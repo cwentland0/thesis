@@ -1,6 +1,6 @@
 \section{AADEIM}
 
-The AADEIM framework, originally posed by Peherstorfer and Willcox~\cite{Peherstorfer2015} and later refined by Peherstorfer~\cite{Peherstorfer2020Adaptive} is outlined here. This section borrows heavily from their notation for the sake of consistency. Only the sample mesh adaptation of AADEIM is utilized, though we detail its trial basis adaptation method for the sake of completeness.
+The AADEIM framework, originally posed by Peherstorfer and Willcox~\cite{Peherstorfer2015} and later refined by Peherstorfer~\cite{Peherstorfer2020Adaptive} is outlined here. This section borrows heavily from their notation for the sake of consistency. Only the sample mesh adaptation of AADEIM is utilized, though the trial basis adaptation method is detailed here for the sake of completeness.
 
 The AADEIM procedure is predicated on the presentation of the fully discrete FOM O$\Delta$E as given in Eq.~\ref{eq:benResidual}, repeated here as
 %
@@ -31,7 +31,12 @@ where the snapshot matrix $\resWindow^{\timeIdx} \inRTwo{\numDOF}{\numWindow}$ i
 %
 The window size $\numWindow \in \mathbb{N}_0$ represents the number of prior PROM solutions for which the regression error in Eq.~\ref{eq:aadeimAlphaBeta} is considered. That is, during the online solution of the PROM, the state $\consVecRom^{\timeIdx}$ is stored in $\resWindow^{\timeIdx}$, and the solution of least-squares minimization of the regression error of this solution updates the the trial basis $\consTrial$ during the PROM runtime. Note that in the work by Peherstorfer~\cite{Peherstorfer2020Adaptive}, those degrees of freedom which are \textit{not} sampled by $\sampMatInterp$ are simply reconstructed by $\sampMat \consVecRom = \sampMat \consTrial^{\timeIdx} \left[\sampMatInterp \consTrial^{\timeIdx}\right]^{-1} \sampMatInterp \left[\consVecCent + \consScale \consTrial \consVecCoef^{\timeIdx}\right]$.
 
-The adaptation of the sample mesh is significantly simpler than that of the trial basis
+The adaptation of the sample mesh is significantly simpler than that of the trial basis. The regression error is computed at every degree of freedom according to the formulation
+
+\begin{equation}
+	\mathbf{R}^{\timeIdx} = \left(\identMat - \deimBasis^{\timeIdx} \left[\sampMat^{\timeIdx} \deimBasis^{\timeIdx}\right] \sampMat^{\timeIdx} \resWindow^{\timeIdx}\right).
+\end{equation}
+Those $\numSamps$ degrees of freedom which incur the highest regression error are selected to construct the new sampling mesh defined by $\sampMat^{\timeIdx+1}$. Note that this step constitutes a \textit{loss of independence} from the full-order dimension $\numDOF$, as the error must be computed at every degree of freedom. The full-order model operator must be evaluated at an infrequent interval $\updateFreq$ to evaluate this. The effect of this query of the full-order system will be shown to be a major handicap of the method in later results.
 
 \section{One-step Basis Adaptation}
 %

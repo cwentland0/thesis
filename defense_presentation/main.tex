@@ -501,7 +501,7 @@ Krzysztof Fidkowski \\
 		\end{equation*}
 		\item Construct linear approximation, supply mapping to conserved variables
 		\begin{equation*}
-			\primVecRom(\timeVar) \defEq \primVecCent + \primScale \primTrial \primVecCoef(\timeVar)
+			\primVecRom(\timeVar) \defEq \primVecCent + \primScale \primTrial \primVecCoef(\timeVar), \quad \primVecCoef \inROne{\numPrimModes}
 		\end{equation*}
 		\begin{equation*}
 			\consVec \defEq \consVec \left( \primVecRom \right)
@@ -533,10 +533,6 @@ Krzysztof Fidkowski \\
 	\end{minipage}
 	\footnotetext[6]{\tiny{Huang, \textbf{Wentland}, and Duraisamy, \textit{J Comp Phys.}, Vol. 448, 2022.}}
 \end{frame}
-
-% \begin{frame}{MP-LSVT for stiff systems}
-	
-% \end{frame}
 
 \section*{Hyper-reduction}
 
@@ -631,7 +627,7 @@ Krzysztof Fidkowski \\
 		\vspace{4em}
 	\end{minipage}
 	\centering
-	\begin{minipage}{0.8\linewidth}%{0.84\linewidth}
+	\begin{minipage}{0.8\linewidth}
 		\includegraphics[width=0.85\linewidth,trim={0.2em 2em 0.3em 2em},clip]{Images/theory/iblanks/random_iblank_z.png}
 
 		\includegraphics[width=0.85\linewidth,trim={0.2em 2em 0.3em 2em},clip]{Images/theory/iblanks/greedy_ben_iblank_z.png}
@@ -1204,7 +1200,7 @@ Krzysztof Fidkowski \\
 	\end{itemize}
 	\begin{figure}
 		\centering
-		\only<1>{
+		% \only<1>{
 			\begin{minipage}{0.4\linewidth}
 				\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/best_pract/errVsModes_norm_l2_Average_errorRaw.png}
 				\caption*{$\ell^2$-norm scaling}
@@ -1213,21 +1209,21 @@ Krzysztof Fidkowski \\
 				\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/best_pract/errVsModes_norm_minmax_Average_errorRaw.png}
 				\caption*{Min-max scaling}
 			\end{minipage}
-		}
-		\only<2>{
-			\begin{minipage}{0.4\linewidth}
-				\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/best_pract/pressure_probe_scale_l2.png}
-				\caption*{$\ell^2$-norm scaling}
-			\end{minipage}
-			\begin{minipage}{0.4\linewidth}
-				\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/best_pract/pressure_probe_scale_minmax.png}
-				\caption*{Min-max scaling}
-			\end{minipage}
-		}
+		% }
+		% \only<2>{
+		% 	\begin{minipage}{0.4\linewidth}
+		% 		\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/best_pract/pressure_probe_scale_l2.png}
+		% 		\caption*{$\ell^2$-norm scaling}
+		% 	\end{minipage}
+		% 	\begin{minipage}{0.4\linewidth}
+		% 		\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/best_pract/pressure_probe_scale_minmax.png}
+		% 		\caption*{Min-max scaling}
+		% 	\end{minipage}
+		% }
 	\end{figure}
 	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
-		Residual scaling \textbf{halves} time-average error \\
-		\textbf{Conservative variable} scaling minimizes solution ``drag''
+		Residual scaling \textbf{halves} time-average error %\\
+		% \textbf{Conservative variable} scaling minimizes solution ``drag''
 	\end{tcolorbox}
 \end{frame}
 
@@ -1238,11 +1234,8 @@ Krzysztof Fidkowski \\
 	\end{itemize}
 	\begin{figure}
 		\centering
-		\begin{minipage}{0.4\linewidth}
-			\includegraphics[width=0.99\linewidth]{example-image-a}
-		\end{minipage}
-		\begin{minipage}{0.4\linewidth}
-			\includegraphics[width=0.99\linewidth]{example-image-a}
+		\begin{minipage}{0.6\linewidth}
+			\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/press_probe_limiters.png}
 		\end{minipage}
 	\end{figure}
 	\begin{tcolorbox}[colframe=blue!50!white,halign=center]
@@ -1346,8 +1339,236 @@ Krzysztof Fidkowski \\
 	\end{minipage}
 \end{frame}
 
-% \begin{frame}{Acknowledgements}
+\begin{frame}[noframenumbering]{Acknowledgements}
+	\begin{figure}
+		\begin{minipage}{0.49\linewidth}
+			\centering
+			\includegraphics[width=0.85\linewidth]{Images/ack/PXL_20210904_023138814.jpg}
+			\vspace{-1em}
+			\includegraphics[angle=270,width=0.85\linewidth,trim={100em 0em 100em 0em},clip]{Images/ack/IMG_3559.jpg}
+			
+		\end{minipage}
+		\begin{minipage}{0.49\linewidth}
+			\centering
+			\includegraphics[width=0.49\linewidth]{Images/ack/pic_group.jpg}
+			\includegraphics[width=0.49\linewidth]{Images/ack/image_cedar.png}
+
+			\centering
+			\includegraphics[width=0.85\linewidth]{Images/ack/PXL_20211127_170237667.MP.jpg}
+		\end{minipage}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[noframenumbering]{Acknowledgements}
+	\begin{figure}
+		\begin{minipage}{0.49\linewidth}
+			\centering
+			\includegraphics[width=0.8\linewidth,trim={0em 20em 0em 70em},clip]{Images/ack/IMG_2073.JPG}
+
+			\includegraphics[width=0.8\linewidth,trim={0em 0em 0em 20em},clip]{Images/ack/IMG_4210.jpg}
+
+			\includegraphics[width=0.8\linewidth,trim={0em 0em 0em 30em},clip]{Images/ack/IMG_6974.jpg}
+		\end{minipage}
+		\begin{minipage}{0.49\linewidth}
+			\centering
+			\includegraphics[width=0.8\linewidth,trim={0em 20em 0em 20em},clip]{Images/ack/IMG_0564.JPG}
+
+			\includegraphics[width=0.8\linewidth,trim={0em 0em 0em 10em},clip]{Images/ack/IMG_7124.jpg}
+
+			\includegraphics[width=0.8\linewidth,trim={0em 30em 0em 0em},clip]{Images/ack/IMG_5132.jpg}
+		\end{minipage}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[noframenumbering]
+	\Large
+	\centering
+	Backup Slides
+	\normalsize
+\end{frame}
+
+\begin{frame}[noframenumbering]{Acoustically-forced model premixed flame details}
+	\begin{itemize}
+		\item Fictitious ``reactant'' converts to ``product''
+		\item 1,024 cells $\rightarrow$ 4,096 DOF
+		\item Sinusoidal forcing about far-field pressure
+		\item $\dt = 25$ ns, 2,001 snapshots per FOM simulation
+	\end{itemize}
+	\begin{minipage}{0.58\linewidth}
+		\includegraphics[width=0.99\linewidth]{Images/experiments/transientFlame/fom_press_snaps.png}
+	\end{minipage}
+	\begin{minipage}{0.39\linewidth}
+		\scriptsize
+		\begin{table}
+			\centering
+			\begin{tabular}{ lll }
+				\toprule
+				Train & Val. & Test  \\
+				\midrule
+				100   & 118.75 & 87.5 \\
+				112.5 & 156.25 & 93.75 \\
+				125   & 193.75 & 106.25 \\
+				137.5 &        & 131.25 \\
+				150   &        & 143.75 \\
+				162.5 &        & 168.75 \\
+				175   &        & 181.25 \\
+				187.5 &        & 206.25 \\
+				200   &        & 212.5 \\
+				\bottomrule
+			\end{tabular}
+			\caption*{Dataset $f$, in kHz}
+		\end{table}
+		\normalsize
+	\end{minipage}
+\end{frame}
+
+\begin{frame}[noframenumbering]{2D transonic cavity details}
+	\begin{itemize}
+		\item 125k cells $\rightarrow$ 500k DOF
+		\item $p_{\infty} = 25$ Pa, $u_{\infty} = 208$ m/s, $T_{\infty} = 300$ K
+		\item $\dt = 1 \; \mu$s, $\timeVar \in [100, \; 110]$ ms $\rightarrow$ 10,001 snapshots
+	\end{itemize}
+
+	\begin{figure}
+		\begin{minipage}{0.59\linewidth}
+			\includegraphics[width=0.99\linewidth]{Images/experiments/2d_cavity/backup/geom.png}
+		\end{minipage}
+		\begin{minipage}{0.39\linewidth}
+			\includegraphics[width=0.99\linewidth]{Images/experiments/2d_cavity/backup/pressure_probe_fom_10ms.png}
+		\end{minipage}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[noframenumbering]{CVRC details}
+	\begin{itemize}
+		\item 2,637,771 cells, 7 variables $\rightarrow$ 18.5 mil DOF
+		\item Fuel: 100\% methane, $T = 300$ K
+		\item Ox: 42.35\% oxygen, 57.65\% water, $T = 1,030$ K
+		\item $\dt = 0.1 \mu$s, $\timeVar \in [5.0, \; 5.5]$ ms, 5,001 snapshots
+	\end{itemize}
+	\begin{figure}
+		\centering
+		\begin{minipage}{0.9\linewidth}
+			\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.1em 0.5em 0.1em},clip]{Images/experiments/cvrc/backup/example_temperature_z.png}}
+			\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Images/experiments/cvrc/backup/example_temperature_x.png}}
+		\end{minipage}
+		\begin{minipage}{0.9\linewidth}
+			\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.1em 0.5em 0.1em},clip]{Images/experiments/cvrc/backup/example_xVel_z.png}}
+			\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Images/experiments/cvrc/backup/example_xVel_x.png}}
+		\end{minipage}
+		\begin{minipage}{0.9\linewidth}
+			\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.1em 0.5em 0.1em},clip]{Images/experiments/cvrc/backup/example_mixFrac_z.png}}
+			\raisebox{-0.5\height}{\includegraphics[width=0.14\linewidth,trim={0.0em 0.1em 0.0em 0.1em},clip]{Images/experiments/cvrc/backup/example_mixFrac_x.png}}
+		\end{minipage}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[noframenumbering]{Nine-element combustor details}
+	\begin{itemize}
+		\item 14,387,292 cells, 17 variables $\rightarrow$ 244 mil. DOF
+		\item Nicoud $\sigma$ turbulence model
+		\item Fuel: 100\% methane, $T = 287.6$ K
+		\item Ox: 96.5\% oxygen, 3.5\% water, $T = 636$ K
+		\item $\dt = 0.1 \mu$s, 3,901 snapshots
+	\end{itemize}
+	\begin{figure}
+		\begin{minipage}{0.49\linewidth}
+			\centering
+			\includegraphics[width=0.8\linewidth]{Images/experiments/9elem/backup/geom_xy.png}
+		\end{minipage}
+		\begin{minipage}{0.49\linewidth}
+			\centering
+			\includegraphics[width=0.8\linewidth,trim={0.5em 0em 6cm 0em},clip]{Images/experiments/9elem/backup/example_heat_z.png}
+		\end{minipage}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[noframenumbering]{Projection method comparison for 2D cavity}
+	\begin{figure}
+		\begin{minipage}{0.35\linewidth}
+			\includegraphics[width=0.99\linewidth]{Images/experiments/2d_cavity/backup/unsampled_dt1e-6_Average_errorRaw.png}
+			\caption*{\scriptsize{$\dt = \dtFOM$}}
+		\end{minipage}
+		\begin{minipage}{0.35\linewidth}
+			\includegraphics[width=0.99\linewidth]{Images/experiments/2d_cavity/backup/unsampled_dt2p5e-6_Average_errorRaw.png}
+			\caption*{\scriptsize{$\dt = 2.5 \times \dtFOM$}}
+		\end{minipage}
 	
-% \end{frame}
+		\begin{minipage}{0.35\linewidth}
+			\includegraphics[width=0.99\linewidth]{Images/experiments/2d_cavity/backup/unsampled_dt5e-6_Average_errorRaw.png}
+			\caption*{\scriptsize{$\dt = 5 \times \dtFOM$}}
+		\end{minipage}
+		\begin{minipage}{0.35\linewidth}
+			\includegraphics[width=0.99\linewidth]{Images/experiments/2d_cavity/backup/unsampled_dt1e-5_Average_errorRaw.png}
+			\caption*{\scriptsize{$\dt = 10 \times \dtFOM$}}
+		\end{minipage}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[noframenumbering]{LSPG for reacting flows}
+	\begin{figure}
+		\begin{minipage}{0.49\linewidth}
+			\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/backup/pressure_probe_unsampled_lspg.png}
+		\end{minipage}
+		\begin{minipage}{0.49\linewidth}
+			\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/backup/condition_number.png}
+		\end{minipage}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[noframenumbering]{Gappy POD regressor basis}
+	\begin{itemize}
+		\item Several options to compute $\deimBasis$: $\consVec$, $\rhsFunc{\consVec}$, $\resFunc{\consVec}$
+		\item Reframe residual as
+		\begin{equation*}
+			\consVec^{\timeIdx-1} - \rhsResFunc{\consVec^{\timeIdx},\; \timeVar^{\timeIdx}} = \zeroVec
+		\end{equation*}
+		\item Choice of $\deimBasis = \consTrial$ valid for linear multistep schemes
+		\begin{equation*}
+			-\rhsResFunc{\consVecCoef^{\timeIdx},\; \timeVar^{\timeIdx}} \defEq \consScale \consTrial \left[\frac{1}{a_1} \consVecCoef^{\timeIdx} + \sum_{\dummyIdx=2}^{s} \frac{a_{\dummyIdx}}{a_1} \consVecCoef^{\timeIdx-\dummyIdx}\right] + \dt \sum_{\dummyIdx=0}^{s} \frac{b_{\dummyIdx}}{a_1} \rhsFunc{\consVecRom^{\timeIdx-\dummyIdx}, \; \timeVar^{\timeIdx-\dummyIdx}}
+		\end{equation*}
+		\begin{equation*}
+			\consTrial \consVecCoef^{\timeIdx-1} = \consScaleInv \rhsResFunc{\consVecCoef^{\timeIdx},\; \timeVar^{\timeIdx}},
+		\end{equation*}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[noframenumbering]{Effect of physical time step}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.37\linewidth]{Images/experiments/cvrc/backup/unsampled_avg_mode_Average_errorRaw.png}
+
+		\begin{minipage}{0.4\linewidth}
+			\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/backup/sampled_dt2p5e-7_Average_errorRaw_pareto.png}
+			\caption*{\scriptsize{$\dt = 2.5 \times \dtFOM$}}
+		\end{minipage}
+		\begin{minipage}{0.4\linewidth}
+			\includegraphics[width=0.99\linewidth]{Images/experiments/cvrc/backup/sampled_dt1e-6_Average_errorRaw_pareto.png}
+			\caption*{\scriptsize{$\dt = 10 \times \dtFOM$}}
+		\end{minipage}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[noframenumbering]{Adaptive sample mesh}
+	\begin{figure}
+		\centering
+		\begin{minipage}{0.9\linewidth}
+			\centering
+			\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Images/experiments/cvrc/backup/iblank_z_1025.png}}
+		\end{minipage}
+		\begin{minipage}{0.9\linewidth}
+			\centering
+			\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Images/experiments/cvrc/backup/iblank_z_1050.png}}
+		\end{minipage}
+		\begin{minipage}{0.9\linewidth}
+			\centering
+			\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Images/experiments/cvrc/backup/iblank_z_1075.png}}
+		\end{minipage}
+		\begin{minipage}{0.9\linewidth}
+			\centering
+			\raisebox{-0.5\height}{\includegraphics[width=0.84\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Images/experiments/cvrc/backup/iblank_z_1100.png}}
+		\end{minipage}
+	\end{figure}
+\end{frame}
 
 \end{document}

@@ -15,7 +15,7 @@ The truncated CVRC case presented here generally follows that investigated by Ha
 	Truncated CVRC geometry with $x-z$ plane slice at $\timeVar = 5.5$ ms.}
 \end{figure}
 
-Combustion is modeled using the FPV approach~\cite{Pierce2001} detailed in Section~\ref{sec:fpv}. As detailed previously, a library of steady diffusion flame solutions is pre-computed off-line, generating a lookup table mapping from the mixture fraction $Z$ and the progress variable $C$ to individual species mass fractions, i.e., $Y_i = Y_i(Z,C)$. For this case, the steady flame solutions are solved using the FlameMaster software~\cite{flamemaster} with the GRI-Mech 1.2 methane combustion mechanism~\cite{griMech}. The GRI-Mech 1.2 mechanism contains 32 chemical species and 177 reactions. All gases are treated as thermally perfect gases, and thermodynamic quantities (specific heats, enthalpy, and entropy) as well as transport properties (mass diffusivity, viscosity, and thermal conductivity) are computed from polynomial functions of temperature developed by McBride et al.~\cite{McBride1993} and described in Section~\ref{subsec:gasModels}.
+Combustion is modeled using the FPV approach~\cite{Pierce2001} detailed in Section~\ref{sec:fpv}. As detailed previously, a library of steady diffusion flame solutions is pre-computed off-line, generating a lookup table mapping from the mixture fraction $Z$ and the progress variable $C$ to individual species mass fractions, i.e., $Y_i = Y_i(Z,C)$. For this case, the steady flame solutions are solved using the FlameMaster software~\cite{flamemaster} with the GRI-Mech 1.2 methane combustion mechanism~\cite{griMech}. The GRI-Mech 1.2 mechanism contains 32 chemical species and 177 reactions. All gases are treated as thermally perfect gases, and thermodynamic quantities (specific heats, enthalpy, and entropy) as well as transport properties (mass diffusivity, viscosity, and thermal conductivity) are computed from polynomial functions of temperature developed by McBride \textit{et al.}~\cite{McBride1993} and described in Section~\ref{subsec:gasModels}.
 
 \begin{figure}
 	\begin{minipage}{0.99\linewidth}
@@ -244,7 +244,7 @@ The same analysis conducted for the MP-LSVT PROMs of the 2D cavity case are repe
 		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/err_contour_gnat2_dt5e-7.png}
 		\subcaption{GNAT, V2}
 	\end{minipage}
-	\caption{\label{fig:cvrcSampledROMErrContourDt5e-7}CVRC HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 5 \times \dtFOM$, various sampling algorithms}
+	\caption{\label{fig:cvrcSampledROMErrContourDt5e-7}CVRC HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 5 \times \dtFOM$, various sampling algorithms.}
 \end{figure}
 
 Time-average $\ell^2$ error contour plots for $\dt \in \{5, \; 10\} \times \dtFOM$, for various $\numResModes$ and $\numSamps$, are shown in Figs.~\ref{fig:cvrcSampledROMErrContourDt5e-7} and~\ref{fig:cvrcSampledROMErrContourDt1e-6}. In this case, all HPROMs remain stable, though those simulations which accrued over 20\% error (indicated by bright yellow) can be considered complete failures. For random and eigenvector-based sampling, the natural tendency for accuracy to improve with increased $\numSamps$ and $\numResModes$ is observed again. Interestingly, both variants of GNAT sampling seem to perform better at higher sampling rates for lower $\numResModes$, though these algorithms tend to perform very poorly across most configurations. Again, eigenvector-based sampling performs remarkably well, generating stable HPROMs with less than 5\% time-average error for $\numResModes \ge 250$. Random sampling also appears capably of generating similar levels of accuracy, albeit at much higher sampling rates.
@@ -267,7 +267,7 @@ Time-average $\ell^2$ error contour plots for $\dt \in \{5, \; 10\} \times \dtFO
 		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/err_contour_gnat2_dt1e-6.png}
 		\subcaption{GNAT, V2}
 	\end{minipage}
-	\caption{\label{fig:cvrcSampledROMErrContourDt1e-6}CVRC HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 10 \times \dtFOM$, various sampling algorithms}
+	\caption{\label{fig:cvrcSampledROMErrContourDt1e-6}CVRC HPROM time-average error contours with respect to gappy POD regressor dimension and sampling rate, $\dt = 10 \times \dtFOM$, various sampling algorithms.}
 \end{figure}
 
 Figure~\ref{fig:cvrcSampledROMErrVsTime} displays the cost-accuracy tradeoff incurred by varying the sampling rate, for fixed $\numResModes = 300$. As observed previously, decreasing the sampling rate tends to degrade simulation accuracy, but enables commensurate computational cost savings. Eigenvector-based sampling is able to generate HPROMs which achieve three to four orders of magnitude speedup over the FOM with minimal loss of accuracy with respect to the unsampled PROM. At extremely low sampling rates, though, the time-average error grows to over 8-10\%. Random sampling is capable of achieving similar speedup results, though this tends to incur unacceptable degredation of accuracy, particularly at very low sampling rates. In general, both GNAT sampling variants are unable to produce accurate HPROMs for any sampling rate investigated, measuring over 10\% error in almost all cases.
@@ -286,7 +286,7 @@ Figure~\ref{fig:cvrcSampledROMErrVsTime} displays the cost-accuracy tradeoff inc
 		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/deim/sampled_dt1e-6_Average_errorRaw_pareto.png}
 		\subcaption{$\dt = 10 \times \dtFOM$}
 	\end{minipage}
-	\caption{\label{fig:cvrcSampledROMErrVsTime}CVRC HPROM time-average error vs. CPU-time speedup, various $\dt$}
+	\caption{\label{fig:cvrcSampledROMErrVsTime}CVRC HPROM time-average error vs. CPU-time speedup, various $\dt$.}
 \end{figure}
 
 Figure~\ref{fig:cvrcSampledROMProbes} illustrates how the sampling algorithms and sampling rates affect the long-term reconstruction of the unsteady pressure signal at the dump plane corner (marked in Fig.~\ref{fig:cvrcGeom}). The average error for Fig.~\ref{fig:cvrcSampledROMProbe0p075} and~\ref{fig:cvrcSampledROMProbe0p25} are marked in Fig.~\ref{fig:cvrcSampledROMErrVsTimeDt5e-7} by an ``X'' and diamond, respectively. Almost all of the displayed simulations remain reasonably accurate up to $t = 5.1$ ms. As indicated by the above discussion, however, both GNAT variants appear incapable of generating accurate reconstructions beyond this point, either exploding or significantly deviating from the FOM pressure signal. For $\numSamps = 0.25 \times \numDOF$, random sampling is able to maintain an accurate reconstruction for $\timeVar < 5.35$ ms, but deteriorates near the end of the simulation. This is not the case for $\numSamps = 0.075 \times \numDOF$, where random sampling explodes shortly after $\timeVar = 5.25$ ms. On the other hand, eigenvector-based sampling is able to faithfully reconstruct the pressure signal in both instances, though for $\numSamps = 0.075 \times \numDOF$ the signal begins to deteriorate noticeably near the end of the simulation period.
@@ -395,7 +395,7 @@ Figure~\ref{fig:cvrcIBlankSlicesDOF} provide indicative sample mesh slices for p
 		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/dof_samp/err_contour_gnat2_dof_dt5e-7.png}
 		\subcaption{GNAT, V2}
 	\end{minipage}
-	\caption{\label{fig:cvrcSampledROMErrContourDOFDt5e-7}CVRC HPROM time-average error contours for sample meshes constructed via the post-sampling approach, with respect to gappy POD regressor dimension and sampling rate, $\dt = 5 \times \dtFOM$, various sampling algorithms}
+	\caption{\label{fig:cvrcSampledROMErrContourDOFDt5e-7}CVRC HPROM time-average error contours for sample meshes constructed via the post-sampling approach, with respect to gappy POD regressor dimension and sampling rate, $\dt = 5 \times \dtFOM$, various sampling algorithms.}
 \end{figure}
 
 The resulting simulation accuracy with respect to the sample rate $\numSamps$ and the regression basis dimension $\numResModes$ also remains largely the same, as seen in Fig.~\ref{fig:cvrcSampledROMErrContourDOFDt5e-7}. Eigenvector-based sampling performs quite well at low sampling rates, random sampling performs well at high sampling rates, and both GNAT algorithms tend to perform poorly at any sampling rate. The general trend of improved accuracy with increased $\numResModes$ is observed again, most noticeably with eigenvector-based sampling.
@@ -403,7 +403,7 @@ The resulting simulation accuracy with respect to the sample rate $\numSamps$ an
 \begin{figure}
 	\begin{minipage}{0.49\linewidth}
 		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/dof_samp/sampled_dt5e-7_Average_errorRaw_pareto.png}
-		\caption{\label{fig:cvrcSampledROMErrVsTimeDOF}CVRC HPROM time-average error vs. CPU-time speedup, $\dt = 5 \times \dtFOM$}
+		\caption{\label{fig:cvrcSampledROMErrVsTimeDOF}CVRC HPROM time-average error vs. CPU-time speedup, $\dt = 5 \times \dtFOM$.}
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
 		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/cvrc/dof_samp/pressure_probe_deim_dof_dt5e-7_samp0p0025.png}
@@ -440,7 +440,7 @@ The sample meshes generated by the dual-basis sampling procedure are virtually i
 \begin{figure}
 	\centering
 	\includegraphics[width=0.6\linewidth]{Chapters/HPROMResults/Images/cvrc/dualModes/sampled_dt5e-7_Average_errorRaw_pareto.png}
-	\caption{\label{fig:cvrcSampledROMErrVsTimeDual}CVRC HPROM time-average error vs. CPU-time speedup, $\dt = 5 \times \dtFOM$}
+	\caption{\label{fig:cvrcSampledROMErrVsTimeDual}CVRC HPROM time-average error vs. CPU-time speedup, $\dt = 5 \times \dtFOM$.}
 \end{figure}
 
 \begin{figure}
@@ -453,4 +453,4 @@ The sample meshes generated by the dual-basis sampling procedure are virtually i
 	\caption{\label{fig:cvrcSampledROMProbesDual}CVRC HPROM probe sampled via post-sampling, $\numPrimModes = 100$, $\numSamps = 0.25\% \times \numDOF$, $\numResModes = 300$, $\dt = 5 \times \dtFOM$.}
 \end{figure}
 
-Pressure monitor results in Fig.~\ref{fig:cvrcSampledROMProbesDual} only emphasize the comparatively poor performance of the dual-basis formulation. The accuracy of the random and eigenvector-based HPROMs deteriorates much more rapidly (around $\timeVar = 5.2$ ms), and even the GNAT HPROMs are wholly unstable (opposed to greatly inaccurate). These results indicate that the dual-basis formulation does not benefit the performance of the HPROMs despite a supposed improvement in the accuracy of the constituent gappy POD regressions. This is, in some sense, a comfort, inasmuch as the simplest solution (a single gappy POD basis) appears to be the best. Of course, increased granularity of the fully-discrete residual (e.g. generating separate approximations for the inviscid and viscous fluxes) might improve on this, but the introduces an exceptional level of complexity in the Gauss--Newton normal equations and was not deemed a worthwhile investigation. 
+Pressure monitor results in Fig.~\ref{fig:cvrcSampledROMProbesDual} only emphasize the comparatively poor performance of the dual-basis formulation. The accuracy of the random and eigenvector-based HPROMs deteriorates much more rapidly (around $\timeVar = 5.2$ ms), and even the GNAT HPROMs are wholly unstable (opposed to greatly inaccurate). These results indicate that the dual-basis formulation does not benefit the performance of the HPROMs despite a supposed improvement in the accuracy of the constituent gappy POD regressions. This is, in some sense, a comfort, inasmuch as the simplest solution (a single gappy POD basis) appears to be the best. Of course, increased granularity of the fully-discrete residual (e.g. generating separate approximations for the inviscid and viscous fluxes) might improve on this, but this introduces an exceptional level of complexity in the Gauss--Newton normal equations and was not deemed a worthwhile investigation. 

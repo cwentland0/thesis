@@ -1,4 +1,4 @@
-For the results shown in Chapter~\ref{chap:HPROMResults}, all simulations have simply \textit{reconstructed} the training data. That is, the geometry, initial conditions, boundary conditions, and simulation duration of each PROM are identical to those of the FOM from which the training data is extracted. Although these simulations were successful in this effort, the ultimate goal of any data-driven method is \textit{generalizability}. To be truly useful for engineering applications, such methods must be able to make fast and accurate predictions for unseen configurations which are not accounted for in the training data. 
+For the results shown in Chapter~\ref{chap:HPROMResults}, all simulations have simply \textit{reconstructed} the training data. That is, the geometry, initial conditions, boundary conditions, and simulation duration of each PROM are identical to those of the FOM from which the training data are extracted. Although these simulations were successful in this effort, the ultimate goal of any data-driven method is \textit{generalizability}. To be truly useful for engineering applications, such methods must be able to make fast and accurate predictions for unseen configurations which are not accounted for in the training data. 
 
 \section{Failure of Static Trial Bases}
 
@@ -24,7 +24,7 @@ The inability of the trial basis to represent unseen data is made readily appare
     \caption{\label{fig:cvrcStaticProjTime}CVRC average projection error over time, various $\numPrimModes$.}
 \end{figure}
 
-Further, comparisons of the FOM and projected pressure and temperature fields at $\timeVar = 5.6$ ms can be seen in Figs.~\ref{fig:cvrcStaticPressureProjSlice} and~\ref{fig:cvrcStaticTempProjSlice}. In both instances, the solution appears smeared and more axisymmetric, lacking most of the transient features of the flow field such as the  highly distorted flame front in the combustion chamber. As the online PROM cannot be expected to model the unsteady solution more accurately than the projected solution, the previous failure of the PROM is to be expected.
+Comparisons of the FOM and projected pressure and temperature fields at $\timeVar = 5.6$ ms can be seen in Figs.~\ref{fig:cvrcStaticPressureProjSlice} and~\ref{fig:cvrcStaticTempProjSlice}. In both instances, the solution appears smeared and more axisymmetric, lacking most of the transient features of the flow field such as the  highly distorted flame front in the combustion chamber. As the online PROM cannot be expected to model the unsteady solution more accurately than the projected solution, the previous failure of the PROM is to be expected.
 
 \begin{figure}
 	\begin{minipage}{0.99\linewidth}

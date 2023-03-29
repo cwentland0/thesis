@@ -52,7 +52,7 @@ where $\consScaleVecVar{\varIdx}$, $\primScaleVecVar{\varIdx} \in \mathbb{R}$ is
 		\consScaleVar{\varIdx} &= \frac{1}{\numSnaps \numCells} \sum_{\timeIdx=1}^{\numSnaps} \left\Vert \consVecVar^{\timeIdx} - \consVecCentVar \right\Vert^2 \\
 		\primScaleVar{\varIdx} &= \frac{1}{\numSnaps \numCells} \sum_{\timeIdx=1}^{\numSnaps} \left\Vert \primVecVar^{\timeIdx} - \primVecCentVar \right\Vert^2
 	\end{align}
-	This has the effect of ensuring that all state variable vectors have a length (in the Euclidean norm) close to unity. This is closely related to the POD, which computes the distance between the data and its projection in the $\ell^2$ norm.
+	This has the effect of ensuring that all state variable vectors have a length (in the Euclidean norm) close to unity. This is closely related to the POD, which computes the distance between the data and their projection in the $\ell^2$ norm.
 
 	\item \textit{Min-max}: Min-max feature scaling, composed of associated centering and scaling operations, has the effect of ensuring that all values in the modified dataset fall in the range $[0.0, \; 1.0]$. For the $\varIdx$th state variable (e.g. density, velocity), the centering vector is computed as
 	%

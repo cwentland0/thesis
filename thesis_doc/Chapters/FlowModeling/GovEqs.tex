@@ -3,10 +3,10 @@
 Fluid flows that can be treated as a continuum are governed by the unsteady Navier--Stokes equations. They describe the conservation of mass, momentum, energy, and transported scalars in an arbitrary control volume. Neglecting body forces, these equations are given by the PDE
 %
 \begin{equation}\label{eq:gemsGovPDE}
-    \pde{\consVec}{\timeVar} + \nabla \cdot (\invFluxDir - \viscFluxDir) = \sourceVec,
+    \pde{\consVec}{\timeVar} + \nabla \cdot (\invFlux - \viscFlux) = \sourceVec,
 \end{equation}
 %
-where $\consVec$ is the conservative state, $\invFluxDir \defEq [\invFlux_x, \; \invFlux_y, \; \invFlux_z]$ and $\viscFluxDir \defEq [\viscFluxDirArg{x}, \; \viscFluxDirArg{y}, \; \viscFluxDirArg{z}]$ are the inviscid and viscous flux terms in each spatial direction, respectively, and $\sourceVec$ are source terms. These terms are given as
+where $\consVec$ is the conservative state, $\invFlux \defEq [\invFlux_x, \; \invFlux_y, \; \invFlux_z]$ and $\viscFlux \defEq [\viscFluxDirArg{x}, \; \viscFluxDirArg{y}, \; \viscFluxDirArg{z}]$ are the inviscid and viscous flux terms in each spatial direction, respectively, and $\sourceVec$ are source terms. These terms are given as
 %
 \begin{equation}\label{eq:gemsGovVecs}
     \consVec \defEq \left[
@@ -86,7 +86,7 @@ where mass diffusion by pressure gradients, body forces, and temperature gradien
 
 Calculation of thermodynamic properties (the species enthalpy $\enthSpec$) and transport properties (the dynamic viscosity $\dynVisc$, thermal conductivity $\thermCond$, and species mass diffusivity $\massDiffSpec$) depend on the gas and transport models used in the simulation. These are described in greater detail in Section~\ref{subsec:gasModels}.
 
-The sixth line of terms in Eq.~\ref{eq:gemsGovVecs} describes the scalar transport equation of the $\specIdx$th chemical species, for $\specIdx \in \{1, \hdots, \numSpec - 1\}$, where $\numSpec$ is the number of chemical species to be modeled. Here, $\mfSpec$ is the mass fraction of the $\specIdx$th species in the mixture, and $\massDiffSpec$ is the mass diffusivity of the $\specIdx$th species into the mixture. The reaction source term, also described as the production rate, for the $\specIdx$th species is given by the specified reaction model; the laminar finite-rate reaction model used in this thesis is described in Section~\ref{sec:finiterate}. Note that only $\numSpec - 1$ chemical transport equations are solved. The mass fraction of the $\numSpec$th species can, by definition of the mass fraction, be computed from
+The sixth line of terms in Eq.~\ref{eq:gemsGovVecs} describes the scalar transport equation of the $\specIdx$th chemical species, for $\specIdx \in \{1, \hdots, \numSpec - 1\}$, where $\numSpec$ is the number of chemical species to be modeled. Here, $\mfSpec$ is the mass fraction of the $\specIdx$th species in the mixture, and $\massDiffSpec$ is the mass diffusivity of the $\specIdx$th species into the mixture. The reaction source term, $\prodRateSpecFR$, also described as the production rate, for the $\specIdx$th species is given by the specified reaction model; the laminar finite-rate reaction model used in this thesis is described in Section~\ref{sec:finiterate}. Note that only $\numSpec - 1$ chemical transport equations are solved. The mass fraction of the $\numSpec$th species can, by definition of the mass fraction, be computed from
 %
 \begin{equation}
 	\mf_{\numSpec} = 1 - \specSumMOne \mfSpec.

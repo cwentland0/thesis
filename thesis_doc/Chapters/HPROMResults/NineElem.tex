@@ -1,6 +1,6 @@
 
 
-In this chapter, PROM performance in modeling a multi-element rocket combustor experiencing high-frequency combustion instability is examined. This model is based on experiments conducted with the nine-element Transverse Instability Combustor Purdue University by Orth \textit{et al.}~\cite{Orth2018}. In the following section, only a simplified description of the experiment as it pertains to the numerical model is described; the reader is encouraged to find greater detail on the experiment's design in~\cite{Orth2018}. As with the CVRC, this test article was designed in tandem with CFD researchers in an effort to establish a rocket combustor benchmark for the development of advanced reacting flow LES solvers. In this case, the number of parallel propellant injectors is increased to nine, introducing additional complexity due to interactions between injectors in the presence of strong transverse combustion instabilities. Indeed, work by Harvazinski \textit{et al.}~\cite{Harvazinski2019} was able to reasonably replicate the experimental self-excited combustion instability via LES with a reduced finite-rate chemistry mechanism. However, as will be demonstrated shortly, the computational cost of such simulations is exceptionally high and precludes any usefulness in the engineering design process. As such, this case provides an excellent target for reduced-order modeling.
+In this section, PROM performance in modeling a multi-element rocket combustor experiencing high-frequency combustion instability is examined. This model is based on experiments conducted with the nine-element Transverse Instability Combustor Purdue University by Orth \textit{et al.}~\cite{Orth2018}. In the following section, only a simplified description of the experiment as it pertains to the numerical model is described; the reader is encouraged to find greater detail on the experiment's design in~\cite{Orth2018}. As with the CVRC, this test article was designed in tandem with CFD researchers in an effort to establish a rocket combustor benchmark for the development of advanced reacting flow LES solvers. In this case, the number of parallel propellant injectors is increased to nine, introducing additional complexity due to interactions between injectors in the presence of strong transverse combustion instabilities. Indeed, work by Harvazinski \textit{et al.}~\cite{Harvazinski2019} was able to reasonably replicate the experimental self-excited combustion instability via LES with a reduced finite-rate chemistry mechanism. However, as will be demonstrated shortly, the computational cost of such simulations is exceptionally high and precludes any usefulness in the engineering design process. As such, this case provides an excellent target for reduced-order modeling.
 
 \subsection{Full-order Model}
 %
@@ -8,11 +8,11 @@ The computational model presented here derives from the work by Harvazinski \tex
 
 \begin{sidewaysfigure}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/nineElem/geom_xy.png}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/nineElem/geom_xy.png}
 		\caption{\label{fig:nineElemGeomXY}Nine-element combustor geometry, $x-y$ cutaway.}
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/nineElem/geom_iso.png}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/nineElem/geom_iso.png}
 		\caption{\label{fig:nineElemGeomIso}Nine-element combustor geometry, isometric view, with $Y_{\text{CO}_2}$ $y-z$ slices at $\timeVar = 21.6$ ms.}
 	\end{minipage}
 \end{sidewaysfigure}
@@ -25,34 +25,34 @@ The computational mesh is composed of 14,387,292 hexahedral cells, resulting in 
 
 \begin{figure}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth,trim={0.5em 0em 6cm 0em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_pressure_z.png}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 15em 0.5em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_pressure_z.png}
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth,trim={6cm 0em 0.5em 0em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_pressure_z_217000.png}
+		\includegraphics[width=0.99\linewidth,trim={15em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_pressure_z_217000.png}
 	\end{minipage}
 
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth,trim={0.5em 0em 6cm 0em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_pressure_z_217500.png}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 15em 0.5em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_pressure_z_217500.png}
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth,trim={6cm 0em 0.5em 0em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_pressure_z_218000.png}
+		\includegraphics[width=0.99\linewidth,trim={15em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_pressure_z_218000.png}
 	\end{minipage}
 	\caption{\label{fig:nineElemFOMPressure}FOM pressure slices for $x-y$ plane slice at $\timeVar = $ 21.65 (top left), 21.7 (top right), 21.75 (bottom left) and 21.8 (bottom right) ms.}
 \end{figure}
 
 \begin{figure}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth,trim={0.5em 0em 6cm 0em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_heat_z.png}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 15em 0.5em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_heat_z.png}
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth,trim={6cm 0em 0.5em 0em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_heat_z_217000.png}
+		\includegraphics[width=0.99\linewidth,trim={15em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_heat_z_217000.png}
 	\end{minipage}
 
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth,trim={0.5em 0em 6cm 0em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_heat_z_217500.png}
+		\includegraphics[width=0.99\linewidth,trim={0.5em 0.5em 15em 0.5em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_heat_z_217500.png}
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=0.99\linewidth,trim={6cm 0em 0.5em 0em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_heat_z_218000.png}
+		\includegraphics[width=0.99\linewidth,trim={15em 0.5em 0.5em 0.5em},clip]{Chapters/HPROMResults/Images/nineElem/example_snaps/example_heat_z_218000.png}
 	\end{minipage}
 	\caption{\label{fig:nineElemFOMHeat}FOM heat release slices for $x-y$ plane slice at $\timeVar = $ 21.65 (top left), 21.7 (top right), 21.75 (bottom left) and 21.8 (bottom right) ms.}
 \end{figure}
@@ -89,7 +89,7 @@ Unsampled PROM accuracy is now investigated. Again, only MP-LSVT PROMs are exami
 	\end{minipage}
 	\begin{minipage}{0.49\linewidth}
 		\includegraphics[width=0.99\linewidth]{Chapters/HPROMResults/Images/nineElem/unsampled/pressure_probe_unsampled_modes.png}
-		\caption{\label{fig:nineElemUnsampledProbe}Nine-element combustor unsampled PROM pressure probe measurements, $\dt = 5 \times \dtFOM$, various $\numPrimModes$}
+		\caption{\label{fig:nineElemUnsampledProbe}Nine-element combustor unsampled PROM pressure probe measurements, $\dt = 5 \times \dtFOM$, various $\numPrimModes$.}
 	\end{minipage}
 \end{figure}
 

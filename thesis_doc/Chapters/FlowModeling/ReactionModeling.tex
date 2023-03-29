@@ -31,7 +31,7 @@ The stoichiometry of this reaction is written in Table~\ref{tab:exampleReac}.
 		4 & $\carbondiox$ & 0 & 1 \\
 		\bottomrule
 	\end{tabular}
-	\caption{\label{tab:exampleReac}Stoichiometry of example reaction, Eq.~\ref{eq:exampleReac}}
+	\caption{\label{tab:exampleReac}Stoichiometry of example reaction, Eq.~\ref{eq:exampleReac}.}
 \end{table}
 
 \subsection{Finite Rate Reactions}\label{sec:finiterate}
@@ -113,13 +113,13 @@ where the scalar dissipation rate, in s$^{-1}$, is given by
 %
 In the original flamelet model formulation, a library of solutions to Eq.~\ref{eq:steadyFlamelet} is precomputed from one-dimensional counterflow diffusion flame simulations (e.g., via FlameMaster~\cite{flamemaster}). This provides a unique mapping from the local fuel mixture fraction and dissipation rate to individual mass fractions, i.e. $\mfSpec = \mfSpec(\mixFrac, \; \scalarDiss)$. As a result, the mixture fraction transport equation need only be accounted for, replacing the species transport equations.
 
-The original flamelet model, however, does not explicitly model any chemical reaction effects. In order to account for this, an additional tracking variable, the \textit{progress variable} $\progVar$ was introduced by Charles Pierce~\cite{Pierce2001}. This takes the form
+The original flamelet model, however, does not explicitly model any chemical reaction effects. In order to account for this, an additional tracking variable, the \textit{progress variable} $\progVar$, was introduced by Charles Pierce~\cite{Pierce2001}. This takes the form
 %
 \begin{equation}\label{eq:progVarDef}
 	\progVar \defEq \sum_{\specIdxTwo = 1}^{\numProg} \mf_{\specIdx_{\specIdxTwo}},
 \end{equation}
 %
-where $\numProg$ is the total number of species mass fractions which make up the progress variable. In general, the constituent mass fractions are chosen to be those of reaction products or late-stage intermediates, as they are an indicator of reaction progress and provide a unique mapping to all chemical states (in combination with the mixture fraction). For example, the simulations of the truncated single-element combustor presented in Section~\ref{sec:cvrc} use carbon dioxide, carbon monoxide, and diatomic hydrogen. The precomputed flamelet library thus provides unique mappings,
+where $\numProg$ is the total number of species mass fractions which make up the progress variable. In general, the constituent mass fractions are chosen to be those of reaction products or late-stage intermediates, as they are an indicator of reaction progress and provide a unique mapping to all chemical states (in combination with the mixture fraction). For example, the simulations of the truncated single-element combustor presented in Section~\ref{sec:cvrc} use carbon dioxide, carbon monoxide, and hydrogen. The precomputed flamelet library thus provides unique mappings,
 %
 \begin{equation}
 	\mfSpec = \mfSpec(\mixFrac, \; \progVar), \quad \prodRateFPV = \prodRateFPV(\mixFrac, \; \progVar).
