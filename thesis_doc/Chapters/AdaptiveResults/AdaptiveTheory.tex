@@ -34,9 +34,9 @@ The window size $\numWindow \in \mathbb{N}_0$ represents the number of prior PRO
 The adaptation of the sample mesh is significantly simpler than that of the trial basis. The regression error is computed at every degree of freedom according to the formulation
 
 \begin{equation}
-	\mathbf{R}^{\timeIdx} = \left(\identMat - \deimBasis^{\timeIdx} \left[\sampMat^{\timeIdx} \deimBasis^{\timeIdx}\right] \sampMat^{\timeIdx} \resWindow^{\timeIdx}\right).
+	\mathbf{R}^{\timeIdx} = \left(\identMat - \deimBasis^{\timeIdx} \left[\sampMat^{\timeIdx} \deimBasis^{\timeIdx}\right]^+ \sampMat^{\timeIdx} \resWindow^{\timeIdx}\right).
 \end{equation}
-Those $\numSamps$ degrees of freedom which incur the highest regression error are selected to construct the new sampling mesh defined by $\sampMat^{\timeIdx+1}$. Note that this step constitutes a \textit{loss of independence} from the full-order dimension $\numDOF$, as the error must be computed at every degree of freedom. The full-order model operator must be evaluated at an infrequent interval $\updateFreq$ to evaluate this. The effect of this query of the full-order system will be shown to be a major handicap of the method in later results.
+Those $\numSamps$ degrees of freedom which incur the highest regression error are selected to construct the new sampling mesh defined by $\sampMat^{\timeIdx+1}$. Note that this step constitutes a \textit{loss of independence} from the full-order dimension $\numDOF$, as the error must be computed at every degree of freedom. The full-order model operator must be evaluated at an infrequent interval $\updateFreq$ to calculate this. The effect of this query of the full-order system will be shown to be a major handicap of the method in later results.
 
 \section{One-step Basis Adaptation}
 %
